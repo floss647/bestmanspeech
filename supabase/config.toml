@@ -43,3 +43,5 @@ verify_jwt = false
 # internally (see get-admin-speeches/index.ts).
 [functions.get-admin-speeches]
 verify_jwt = false
+
+# deploy trigger
