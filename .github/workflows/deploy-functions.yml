@@ -5,7 +5,7 @@ name: Deploy Supabase functions
 # access token). The project ref is public and set below.
 on:
   push:
-    branches: [main]
+    branches: [main, claude/lovabel-codebase-analysis-dr8qww]
     paths:
       - "supabase/functions/**"
       - "supabase/config.toml"
