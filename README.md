@@ -1,73 +1,58 @@
-# Welcome to your Lovable project
+# bestmanspeech.com
 
-## Project info
+AI-assisted speech writing — wedding, best man, corporate, eulogy and more —
+by speechwriter Adrian Simpson.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Stack:** React 18 + Vite + TypeScript, Tailwind + shadcn/ui, Supabase
+(Postgres + edge functions), Stripe payments, and an LLM for speech generation.
 
-## How can I edit this code?
+## Local development
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Requires Node.js 20+ and npm.
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# 1. Install dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Create your local env file
+cp .env.example .env
+#    then fill in the values (see below)
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 3. Start the dev server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Environment variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Copy `.env.example` to `.env` and fill in:
 
-**Use GitHub Codespaces**
+| Variable | Purpose |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_PROJECT_ID` | Supabase project ref |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase anon key (safe to expose) |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (safe to expose) |
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+All of these ship in the client bundle by design — do **not** put secret keys
+(service role, Stripe secret, LLM keys) here. Those belong in Supabase edge
+function secrets. `.env` is gitignored; never commit it.
 
-## What technologies are used for this project?
+## Scripts
 
-This project is built with:
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript type check (`tsc --noEmit`) |
+| `npm run test` | Run the vitest suite |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, test and build on every
+push and pull request.
 
-## How can I deploy this project?
+## Backend
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Supabase edge functions live in `supabase/functions/`; the database schema is in
+`supabase/migrations/`. Deploy with the [Supabase CLI](https://supabase.com/docs/guides/cli).
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+See `ANALYSIS.md` for the full code review and the improvement roadmap.

@@ -5,6 +5,21 @@ import { Cookie, X } from "lucide-react";
 
 const COOKIE_KEY = "cookie_consent";
 
+// Update Google Consent Mode so analytics/ads storage follows the visitor's
+// choice. Gated here rather than firing tags unconditionally on page load.
+function updateConsent(granted: boolean) {
+  const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+  if (typeof w.gtag === "function") {
+    const state = granted ? "granted" : "denied";
+    w.gtag("consent", "update", {
+      ad_storage: state,
+      ad_user_data: state,
+      ad_personalization: state,
+      analytics_storage: state,
+    });
+  }
+}
+
 const CookieBanner = () => {
   const [visible, setVisible] = useState(false);
 
@@ -19,11 +34,13 @@ const CookieBanner = () => {
 
   const accept = () => {
     localStorage.setItem(COOKIE_KEY, "accepted");
+    updateConsent(true);
     setVisible(false);
   };
 
   const decline = () => {
     localStorage.setItem(COOKIE_KEY, "declined");
+    updateConsent(false);
     setVisible(false);
   };
 

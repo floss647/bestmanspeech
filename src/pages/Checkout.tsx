@@ -7,7 +7,11 @@ import { Shield, Lock, ArrowLeft, Loader2, Check, Star, PenLine, RefreshCw } fro
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const stripePromise = loadStripe("pk_live_gRExRDWK9D5Yxat8LmNPo1Ml00iAB4gHO1");
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+if (!stripePublishableKey) {
+  throw new Error("Missing VITE_STRIPE_PUBLISHABLE_KEY environment variable");
+}
+const stripePromise = loadStripe(stripePublishableKey);
 
 interface CheckoutState {
   tier: string;
