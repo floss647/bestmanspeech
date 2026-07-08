@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+
+    <!-- Google tag (gtag.js) with Consent Mode v2 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-670106207"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Default to denied until the visitor accepts via the cookie banner.
+      // The banner calls gtag('consent','update',...) to grant. Any previously
+      // stored choice is reapplied here so returning visitors aren't re-prompted.
+      var storedConsent = null;
+      try { storedConsent = localStorage.getItem('cookie_consent'); } catch (e) {}
+      var granted = storedConsent === 'accepted';
+      gtag('consent', 'default', {
+        ad_storage: granted ? 'granted' : 'denied',
+        ad_user_data: granted ? 'granted' : 'denied',
+        ad_personalization: granted ? 'granted' : 'denied',
+        analytics_storage: granted ? 'granted' : 'denied',
+      });
+
+      gtag('config', 'AW-670106207');
+      gtag('config', 'AW-968218322');
+      gtag('config', 'G-MPYF6WKEHS');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bestmanspeech.com | AI Speeches by Adrian Simpson</title>
+    <meta name="description" content="Create unforgettable speeches powered by world-renowned speechwriter Adrian Simpson. Wedding, corporate, social and more." />
+    <meta name="author" content="bestmanspeech.com" />
+
+    <link rel="canonical" href="https://www.bestmanspeech.com/" />
+
+    <meta property="og:title" content="bestmanspeech.com | AI Speeches by Adrian Simpson" />
+    <meta property="og:description" content="Create unforgettable speeches powered by world-renowned speechwriter Adrian Simpson." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.bestmanspeech.com/" />
+    <meta property="og:image" content="https://www.bestmanspeech.com/og-image.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@bestmanspeech" />
+    <meta name="twitter:image" content="https://www.bestmanspeech.com/og-image.jpg" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

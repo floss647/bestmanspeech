@@ -1,0 +1,1 @@
+ALTER TABLE public.leads ADD COLUMN partial_answers jsonb NOT NULL DEFAULT '{}'::jsonb;
