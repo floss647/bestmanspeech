@@ -38,12 +38,14 @@ serve(async (req) => {
 
     const tier = speech.tier || "basic";
 
-    if (tier === "basic") {
-      throw new Error("Regeneration is not available for Basic tier");
-    }
-
-    if (tier === "premium" && speech.regenerations_used >= speech.max_regenerations) {
-      throw new Error("You've used all your regenerations. Upgrade to VIP for unlimited regenerations.");
+    // The All-Inclusive package includes unlimited edits/rewrites. Enforce the
+    // per-speech limit only when max_regenerations is a real cap (< 9999).
+    if (
+      typeof speech.max_regenerations === "number" &&
+      speech.max_regenerations < 9999 &&
+      speech.regenerations_used >= speech.max_regenerations
+    ) {
+      throw new Error("You've used all your regenerations for this speech.");
     }
 
     // Get speech details
@@ -88,22 +90,21 @@ ${toneInstruction}
 
 Write a completely fresh speech that uses the same information but with different structure, different jokes, and different transitions. It should feel like a genuinely different speech, not a rewrite. Minimum 1400 words.`;
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) throw new Error("AI API key not configured");
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
-        ],
-        max_tokens: 4000,
+        model: "claude-opus-4-8",
+        max_tokens: 4096,
+        system: systemPrompt,
+        messages: [{ role: "user", content: prompt }],
       }),
     });
 
@@ -114,15 +115,16 @@ Write a completely fresh speech that uses the same information but with differen
     }
 
     const aiData = await aiResponse.json();
-    const newSpeech = aiData.choices?.[0]?.message?.content || "";
+    const newSpeech = (aiData.content ?? [])
+      .filter((b: { type: string }) => b.type === "text")
+      .map((b: { text: string }) => b.text)
+      .join("");
 
-    // Increment regeneration count (skip for VIP unlimited)
-    if (tier !== "vip") {
-      await supabase
-        .from("speeches")
-        .update({ regenerations_used: speech.regenerations_used + 1 })
-        .eq("id", speechId);
-    }
+    // Increment regeneration count
+    await supabase
+      .from("speeches")
+      .update({ regenerations_used: speech.regenerations_used + 1 })
+      .eq("id", speechId);
 
     return new Response(
       JSON.stringify({
@@ -140,8 +142,7 @@ Write a completely fresh speech that uses the same information but with differen
     const safeMessages = [
       "speechId and accessToken are required",
       "Speech not found or access denied",
-      "Regeneration is not available for Basic tier",
-      "You've used all your regenerations. Upgrade to VIP for unlimited regenerations.",
+      "You've used all your regenerations for this speech.",
       "Speech generation failed. Please try again.",
       "AI API key not configured",
     ];

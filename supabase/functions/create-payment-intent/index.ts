@@ -37,7 +37,7 @@ const TIER_DESCRIPTIONS: Record<string, string> = {
 };
 
 const MAX_REGENERATIONS: Record<string, number> = {
-  basic: 3,
+  basic: 9999,
   deluxe: 9999,
   premium: 9999,
 };

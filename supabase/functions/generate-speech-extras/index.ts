@@ -36,20 +36,10 @@ serve(async (req) => {
       throw new Error("Speech not found or access denied");
     }
 
-    const tier = speech.tier || "basic";
     const speechText = speech.generated_speech;
 
-    // Validate tier access
-    if (type === "delivery-tips" && tier === "basic") {
-      throw new Error("Delivery tips are available for Premium and VIP tiers");
-    }
-    if (type === "timing-breakdown" && tier !== "vip") {
-      throw new Error("Timing breakdown is available for VIP tier only");
-    }
-    if (type === "delivery-guide" && tier !== "vip") {
-      throw new Error("Professional delivery guide is available for VIP tier only");
-    }
-
+    // The All-Inclusive package includes the delivery tips, timing guide, and
+    // delivery guide, so every paid speech (verified above) can access them.
     let prompt = "";
 
     if (type === "delivery-tips") {
@@ -126,23 +116,22 @@ Write this as a warm, expert guide that feels like personal coaching. Use "you" 
       throw new Error("Invalid type. Use: delivery-tips, timing-breakdown, or delivery-guide");
     }
 
-    // Call AI to generate
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    // Call Claude to generate
+    const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) throw new Error("AI API key not configured");
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: "You are a world-class speech coach and delivery expert." },
-          { role: "user", content: prompt },
-        ],
+        model: "claude-opus-4-8",
         max_tokens: 3000,
+        system: "You are a world-class speech coach and delivery expert.",
+        messages: [{ role: "user", content: prompt }],
       }),
     });
 
@@ -153,7 +142,10 @@ Write this as a warm, expert guide that feels like personal coaching. Use "you" 
     }
 
     const aiData = await aiResponse.json();
-    const content = aiData.choices?.[0]?.message?.content || "";
+    const content = (aiData.content ?? [])
+      .filter((b: { type: string }) => b.type === "text")
+      .map((b: { text: string }) => b.text)
+      .join("");
 
     return new Response(
       JSON.stringify({ content, type }),

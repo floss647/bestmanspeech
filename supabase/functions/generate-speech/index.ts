@@ -74,49 +74,39 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("API key not configured");
+    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+    if (!ANTHROPIC_API_KEY) throw new Error("API key not configured");
 
     const speechConfig = SPEECH_PROMPTS[speechType];
     const systemPrompt = speechConfig.systemPrompt;
     const userPrompt = speechConfig.userPromptTemplate(details);
 
     // Generate the full speech server-side (non-streamed) so the complete text
-    // never reaches the unpaid client.
-    const response = await fetch(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          stream: false,
-        }),
-      }
-    );
+    // never reaches the unpaid client. Uses Claude via the Anthropic API.
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-opus-4-8",
+        max_tokens: 4096,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+      }),
+    });
 
     if (!response.ok) {
-      if (response.status === 429) {
+      if (response.status === 429 || response.status === 529) {
         return new Response(
           JSON.stringify({ error: "Too many requests. Please try again in a moment." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Service temporarily unavailable. Please try again later." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("Anthropic error:", response.status, errorText);
       return new Response(
         JSON.stringify({ error: "Failed to generate speech" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -124,7 +114,10 @@ serve(async (req) => {
     }
 
     const completion = await response.json();
-    const fullSpeech: string = completion?.choices?.[0]?.message?.content ?? "";
+    const fullSpeech: string = (completion?.content ?? [])
+      .filter((b: { type: string }) => b.type === "text")
+      .map((b: { text: string }) => b.text)
+      .join("");
     if (!fullSpeech.trim()) {
       return new Response(
         JSON.stringify({ error: "Failed to generate speech" }),
@@ -148,7 +141,7 @@ serve(async (req) => {
         generated_speech: fullSpeech,
         paid: false,
         tier: "basic",
-        max_regenerations: 3,
+        max_regenerations: 9999,
       })
       .select("id, access_token")
       .single();

@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      PROJECT_REF: pgctakebcptlghemtxip
+      PROJECT_REF: dooelzojlgrbatclrskz
     steps:
       - uses: actions/checkout@v4
 
