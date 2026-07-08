@@ -1,5 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { SPEECH_PROMPTS } from "./speechPrompts.ts";
+
+// Number of words returned to the (unpaid) client as a preview. The full speech
+// is stored server-side and only released by get-speech once paid = true.
+const PREVIEW_WORDS = 100;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -76,6 +81,8 @@ serve(async (req) => {
     const systemPrompt = speechConfig.systemPrompt;
     const userPrompt = speechConfig.userPromptTemplate(details);
 
+    // Generate the full speech server-side (non-streamed) so the complete text
+    // never reaches the unpaid client.
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -90,7 +97,7 @@ serve(async (req) => {
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },
           ],
-          stream: true,
+          stream: false,
         }),
       }
     );
@@ -116,9 +123,54 @@ serve(async (req) => {
       );
     }
 
-    return new Response(response.body, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
-    });
+    const completion = await response.json();
+    const fullSpeech: string = completion?.choices?.[0]?.message?.content ?? "";
+    if (!fullSpeech.trim()) {
+      return new Response(
+        JSON.stringify({ error: "Failed to generate speech" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Persist the full speech (unpaid). get-speech gates release on paid = true.
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const email = typeof details?.email === "string" ? details.email : "";
+    const { data: speechRow, error: insertError } = await supabase
+      .from("speeches")
+      .insert({
+        email,
+        speech_type: speechType,
+        answers: details ?? {},
+        generated_speech: fullSpeech,
+        paid: false,
+        tier: "basic",
+        max_regenerations: 3,
+      })
+      .select("id, access_token")
+      .single();
+
+    if (insertError || !speechRow) {
+      console.error("Failed to store speech:", insertError?.message);
+      return new Response(
+        JSON.stringify({ error: "Failed to generate speech" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const preview = fullSpeech.split(/\s+/).slice(0, PREVIEW_WORDS).join(" ");
+
+    return new Response(
+      JSON.stringify({
+        speechId: speechRow.id,
+        accessToken: speechRow.access_token,
+        preview,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (e) {
     console.error("generate-speech error:", e);
     return new Response(

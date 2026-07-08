@@ -17,7 +17,8 @@ interface CheckoutState {
   tier: string;
   tierName: string;
   price: string;
-  speech: string;
+  speechId: string;
+  accessToken: string;
   speechType: string;
   speechTitle: string;
   answers: Record<string, string>;
@@ -139,10 +140,7 @@ const Checkout = () => {
       const { data, error: fnError } = await supabase.functions.invoke("create-payment-intent", {
         body: {
           tier: state.tier,
-          email: state.email,
-          speech: state.speech,
-          speechType: state.speechType,
-          answers: state.answers,
+          speechId: state.speechId,
           currency: state.currency,
         },
       });
@@ -151,8 +149,8 @@ const Checkout = () => {
       if (!data?.clientSecret) throw new Error("Failed to create payment session");
 
       setClientSecret(data.clientSecret);
-      setSpeechId(data.speechId);
-      setAccessToken(data.accessToken);
+      setSpeechId(state.speechId);
+      setAccessToken(state.accessToken);
     } catch (err: any) {
       console.error("Checkout error:", err);
       setError("Failed to initialize checkout. Please go back and try again.");

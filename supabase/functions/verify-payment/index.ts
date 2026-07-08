@@ -8,6 +8,14 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Catalog prices (minor units) — must match create-payment-intent. Used to
+// assert the amount actually charged matches the tier being claimed.
+const PRICING: Record<string, Record<string, number>> = {
+  basic: { gbp: 2900, usd: 3900, aud: 4900, cad: 3900 },
+  deluxe: { gbp: 3900, usd: 4900, aud: 6900, cad: 5900 },
+  premium: { gbp: 7900, usd: 9900, aud: 13900, cad: 10900 },
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -39,6 +47,15 @@ serve(async (req) => {
 
       if (paymentIntent.metadata?.speech_id !== speechId) {
         throw new Error("Speech ID does not match this payment");
+      }
+
+      // Assert the amount charged matches the catalog price for the claimed tier
+      // and currency, so a smaller/mismatched payment can't unlock the speech.
+      const tier = paymentIntent.metadata?.tier ?? "";
+      const cur = (paymentIntent.currency || "").toLowerCase();
+      const expected = PRICING[tier]?.[cur];
+      if (!expected || paymentIntent.amount !== expected) {
+        throw new Error("Payment amount does not match the expected price");
       }
 
       amountPaid = (paymentIntent.amount || 0) / 100;

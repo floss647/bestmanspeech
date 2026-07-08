@@ -48,13 +48,13 @@ serve(async (req) => {
   }
 
   try {
-    const { email, speech, speechType, answers, currency, tier } = await req.json();
+    const { speechId, currency, tier } = await req.json();
 
-    if (!email || !speech) {
-      throw new Error("Email and speech are required");
+    if (!speechId) {
+      throw new Error("speechId is required");
     }
 
-    const normalizedTier = tier && tier in PRICING ? tier : "deluxe";
+    const normalizedTier = tier && tier in PRICING ? tier : "basic";
     const normalizedCurrency =
       typeof currency === "string" && currency.toLowerCase() in PRICING[normalizedTier]
         ? currency.toLowerCase()
@@ -67,23 +67,32 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Look up the speech that generate-speech already stored. The full text and
+    // the price come from the server, never from the client, so neither can be
+    // tampered with here.
     const { data: speechData, error: speechError } = await supabaseServiceClient
       .from("speeches")
-      .insert({
-        email,
-        speech_type: speechType || "best-man",
-        answers: answers || {},
-        generated_speech: speech,
-        tier: normalizedTier,
-        paid: false,
-        max_regenerations: MAX_REGENERATIONS[normalizedTier],
-      })
-      .select("id, access_token")
+      .select("id, email, access_token, paid")
+      .eq("id", speechId)
       .single();
 
-    if (speechError) {
-      throw new Error(`Failed to store speech: ${speechError.message}`);
+    if (speechError || !speechData) {
+      throw new Error("Speech not found");
     }
+    if (speechData.paid) {
+      throw new Error("This speech has already been paid for");
+    }
+
+    // Record the selected tier on the speech before charging for it.
+    const { error: updateError } = await supabaseServiceClient
+      .from("speeches")
+      .update({ tier: normalizedTier, max_regenerations: MAX_REGENERATIONS[normalizedTier] })
+      .eq("id", speechId);
+    if (updateError) {
+      throw new Error(`Failed to update speech: ${updateError.message}`);
+    }
+
+    const email = speechData.email;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",

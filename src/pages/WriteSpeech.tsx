@@ -49,6 +49,8 @@ const WriteSpeech = () => {
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [speech, setSpeech] = useState("");
+  const [speechId, setSpeechId] = useState("");
+  const [speechAccessToken, setSpeechAccessToken] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [phase, setPhase] = useState<"questions" | "generating" | "paywall">("questions");
   const [generatingStep, setGeneratingStep] = useState(0);
@@ -281,57 +283,22 @@ const WriteSpeech = () => {
         throw new Error(err.error || "Failed to generate speech");
       }
 
-      const reader = resp.body!.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let fullSpeech = "";
-      let streamDone = false;
-
-      const processBuffer = () => {
-        let newlineIndex: number;
-        while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
-          let line = buffer.slice(0, newlineIndex);
-          buffer = buffer.slice(newlineIndex + 1);
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (!line.startsWith("data: ")) continue;
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") {
-            streamDone = true;
-            return;
-          }
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) {
-              fullSpeech += content;
-              setSpeech(fullSpeech);
-            }
-          } catch {
-            // Incomplete JSON — skip this malformed line rather than blocking
-            console.warn("Skipped malformed SSE line:", line.slice(0, 80));
-          }
-        }
-      };
-
-      while (!streamDone) {
-        const { done, value } = await reader.read();
-        if (done) {
-          // Flush decoder and process any remaining buffer
-          buffer += decoder.decode();
-          if (buffer.trim()) {
-            buffer += "\n";
-            processBuffer();
-          }
-          break;
-        }
-        buffer += decoder.decode(value, { stream: true });
-        processBuffer();
+      // The server generates and stores the full speech and returns only a
+      // preview plus the ids needed to purchase and later retrieve it. The full
+      // text is never sent to the unpaid client.
+      const { speechId: newSpeechId, accessToken: newAccessToken, preview } = await resp.json();
+      if (!newSpeechId || !preview) {
+        throw new Error("Failed to generate speech");
       }
 
+      setSpeech(preview);
+      setSpeechId(newSpeechId);
+      setSpeechAccessToken(newAccessToken);
       setPhase("paywall");
       try { localStorage.removeItem(storageKey); } catch {}
 
-      // Fire remarketing webhook (non-blocking)
+      // Fire remarketing webhook (non-blocking). No speech text is sent — the
+      // webhook builds the resume link from the stored speech's ids.
       fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-remarketing-webhook`,
         {
@@ -340,12 +307,13 @@ const WriteSpeech = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-      body: JSON.stringify({
+          body: JSON.stringify({
             email: answers.email,
             firstName: answers.firstName || "",
             speechType,
             generatedAt: new Date().toISOString(),
-            speech: fullSpeech,
+            speechId: newSpeechId,
+            accessToken: newAccessToken,
             answers,
           }),
         }
@@ -506,6 +474,8 @@ const WriteSpeech = () => {
     return (
       <SpeechPaywall
         speech={speech}
+        speechId={speechId}
+        accessToken={speechAccessToken}
         speechType={speechType}
         speechTitle={config.title}
         answers={answers}

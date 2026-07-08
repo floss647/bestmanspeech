@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { email, firstName, speechType, generatedAt, speech, answers, event, leadId } = await req.json();
+    const { email, firstName, speechType, generatedAt, speechId, accessToken, event, leadId } = await req.json();
 
     if (!email) {
       throw new Error("Email is required");
@@ -41,24 +41,9 @@ serve(async (req) => {
       }
     }
 
-    if (speech && eventType === "speech_generated_no_purchase") {
-      const { data: speechData, error: speechError } = await supabaseServiceClient
-        .from("speeches")
-        .insert({
-          email,
-          speech_type: speechType || "best-man",
-          answers: answers || {},
-          generated_speech: speech,
-          paid: false,
-        })
-        .select("id, access_token")
-        .single();
-
-      if (speechError) {
-        console.error("Failed to save speech for remarketing:", speechError.message);
-      } else {
-        resumeLink = `${origin}/resume?id=${speechData.id}&token=${speechData.access_token}`;
-      }
+    // The speech is already stored by generate-speech; just link back to it.
+    if (speechId && accessToken && eventType === "speech_generated_no_purchase") {
+      resumeLink = `${origin}/resume?id=${speechId}&token=${accessToken}`;
     }
 
     const webhookUrl = Deno.env.get("ZAPIER_REMARKETING_WEBHOOK_URL");

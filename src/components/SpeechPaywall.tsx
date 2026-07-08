@@ -9,13 +9,15 @@ import ReviewsWidget from "@/components/ReviewsWidget";
 
 interface SpeechPaywallProps {
   speech: string;
+  speechId: string;
+  accessToken: string;
   speechType: string;
   speechTitle: string;
   answers: Record<string, string>;
   onStartOver: () => void;
 }
 
-const SpeechPaywall = ({ speech, speechType, speechTitle, answers, onStartOver }: SpeechPaywallProps) => {
+const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle, answers, onStartOver }: SpeechPaywallProps) => {
   const [loadingPurchase, setLoadingPurchase] = useState(false);
   const { country, currency: currencyCode, symbol, localize, isAmerican } = useGeolocation();
   const navigate = useNavigate();
@@ -107,7 +109,8 @@ const SpeechPaywall = ({ speech, speechType, speechTitle, answers, onStartOver }
         tier: "basic",
         tierName: "All-Inclusive",
         price: pricing.basic.price,
-        speech,
+        speechId,
+        accessToken,
         speechType,
         speechTitle,
         answers,

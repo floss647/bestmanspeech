@@ -6,6 +6,24 @@
 
 ---
 
+## ✅ Status — fixed in the rebuild branch
+
+Done and pushed on `claude/lovabel-codebase-analysis-dr8qww` (needs a Supabase staging deploy + test before merge):
+
+- **Repo:** real source now in git (was a zip); off Lovable; `.env` untracked; single package manager.
+- **Tooling:** TypeScript strict mode + `typecheck` script; GitHub Actions CI; consent-gated analytics; Lovable social placeholders replaced; Stripe key moved to env.
+- **🔴 1.1 Admin auth** — `get-admin-speeches` now requires a server-side `ADMIN_TOKEN`.
+- **🔴 1.2 Paywall bypass** — the full speech is generated and stored server-side; the browser only ever receives a preview until `paid = true`.
+- **🔴 1.3 Leads PII** — `USING (true)` policies removed; per-lead access token; reads/writes go through edge functions.
+- **🔴 1.4 Cookie consent** — Google tags now gated behind Consent Mode v2.
+- **🟠 2 (amount check)** — `verify-payment` now asserts the charged amount matches the tier price.
+
+**Deploy checklist:** set the `ADMIN_TOKEN` Supabase secret; set `VITE_STRIPE_PUBLISHABLE_KEY` in the frontend host; apply the new migration; deploy the new/changed functions (`generate-speech`, `create-payment-intent`, `verify-payment`, `create-lead`, `update-lead-progress`, `get-lead`, `get-admin-speeches`, `send-remarketing-webhook`, `check-abandoned-leads`).
+
+**Still open:** Stripe webhook as source of truth (2), durable rate limiting on `generate-speech` (2), and the 🟡 correctness bugs below.
+
+---
+
 ## 0. The repo itself
 
 The GitHub repository currently contains only `bestmanspeech-export.zip` — the actual source is not in version control, so nothing can be diffed, reviewed, or deployed from here. **Step zero:** extract the zip into the repo, delete the broken `.git` pointer file inside it (it points at a Lovable build path: `gitdir: /nix/store/…/worktrees/dev-server` and makes the folder a non-functional git repo), and commit the real tree. Everything in this document refers to files inside that export.

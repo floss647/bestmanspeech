@@ -106,6 +106,8 @@ const ResumePurchase = () => {
   return (
     <SpeechPaywall
       speech={speechData.speech}
+      speechId={speechId!}
+      accessToken={accessToken!}
       speechType={speechData.speechType}
       speechTitle={title}
       answers={speechData.answers}
