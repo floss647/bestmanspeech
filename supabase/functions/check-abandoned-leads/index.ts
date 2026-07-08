@@ -58,7 +58,7 @@ serve(async (req) => {
         .select("id")
         .eq("email", lead.email)
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (existingSpeech) {
         // They completed — mark as sent so we don't check again, but don't fire webhook
@@ -69,8 +69,8 @@ serve(async (req) => {
         continue;
       }
 
-      // Fire the form_abandoned webhook with resume link
-      const resumeLink = `https://adrians-artful-words.lovable.app/resume-form?id=${lead.id}`;
+      // Fire the form_abandoned webhook with a tokenized resume link
+      const resumeLink = `https://www.bestmanspeech.com/resume-form?id=${lead.id}&token=${lead.access_token}`;
       try {
         await fetch(webhookUrl, {
           method: "POST",

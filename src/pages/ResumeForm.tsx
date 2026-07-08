@@ -8,23 +8,24 @@ const ResumeForm = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const leadId = searchParams.get("id");
+  const token = searchParams.get("token");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!leadId) {
+    if (!leadId || !token) {
       setError("Invalid link. Please check your email for the correct link.");
       setLoading(false);
       return;
     }
     loadLead();
-  }, [leadId]);
+  }, [leadId, token]);
 
   const loadLead = async () => {
     try {
       const { data, error: fetchError } = await supabase.functions.invoke("get-lead", {
-        body: { leadId },
+        body: { leadId, accessToken: token },
       });
 
       if (fetchError) {

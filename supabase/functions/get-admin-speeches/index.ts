@@ -3,12 +3,33 @@ import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-token",
 };
+
+// Constant-time string comparison to avoid leaking the token via timing.
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Require a server-side admin token. This endpoint uses the service-role key
+  // and returns all customer PII, so it must never be reachable unauthenticated.
+  const adminToken = Deno.env.get("ADMIN_TOKEN");
+  const provided = req.headers.get("x-admin-token") ?? "";
+  if (!adminToken || !safeEqual(provided, adminToken)) {
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
   try {
@@ -56,9 +77,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
+    // Don't leak internal DB errors to the caller.
+    console.error("[get-admin-speeches] error:", error instanceof Error ? error.message : String(error));
     return new Response(
-      JSON.stringify({ error: msg }),
+      JSON.stringify({ error: "An error occurred." }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }

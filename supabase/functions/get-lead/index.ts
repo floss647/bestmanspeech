@@ -13,10 +13,13 @@ serve(async (req) => {
   }
 
   try {
-    const { leadId } = await req.json();
+    const { leadId, accessToken } = await req.json();
 
-    if (!leadId) {
-      throw new Error("Lead ID is required");
+    if (!leadId || !accessToken) {
+      return new Response(
+        JSON.stringify({ error: "Lead ID and access token are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const supabase = createClient(
@@ -24,10 +27,13 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Require both the id and the matching access token — the bare UUID is not
+    // enough to read a lead's email and personal answers.
     const { data, error } = await supabase
       .from("leads")
       .select("id, email, speech_type, last_question_reached, partial_answers, converted")
       .eq("id", leadId)
+      .eq("access_token", accessToken)
       .single();
 
     if (error || !data) {

@@ -69,6 +69,16 @@ const WriteSpeech = () => {
           toast.success("Welcome back! We've saved your answers — pick up where you left off.");
         }
       }
+      // Restore lead credentials so progress keeps syncing after a reload.
+      const savedLead = localStorage.getItem(leadStorageKey);
+      if (savedLead) {
+        const { leadId, accessToken } = JSON.parse(savedLead);
+        if (leadId && accessToken) {
+          leadIdRef.current = leadId;
+          leadTokenRef.current = accessToken;
+          leadCapturedRef.current = true;
+        }
+      }
     } catch {}
     setRestored(true);
   }, [speechType, storageKey, restored]);
@@ -143,26 +153,41 @@ const WriteSpeech = () => {
 
   const leadCapturedRef = useRef(false);
   const leadIdRef = useRef<string | null>(null);
+  const leadTokenRef = useRef<string | null>(null);
+  const leadStorageKey = `speech-lead-${speechType}`;
 
   const captureLeadEmail = useCallback(async (email: string) => {
     if (leadCapturedRef.current || !email || !speechType) return;
     leadCapturedRef.current = true;
     try {
-      // Save to leads table with partial answers
-      const { data } = await supabase.from("leads").insert({
-        email,
-        speech_type: speechType,
-        last_question_reached: currentIndex,
-        partial_answers: answers,
-      }).select("id").single();
+      // Create the lead via an edge function (service role) — the client can no
+      // longer write the leads table directly. We keep the returned access token
+      // to authorize later progress updates.
+      const { data } = await supabase.functions.invoke("create-lead", {
+        body: {
+          email,
+          speechType,
+          lastQuestionReached: currentIndex,
+          partialAnswers: answers,
+        },
+      });
 
-      if (data) leadIdRef.current = data.id;
+      if (data?.leadId && data?.accessToken) {
+        leadIdRef.current = data.leadId;
+        leadTokenRef.current = data.accessToken;
+        try {
+          localStorage.setItem(
+            leadStorageKey,
+            JSON.stringify({ leadId: data.leadId, accessToken: data.accessToken })
+          );
+        } catch {}
+      }
 
       // Fire Zapier webhook for early lead capture
       supabase.functions.invoke("send-remarketing-webhook", {
         body: {
           email,
-          leadId: data?.id,
+          leadId: data?.leadId,
           firstName: "",
           speechType,
           generatedAt: new Date().toISOString(),
@@ -172,17 +197,22 @@ const WriteSpeech = () => {
     } catch (err) {
       console.error("Lead capture error:", err);
     }
-  }, [speechType, currentIndex, answers]);
+  }, [speechType, currentIndex, answers, leadStorageKey]);
 
-  // Sync partial answers to leads table as user progresses
+  // Sync partial answers as the user progresses, via the token-authorized
+  // edge function.
   useEffect(() => {
-    if (!leadIdRef.current || !restored || phase !== "questions") return;
+    if (!leadIdRef.current || !leadTokenRef.current || !restored || phase !== "questions") return;
     if (Object.keys(answers).length === 0) return;
     const timeout = setTimeout(() => {
-      supabase.from("leads").update({
-        partial_answers: answers,
-        last_question_reached: currentIndex,
-      }).eq("id", leadIdRef.current!).then(() => {});
+      supabase.functions.invoke("update-lead-progress", {
+        body: {
+          leadId: leadIdRef.current,
+          accessToken: leadTokenRef.current,
+          partialAnswers: answers,
+          lastQuestionReached: currentIndex,
+        },
+      }).catch(() => {});
     }, 2000); // debounce 2s
     return () => clearTimeout(timeout);
   }, [answers, currentIndex, restored, phase]);

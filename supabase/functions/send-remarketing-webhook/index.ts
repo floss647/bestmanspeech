@@ -24,16 +24,24 @@ serve(async (req) => {
     const origin = "https://www.bestmanspeech.com";
     let resumeLink = "";
 
+    const supabaseServiceClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
     if (eventType === "form_started" && leadId) {
-      resumeLink = `${origin}/resume-form?id=${leadId}`;
+      // Look up the lead's access token so the resume link is authorized.
+      const { data: leadRow } = await supabaseServiceClient
+        .from("leads")
+        .select("access_token")
+        .eq("id", leadId)
+        .maybeSingle();
+      if (leadRow) {
+        resumeLink = `${origin}/resume-form?id=${leadId}&token=${leadRow.access_token}`;
+      }
     }
 
     if (speech && eventType === "speech_generated_no_purchase") {
-      const supabaseServiceClient = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-      );
-
       const { data: speechData, error: speechError } = await supabaseServiceClient
         .from("speeches")
         .insert({

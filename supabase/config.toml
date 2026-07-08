@@ -1,12 +1,18 @@
 project_id = "pgctakebcptlghemtxip"
 
+# These functions are called from the anonymous client and perform their own
+# authorization (per-lead / per-speech access tokens, or an admin token), so
+# they don't require a Supabase user JWT.
 [functions.generate-speech]
 verify_jwt = false
 
-[functions.create-payment]
+[functions.create-payment-intent]
 verify_jwt = false
 
 [functions.verify-payment]
+verify_jwt = false
+
+[functions.get-speech]
 verify_jwt = false
 
 [functions.send-speech-email]
@@ -21,8 +27,19 @@ verify_jwt = false
 [functions.send-remarketing-webhook]
 verify_jwt = false
 
-[functions.get-admin-speeches]
+[functions.check-abandoned-leads]
 verify_jwt = false
 
-[functions.check-abandoned-leads]
+[functions.create-lead]
+verify_jwt = false
+
+[functions.update-lead-progress]
+verify_jwt = false
+
+[functions.get-lead]
+verify_jwt = false
+
+# Admin endpoint: no Supabase JWT, but gated by the ADMIN_TOKEN secret it checks
+# internally (see get-admin-speeches/index.ts).
+[functions.get-admin-speeches]
 verify_jwt = false

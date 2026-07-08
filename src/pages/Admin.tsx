@@ -43,28 +43,33 @@ const Admin = () => {
   const [speeches, setSpeeches] = useState<SpeechRow[]>([]);
   const [contacts, setContacts] = useState<ContactRow[]>([]);
   const [leads, setLeads] = useState<LeadRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [authorized, setAuthorized] = useState(false);
   const [pin, setPin] = useState("");
+  const [authError, setAuthError] = useState("");
   const navigate = useNavigate();
 
-  const ADMIN_PIN = "artful2025";
-
-  const fetchData = async () => {
+  // The passphrase is validated server-side against the ADMIN_TOKEN secret in
+  // the get-admin-speeches edge function — it is never checked in the browser.
+  const authenticate = async (token: string) => {
+    if (!token) return;
     setLoading(true);
-    const { data, error } = await supabase.functions.invoke("get-admin-speeches");
-    if (!error && data) {
-      if (data.speeches) setSpeeches(data.speeches);
-      if (data.contacts) setContacts(data.contacts);
-      if (data.leads) setLeads(data.leads);
-    }
+    setAuthError("");
+    const { data, error } = await supabase.functions.invoke("get-admin-speeches", {
+      headers: { "x-admin-token": token },
+    });
     setLoading(false);
+    if (error || !data || data.error) {
+      setAuthError("Invalid passphrase.");
+      return;
+    }
+    sessionStorage.setItem("admin_token", token);
+    if (data.speeches) setSpeeches(data.speeches);
+    if (data.contacts) setContacts(data.contacts);
+    if (data.leads) setLeads(data.leads);
+    setAuthorized(true);
   };
-
-  useEffect(() => {
-    if (authorized) fetchData();
-  }, [authorized]);
 
   const filteredSpeeches = speeches.filter(
     (s) =>
@@ -123,13 +128,14 @@ const Admin = () => {
           <CardContent className="space-y-4">
             <Input
               type="password"
-              placeholder="Enter PIN"
+              placeholder="Enter passphrase"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && pin === ADMIN_PIN && setAuthorized(true)}
+              onKeyDown={(e) => e.key === "Enter" && authenticate(pin)}
             />
-            <Button className="w-full" onClick={() => pin === ADMIN_PIN && setAuthorized(true)}>
-              Enter
+            {authError && <p className="text-sm text-destructive">{authError}</p>}
+            <Button className="w-full" onClick={() => authenticate(pin)} disabled={loading}>
+              {loading ? "Checking…" : "Enter"}
             </Button>
           </CardContent>
         </Card>
