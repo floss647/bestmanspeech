@@ -1,0 +1,1 @@
+UPDATE speeches SET generated_speech = (SELECT generated_speech FROM speeches WHERE id = '11ac55be-422e-4d87-8605-e1e8672a7ba9') WHERE id = '89fc3a64-b461-443a-9b50-e4f78bbe6a26'

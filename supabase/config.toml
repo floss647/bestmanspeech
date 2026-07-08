@@ -1,0 +1,28 @@
+project_id = "pgctakebcptlghemtxip"
+
+[functions.generate-speech]
+verify_jwt = false
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
+[functions.send-speech-email]
+verify_jwt = false
+
+[functions.generate-speech-extras]
+verify_jwt = false
+
+[functions.regenerate-speech]
+verify_jwt = false
+
+[functions.send-remarketing-webhook]
+verify_jwt = false
+
+[functions.get-admin-speeches]
+verify_jwt = false
+
+[functions.check-abandoned-leads]
+verify_jwt = false
