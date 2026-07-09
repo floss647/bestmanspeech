@@ -49,7 +49,7 @@ const PaymentSuccess = () => {
         const w = window as any;
         if (typeof w.gtag === "function") {
           const conversionParams = {
-            value: data.amount || 29.0,
+            value: data.amount || 49.0,
             currency: data.currency || "GBP",
             transaction_id: data.transactionId || "",
           };

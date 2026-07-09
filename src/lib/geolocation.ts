@@ -15,25 +15,25 @@ export interface CountryPricing {
 export const currencyPricing: Record<string, CountryPricing> = {
   GB: {
     currency: "GBP", symbol: "£",
-    basic:   { price: "£29",   priceNum: 2900 },
+    basic:   { price: "£49",   priceNum: 4900 },
     deluxe:  { price: "£39",   priceNum: 3900 },
     premium: { price: "£79",   priceNum: 7900 },
   },
   US: {
     currency: "USD", symbol: "$",
-    basic:   { price: "$39",   priceNum: 3900 },
+    basic:   { price: "$59",   priceNum: 5900 },
     deluxe:  { price: "$49",   priceNum: 4900 },
     premium: { price: "$99",   priceNum: 9900 },
   },
   AU: {
     currency: "AUD", symbol: "A$",
-    basic:   { price: "A$49",  priceNum: 4900 },
+    basic:   { price: "A$89",  priceNum: 8900 },
     deluxe:  { price: "A$69",  priceNum: 6900 },
     premium: { price: "A$139", priceNum: 13900 },
   },
   CA: {
     currency: "CAD", symbol: "CA$",
-    basic:   { price: "CA$39", priceNum: 3900 },
+    basic:   { price: "CA$79", priceNum: 7900 },
     deluxe:  { price: "CA$59", priceNum: 5900 },
     premium: { price: "CA$109",priceNum: 10900 },
   },
