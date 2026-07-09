@@ -7,11 +7,11 @@ import { Shield, Lock, ArrowLeft, Loader2, Check, Star, PenLine, RefreshCw } fro
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-if (!stripePublishableKey) {
-  throw new Error("Missing VITE_STRIPE_PUBLISHABLE_KEY environment variable");
-}
-const stripePromise = loadStripe(stripePublishableKey);
+// Load Stripe lazily. If the key is missing we return null instead of throwing —
+// throwing here would run at module load and white-screen the whole app, since
+// this page is imported eagerly. A missing key only disables the checkout page.
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 interface CheckoutState {
   tier: string;
