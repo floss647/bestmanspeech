@@ -11,10 +11,10 @@ const corsHeaders = {
 // Tiered pricing by currency (amounts in minor units)
 const PRICING: Record<string, Record<string, number>> = {
   basic: {
-    gbp: 2900,
-    usd: 3900,
-    aud: 4900,
-    cad: 3900,
+    gbp: 4900,
+    usd: 5900,
+    aud: 8900,
+    cad: 7900,
   },
   deluxe: {
     gbp: 3900,
