@@ -29,7 +29,10 @@ serve(async (req) => {
       throw new Error("Speech ID is required");
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Trim the secret key: a stray leading/trailing newline (common when a key
+    // is pasted into the dashboard) lands in the Authorization header and makes
+    // every Stripe request fail with a connection error.
+    const stripe = new Stripe((Deno.env.get("STRIPE_SECRET_KEY") || "").trim(), {
       apiVersion: "2025-08-27.basil",
     });
 
