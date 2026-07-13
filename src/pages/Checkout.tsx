@@ -202,7 +202,7 @@ const Checkout = () => {
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-3.5 h-3.5 text-accent" />
                 <span className="font-body text-xs text-muted-foreground">
-                  {state.tier === "basic" ? "3 speech regenerations" : "Unlimited edits & rewrites"}
+                  Unlimited edits &amp; rewrites
                 </span>
               </div>
               <div className="flex items-center gap-2">
