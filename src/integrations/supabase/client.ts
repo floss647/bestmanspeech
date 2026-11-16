@@ -24,9 +24,10 @@ export const supabase = createClient<Database>(
   SUPABASE_PUBLISHABLE_KEY || "placeholder-anon-key",
   {
     auth: {
-      storage: localStorage,
-      persistSession: true,
-      autoRefreshToken: true,
+      // localStorage doesn't exist during build-time prerendering (Node).
+      storage: typeof window !== "undefined" ? window.localStorage : undefined,
+      persistSession: typeof window !== "undefined",
+      autoRefreshToken: typeof window !== "undefined",
     },
   }
 );
