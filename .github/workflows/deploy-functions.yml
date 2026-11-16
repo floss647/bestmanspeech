@@ -5,7 +5,7 @@ name: Deploy Supabase functions
 # access token). The project ref is public and set below.
 on:
   push:
-    branches: [main, claude/lovabel-codebase-analysis-dr8qww]
+    branches: [main]
     paths:
       - "supabase/functions/**"
       - "supabase/config.toml"
@@ -25,4 +25,4 @@ jobs:
           version: latest
 
       - name: Deploy all edge functions
-        run: supabase functions deploy --project-ref "$PROJECT_REF"
+        run: supabase functions deploy --project-ref "$PROJECT_REF" --yes
