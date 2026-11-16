@@ -56,7 +56,9 @@ for (const page of pages) {
     '<div id="root"></div>',
     `<div id="root">${body}</div>`,
   );
-  const out = page.url === "/" ? path.join(dist, "index.html") : path.join(dist, page.url.slice(1), "index.html");
+  // /best-man-speech -> best-man-speech.html: Netlify serves it at the clean URL
+  // with no trailing-slash redirect, matching the canonical and existing ad links.
+  const out = page.url === "/" ? path.join(dist, "index.html") : path.join(dist, `${page.url.slice(1)}.html`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, html);
   urls.push(SITE + (page.url === "/" ? "/" : page.url));
