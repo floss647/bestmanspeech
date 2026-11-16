@@ -11,7 +11,7 @@ const corsHeaders = {
 // Catalog prices (minor units) — must match create-payment-intent. Used to
 // assert the amount actually charged matches the tier being claimed.
 const PRICING: Record<string, Record<string, number>> = {
-  basic: { gbp: 4900, usd: 5900, aud: 8900, cad: 7900 },
+  basic: { gbp: 2900, usd: 3900, aud: 4900, cad: 3900 },
   deluxe: { gbp: 3900, usd: 4900, aud: 6900, cad: 5900 },
   premium: { gbp: 7900, usd: 9900, aud: 13900, cad: 10900 },
 };
@@ -29,7 +29,10 @@ serve(async (req) => {
       throw new Error("Speech ID is required");
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Trim the secret key: a stray leading/trailing newline (common when a key
+    // is pasted into the dashboard) lands in the Authorization header and makes
+    // every Stripe request fail with a connection error.
+    const stripe = new Stripe((Deno.env.get("STRIPE_SECRET_KEY") || "").trim(), {
       apiVersion: "2025-08-27.basil",
     });
 

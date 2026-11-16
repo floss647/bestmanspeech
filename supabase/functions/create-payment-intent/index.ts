@@ -11,10 +11,10 @@ const corsHeaders = {
 // Tiered pricing by currency (amounts in minor units)
 const PRICING: Record<string, Record<string, number>> = {
   basic: {
-    gbp: 4900,
-    usd: 5900,
-    aud: 8900,
-    cad: 7900,
+    gbp: 2900,
+    usd: 3900,
+    aud: 4900,
+    cad: 3900,
   },
   deluxe: {
     gbp: 3900,
@@ -94,7 +94,10 @@ serve(async (req) => {
 
     const email = speechData.email;
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Trim the secret key: a stray leading/trailing newline (common when a key
+    // is pasted into the dashboard) lands in the Authorization header and makes
+    // every Stripe request fail with a connection error.
+    const stripe = new Stripe((Deno.env.get("STRIPE_SECRET_KEY") || "").trim(), {
       apiVersion: "2025-08-27.basil",
     });
 

@@ -6,11 +6,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Single-page app: every route must serve index.html so React Router can handle
-# it client-side. Without this, deep links like /checkout or /about would 404.
+# Marketing pages are prerendered to real HTML at build time (scripts/prerender.mjs)
+# and Netlify serves those files directly. Everything else (/write, /checkout, …)
+# falls back to the empty app shell, which React renders client-side.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/app.html"
   status = 200
 
 # Sensible default security headers.

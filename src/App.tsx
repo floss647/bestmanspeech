@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import type { ReactNode } from "react";
 import Index from "./pages/Index";
 import WriteSpeech from "./pages/WriteSpeech";
 import SpeechDashboard from "./pages/SpeechDashboard";
@@ -22,13 +23,15 @@ import { GeolocationProvider } from "./contexts/GeolocationContext";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+/** Providers + routes, without a router. Shared by the browser entry
+ *  (BrowserRouter) and the build-time prerenderer (StaticRouter). */
+export const AppShell = ({ router: Router }: { router: (p: { children: ReactNode }) => JSX.Element }) => (
   <QueryClientProvider client={queryClient}>
     <GeolocationProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <Router>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/write" element={<WriteSpeech />} />
@@ -47,10 +50,12 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieBanner />
-        </BrowserRouter>
+        </Router>
       </TooltipProvider>
     </GeolocationProvider>
   </QueryClientProvider>
 );
+
+const App = () => <AppShell router={({ children }) => <BrowserRouter>{children}</BrowserRouter>} />;
 
 export default App;
