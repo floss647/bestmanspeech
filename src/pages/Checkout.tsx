@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
@@ -136,6 +137,7 @@ const Checkout = () => {
   const createPaymentIntent = async () => {
     if (!state) return;
 
+    track("begin_checkout", { tier: state.tier, currency: state.currency }, `checkout-${state.speechId}`);
     try {
       const { data, error: fnError } = await supabase.functions.invoke("create-payment-intent", {
         body: {

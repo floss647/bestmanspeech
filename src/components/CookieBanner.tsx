@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X } from "lucide-react";
+import { useGeolocation } from "@/contexts/GeolocationContext";
+
+// Countries where tracking needs consent first (UK, EEA, Switzerland). Keep in
+// step with CONSENT_REGIONS in index.html.
+const CONSENT_COUNTRIES = new Set(["GB","AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","IS","LI","NO","CH"]);
 
 const COOKIE_KEY = "cookie_consent";
 
@@ -22,15 +27,19 @@ function updateConsent(granted: boolean) {
 
 const CookieBanner = () => {
   const [visible, setVisible] = useState(false);
+  const { country, loading } = useGeolocation();
 
   useEffect(() => {
+    if (loading) return;
+    // Outside the UK/EEA tracking is on by default, so no banner is needed there.
+    if (!CONSENT_COUNTRIES.has(country)) return;
     const consent = localStorage.getItem(COOKIE_KEY);
     if (!consent) {
       // Small delay so it doesn't flash on load
       const timer = setTimeout(() => setVisible(true), 1000);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [country, loading]);
 
   const accept = () => {
     localStorage.setItem(COOKIE_KEY, "accepted");
