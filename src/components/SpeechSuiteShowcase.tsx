@@ -63,7 +63,6 @@ const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { varian
             poster={demoPoster(variant)}
             controls
             playsInline
-            muted
             preload="none"
             aria-label="Demo: answering the questions, previewing the speech, then editing it and creating new versions in the speech suite"
           />
