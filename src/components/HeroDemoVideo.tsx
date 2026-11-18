@@ -10,7 +10,11 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => (
     transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
     className="w-full"
   >
-    <div className="rounded-2xl overflow-hidden border border-primary-foreground/15 shadow-2xl shadow-black/40 bg-charcoal">
+    <div className="relative rounded-2xl overflow-hidden border border-primary-foreground/15 shadow-2xl shadow-black/40 bg-charcoal">
+      <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent text-accent-foreground font-body text-xs md:text-sm font-semibold shadow-lg pointer-events-none">
+        <PlayCircle className="w-4 h-4" />
+        How it works · 52 sec
+      </span>
       <video
         className="w-full h-auto block"
         src={demoVideo(variant)}
@@ -24,9 +28,8 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => (
         aria-label="Demo: answering the questions, previewing the speech free, then editing it and creating new versions in the speech suite"
       />
     </div>
-    <p className="font-body text-sm text-primary-foreground/60 mt-3 flex items-center justify-center lg:justify-start gap-2">
-      <PlayCircle className="w-4 h-4 text-accent" />
-      See how it works in under a minute
+    <p className="font-body text-base text-primary-foreground/90 mt-3 text-center lg:text-left">
+      Watch the whole thing: questions, free preview, then editing and new versions in your speech suite.
     </p>
   </motion.div>
 );
