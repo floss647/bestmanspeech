@@ -17,8 +17,8 @@ const CTASection = () => {
             Your Speech Is Waiting
           </h2>
           <p className="font-body text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-            Stop staring at a blank page. In minutes, you'll have a speech 
-            that sounds authentically you, crafted by the best in the business.
+            Stop staring at a blank page. Preview your speech free in minutes,
+            then make it perfect in your own speech suite.
           </p>
           <a
             href="/write"
@@ -28,7 +28,7 @@ const CTASection = () => {
             Start Writing Your Speech
           </a>
           <p className="font-body text-muted-foreground text-sm mt-6">
-            No account needed · Ready in minutes
+            No account needed · Free preview · One payment
           </p>
         </motion.div>
       </div>

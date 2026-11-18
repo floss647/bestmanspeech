@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { readVersions } from "../_shared/versions.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -25,7 +26,7 @@ serve(async (req) => {
 
     const { data, error } = await supabaseClient
       .from("speeches")
-      .select("id, generated_speech, speech_type, answers, paid, tier, email, regenerations_used, max_regenerations, access_token")
+      .select("id, generated_speech, speech_type, answers, paid, tier, email, regenerations_used, max_regenerations, access_token, versions, created_at")
       .eq("id", speechId)
       .eq("access_token", accessToken)
       .single();
@@ -35,7 +36,7 @@ serve(async (req) => {
     }
 
     // Remove access_token from response
-    const { access_token: _, ...speechData } = data;
+    const { access_token: _, versions: _v, ...speechData } = data;
 
     // For unpaid speeches, return a truncated preview so the paywall can display it
     if (!speechData.paid) {
@@ -47,7 +48,7 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify(speechData), {
+    return new Response(JSON.stringify({ ...speechData, versions: readVersions(data) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

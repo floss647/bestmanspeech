@@ -4,21 +4,27 @@ import { useGeolocation } from "@/contexts/GeolocationContext";
 const steps = [
   {
     number: "01",
-    title: "Tell Us About Your Speech",
+    title: "Answer a Few Questions",
     description:
-      "Share the occasion, your relationship to the person, and any stories or details you'd like to include.",
+      "Tell us about the person, your relationship and your stories. It takes about five minutes, with no sign-up.",
   },
   {
     number: "02",
-    title: "Adrian's Method Takes Over",
+    title: "Preview It Free",
     description:
-      "Our AI applies Adrian Simpson's proven speechwriting framework: structure, tone, timing, and emotional beats.",
+      "Adrian Simpson's method turns your answers into a speech with real structure, laughs and heart. Read the start before you pay.",
   },
   {
     number: "03",
-    title: "Receive Your Speech",
+    title: "Unlock Your Speech Suite",
     description:
-      "Get a polished, personalised speech that sounds like you, only better. Refine it until it's perfect.",
+      "Pay once. Your full speech opens in your own speech suite, saved for you to come back to any time.",
+  },
+  {
+    number: "04",
+    title: "Make It Perfect",
+    description:
+      "Edit any line yourself, ask for unlimited new versions, and use the timing and delivery coaching to nail it on the day.",
   },
 ];
 
@@ -41,11 +47,11 @@ const HowItWorks = () => {
             How It Works
           </h2>
           <p className="font-body text-primary-foreground/60 text-lg max-w-xl mx-auto">
-            Three simple steps to a speech that will have the room in your hands.
+            Four simple steps to a speech that will have the room in your hands.
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
           {steps.map((step, index) => (
             <motion.div
               key={step.number}

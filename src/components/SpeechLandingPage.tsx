@@ -12,6 +12,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReviewsWidget from "@/components/ReviewsWidget";
 import Pricing from "@/components/Pricing";
+import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
 import AsSeenIn from "@/components/AsSeenIn";
 
 const heroImages: Record<string, string> = {
@@ -226,15 +227,16 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           >
             <p className="font-body text-accent tracking-[0.3em] uppercase text-sm mb-4">Simple Process</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-              Your {data.title} in 3 Steps
+              Your {data.title} in 4 Steps
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { step: "1", title: "Answer Questions", desc: "Tell us about the person and your relationship. The more detail, the better the speech." },
-              { step: "2", title: "AI Crafts Your Speech", desc: "Our AI uses Adrian Simpson's proven methodology to write a speech that sounds authentically you." },
-              { step: "3", title: "Deliver with Confidence", desc: "Get your polished, ready to deliver speech. Edit, rehearse, and own the room." },
+              { step: "2", title: "Preview It Free", desc: "Adrian Simpson's method writes a speech that sounds authentically you. Read the start before you pay." },
+              { step: "3", title: "Unlock Your Speech Suite", desc: "Pay once and your full speech opens in your own speech suite, saved for you." },
+              { step: "4", title: "Make It Perfect", desc: "Edit any line, get unlimited new versions, and use the timing and delivery coaching." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -254,6 +256,8 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           </div>
         </div>
       </section>
+
+      <SpeechSuiteShowcase />
 
       {/* Pricing — moved up, right after How It Works */}
       <Pricing speechType={data.speechType} />
