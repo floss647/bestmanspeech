@@ -4,8 +4,8 @@ import { packageSummary } from "@/lib/speechPackage";
 
 /** Each kind of speech has its own demo, with a fitting example speech on screen. */
 export type DemoVariant = "wedding" | "eulogy" | "corporate" | "social";
-const demoVideo = (v: DemoVariant) => `/media/speech-suite-demo-${v}.mp4`;
-const demoPoster = (v: DemoVariant) => `/media/speech-suite-demo-${v}-poster.jpg`;
+export const demoVideo = (v: DemoVariant) => `/media/speech-suite-demo-${v}.mp4`;
+export const demoPoster = (v: DemoVariant) => `/media/speech-suite-demo-${v}-poster.jpg`;
 
 const points = [
   {
@@ -30,8 +30,8 @@ const points = [
   },
 ];
 
-/** Explains what a buyer gets after paying, with the demo video. */
-const SpeechSuiteShowcase = ({ variant = "wedding" }: { variant?: DemoVariant }) => (
+/** Explains what a buyer gets after paying. The video is left out when it already sits in the page header. */
+const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { variant?: DemoVariant; showVideo?: boolean }) => (
   <section id="speech-suite" className="py-24 md:py-32 bg-background">
     <div className="container mx-auto px-6 max-w-6xl">
       <motion.div
@@ -48,7 +48,8 @@ const SpeechSuiteShowcase = ({ variant = "wedding" }: { variant?: DemoVariant })
         <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto">{packageSummary}</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className={showVideo ? "grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" : "max-w-5xl mx-auto"}>
+        {showVideo && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -67,8 +68,9 @@ const SpeechSuiteShowcase = ({ variant = "wedding" }: { variant?: DemoVariant })
             aria-label="Demo: answering the questions, previewing the speech, then editing it and creating new versions in the speech suite"
           />
         </motion.div>
+        )}
 
-        <div className="space-y-6">
+        <div className={showVideo ? "space-y-6" : "grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8"}>
           {points.map((p, i) => (
             <motion.div
               key={p.title}
@@ -87,7 +89,7 @@ const SpeechSuiteShowcase = ({ variant = "wedding" }: { variant?: DemoVariant })
               </div>
             </motion.div>
           ))}
-          <p className="font-body text-sm text-muted-foreground flex items-center gap-2 pt-2">
+          <p className={`font-body text-sm text-muted-foreground flex items-center gap-2 pt-2 ${showVideo ? "" : "md:col-span-2 justify-center"}`}>
             <Clock className="w-4 h-4 text-accent" />
             Preview your speech free before you pay. One payment, no subscription.
           </p>

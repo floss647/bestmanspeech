@@ -319,7 +319,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <p className="font-body text-muted-foreground text-center mb-8">
             Reviews of Adrian's bespoke speechwriting service
           </p>
-          <ReviewsWidget />
+          <ReviewsWidget heading={false} />
         </motion.div>
 
         {/* Final CTA */}
