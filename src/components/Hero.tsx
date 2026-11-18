@@ -44,9 +44,8 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           className="font-body text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-4 leading-relaxed"
         >
-          Answer a few questions and preview your personalised speech free in under
-          5 minutes. Buy it once and it's yours in your own speech suite: edit any
-          line, get unlimited new versions, and be coached to deliver it.
+          Preview your speech free in 5 minutes. Then make it perfect in your own
+          speech suite: edit any line and get unlimited new versions.
         </motion.p>
 
         {/* Social proof strip */}
@@ -98,7 +97,7 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.7 }}
           className="font-body text-sm text-primary-foreground/50 mt-4"
         >
-          No sign-up required · Preview your speech for free
+          No sign-up · Preview free · One payment · Money-back guarantee
         </motion.p>
       </div>
 
