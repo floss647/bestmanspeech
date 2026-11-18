@@ -61,7 +61,7 @@ const Hero = () => {
           </span>
           <span className="inline-flex items-center gap-1.5 font-body text-sm text-primary-foreground/60">
             <Users className="w-3.5 h-3.5 text-accent" />
-            10,000+ speeches delivered
+            Writing speeches since 2012
           </span>
           <span className="inline-flex items-center gap-1.5 font-body text-sm text-primary-foreground/60">
             <Clock className="w-3.5 h-3.5 text-accent" />

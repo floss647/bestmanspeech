@@ -268,7 +268,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           </div>
           <div className="flex items-center gap-1.5">
             <Users className="w-4 h-4" />
-            <span className="font-body text-xs">10,000+ speeches</span>
+            <span className="font-body text-xs">Since 2012</span>
           </div>
         </motion.div>
 
@@ -291,12 +291,12 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
                 World's Highest-Rated Speechwriter · Founder of All Speeches Great & Small
               </p>
               <p className="font-body text-muted-foreground text-sm leading-relaxed mb-4">
-                With over 10,000 speeches written and a 4.9/5 star rating from verified clients, Adrian is the most reviewed and highest-rated professional speechwriter in the world. His proven methodology powers every speech generated on this platform.
+                A professional speechwriter since 2012, Adrian holds a 4.9/5 rating from 421 verified reviews of his bespoke speechwriting service. His method powers every speech generated on this platform.
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                 <div className="flex items-center gap-1.5">
                   <Award className="w-4 h-4 text-accent" />
-                  <span className="font-body text-xs font-semibold text-foreground">10,000+ speeches</span>
+                  <span className="font-body text-xs font-semibold text-foreground">421 verified reviews</span>
                 </div>
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -324,7 +324,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             Verified Reviews from Real Clients
           </h2>
           <p className="font-body text-muted-foreground text-center mb-8">
-            Join 10,000+ people who nailed their speech
+            Reviews of Adrian's bespoke speechwriting service
           </p>
           <ReviewsWidget />
         </motion.div>

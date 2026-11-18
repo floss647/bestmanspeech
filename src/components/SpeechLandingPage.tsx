@@ -32,7 +32,6 @@ export interface LandingPageData {
   metaTitle: string;
   metaDescription: string;
   heroCtaText: string;
-  testimonials: { name: string; role: string; text: string }[];
   faqs: { q: string; a: string }[];
   benefits: string[];
 }
@@ -49,7 +48,7 @@ const TrustBar = () => (
     </div>
     <div className="flex items-center gap-2">
       <CheckCircle2 className="w-4 h-4 text-accent" />
-      <span className="font-body text-sm text-primary-foreground/70">10,000+ speeches delivered</span>
+      <span className="font-body text-sm text-primary-foreground/70">Writing speeches since 2012</span>
     </div>
     <div className="flex items-center gap-2">
       <Shield className="w-4 h-4 text-accent" />
@@ -312,45 +311,6 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               <p className="font-display text-lg font-semibold text-foreground">Money Back Guarantee</p>
               <p className="font-body text-muted-foreground text-sm">Not happy with your speech? We'll work with you to fix it, or give you your money back.</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 md:py-28 bg-gradient-warm">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <p className="font-body text-accent tracking-[0.3em] uppercase text-sm mb-4">Real Results</p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-              What Our Customers Say
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {data.testimonials.map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card rounded-xl p-7"
-              >
-                <div className="flex gap-0.5 mb-4">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-4 h-4 fill-accent text-accent" />
-                  ))}
-                </div>
-                <p className="font-body text-muted-foreground text-sm leading-relaxed mb-5">"{localize(t.text)}"</p>
-                <p className="font-body font-semibold text-foreground text-sm">{t.name}</p>
-                <p className="font-body text-muted-foreground/70 text-xs">{localize(t.role)}</p>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
