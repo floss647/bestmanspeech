@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, PenLine, RefreshCw, Mic, Clock } from "lucide-react";
 import { packageSummary } from "@/lib/speechPackage";
+import { videoHandlers } from "@/lib/track";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 
 /** Each kind of speech has its own demo, with a fitting example speech on screen. */
@@ -34,6 +35,7 @@ const points = [
 /** Explains what a buyer gets after paying. The video is left out when it already sits in the page header. */
 const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { variant?: DemoVariant; showVideo?: boolean }) => {
   const { isAmerican } = useGeolocation();
+  const vt = videoHandlers(`${variant}${isAmerican ? "-us" : ""}`, "showcase");
   return (
   <section id="speech-suite" className="py-24 md:py-32 bg-background">
     <div className="container mx-auto px-6 max-w-6xl">
@@ -68,6 +70,9 @@ const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { varian
             controls
             playsInline
             preload="none"
+            onPlay={vt.onPlay}
+            onVolumeChange={vt.onVolumeChange}
+            onTimeUpdate={vt.onTimeUpdate}
             aria-label="Demo: answering the questions, previewing the speech, then editing it and creating new versions in the speech suite"
           />
         </motion.div>
