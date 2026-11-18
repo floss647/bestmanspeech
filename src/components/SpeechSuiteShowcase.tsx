@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { Check, PenLine, RefreshCw, Mic, Clock } from "lucide-react";
 import { packageSummary } from "@/lib/speechPackage";
+import { useGeolocation } from "@/contexts/GeolocationContext";
 
 /** Each kind of speech has its own demo, with a fitting example speech on screen. */
 export type DemoVariant = "wedding" | "eulogy" | "corporate" | "social";
-export const demoVideo = (v: DemoVariant) => `/media/speech-suite-demo-${v}.mp4`;
-export const demoPoster = (v: DemoVariant) => `/media/speech-suite-demo-${v}-poster.jpg`;
+export const demoVideo = (v: DemoVariant, us = false) => `/media/speech-suite-demo-${v}${us ? "-us" : ""}.mp4`;
+export const demoPoster = (v: DemoVariant, us = false) => `/media/speech-suite-demo-${v}${us ? "-us" : ""}-poster.jpg`;
 
 const points = [
   {
@@ -31,7 +32,9 @@ const points = [
 ];
 
 /** Explains what a buyer gets after paying. The video is left out when it already sits in the page header. */
-const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { variant?: DemoVariant; showVideo?: boolean }) => (
+const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { variant?: DemoVariant; showVideo?: boolean }) => {
+  const { isAmerican } = useGeolocation();
+  return (
   <section id="speech-suite" className="py-24 md:py-32 bg-background">
     <div className="container mx-auto px-6 max-w-6xl">
       <motion.div
@@ -59,11 +62,11 @@ const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { varian
         >
           <video
             className="w-full h-auto block"
-            src={demoVideo(variant)}
-            poster={demoPoster(variant)}
+            key={isAmerican ? "us" : "uk"}
+            src={demoVideo(variant, isAmerican)}
+            poster={demoPoster(variant, isAmerican)}
             controls
             playsInline
-            muted
             preload="none"
             aria-label="Demo: answering the questions, previewing the speech, then editing it and creating new versions in the speech suite"
           />
@@ -97,6 +100,7 @@ const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { varian
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default SpeechSuiteShowcase;
