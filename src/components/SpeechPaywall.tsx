@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -25,6 +26,10 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
 
   const userEmail = answers.email || "";
   const pricing = getPricingForCountry(country);
+
+  useEffect(() => {
+    track("view_preview", { speech_type: speechType, currency: pricing.currency }, `preview-${speechId}`);
+  }, [speechId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getPersonName = () => {
     const map: Record<string, string[]> = {

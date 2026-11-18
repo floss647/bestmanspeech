@@ -11,18 +11,25 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      // Default to denied until the visitor accepts via the cookie banner.
-      // The banner calls gtag('consent','update',...) to grant. Any previously
-      // stored choice is reapplied here so returning visitors aren't re-prompted.
+      // Consent Mode v2. In the UK, EEA and Switzerland tracking stays off until
+      // the visitor accepts via the cookie banner. Elsewhere (e.g. the US) it is on
+      // by default, and the visitor can still decline. A stored choice always wins.
       var storedConsent = null;
       try { storedConsent = localStorage.getItem('cookie_consent'); } catch (e) {}
-      var granted = storedConsent === 'accepted';
-      gtag('consent', 'default', {
-        ad_storage: granted ? 'granted' : 'denied',
-        ad_user_data: granted ? 'granted' : 'denied',
-        ad_personalization: granted ? 'granted' : 'denied',
-        analytics_storage: granted ? 'granted' : 'denied',
-      });
+      var CONSENT_REGIONS = ['GB','AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','CH'];
+      function consentState(v) {
+        return { ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v };
+      }
+      if (storedConsent === 'accepted') {
+        gtag('consent', 'default', consentState('granted'));
+      } else if (storedConsent === 'declined') {
+        gtag('consent', 'default', consentState('denied'));
+      } else {
+        var regional = consentState('denied');
+        regional.region = CONSENT_REGIONS;
+        gtag('consent', 'default', regional);
+        gtag('consent', 'default', consentState('granted'));
+      }
 
       gtag('config', 'AW-670106207');
       gtag('config', 'AW-968218322');

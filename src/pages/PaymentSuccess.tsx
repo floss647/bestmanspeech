@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -44,6 +45,13 @@ const PaymentSuccess = () => {
         setSuccess(true);
         const link = `${window.location.origin}/speech?id=${data.speechId}&token=${data.accessToken}`;
         setSpeechLink(link);
+
+        // GA4 purchase (the key step in the funnel)
+        track("purchase", {
+          transaction_id: data.transactionId || data.speechId,
+          value: data.amount || 29.0,
+          currency: data.currency || "GBP",
+        }, `purchase-${data.speechId}`);
 
         // Fire Google Ads purchase conversions
         const w = window as any;

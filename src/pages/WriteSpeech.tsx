@@ -1,3 +1,4 @@
+import { track } from "@/lib/track";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -161,6 +162,7 @@ const WriteSpeech = () => {
   const captureLeadEmail = useCallback(async (email: string) => {
     if (leadCapturedRef.current || !email || !speechType) return;
     leadCapturedRef.current = true;
+    track("share_email", { speech_type: speechType }, `email-${speechType}`);
     try {
       // Create the lead via an edge function (service role) — the client can no
       // longer write the leads table directly. We keep the returned access token
@@ -224,6 +226,7 @@ const WriteSpeech = () => {
     isTransitioning.current = true;
     setTimeout(() => { isTransitioning.current = false; }, 500);
     if (currentIndex === -1) {
+      track("start_questions", { speech_type: speechType }, `start-${speechType}`);
       setCurrentIndex(0);
       return;
     }
@@ -264,6 +267,7 @@ const WriteSpeech = () => {
     setSpeech("");
     setPhase("generating");
     setGeneratingStep(0);
+    track("finish_questions", { speech_type: speechType });
 
     try {
       const resp = await fetch(
