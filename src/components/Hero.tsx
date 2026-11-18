@@ -27,7 +27,7 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <p className="font-body text-accent tracking-[0.25em] uppercase text-xs md:text-sm mb-6">
+          <p className="font-body text-accent tracking-[0.18em] uppercase text-xs md:text-sm mb-6">
             By speechwriter Adrian Simpson · As seen in The Times
           </p>
         </motion.div>
