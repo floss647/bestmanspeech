@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { PlayCircle, Volume2 } from "lucide-react";
+import { videoHandlers } from "@/lib/track";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuiteShowcase";
 
@@ -11,6 +12,7 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const { isAmerican } = useGeolocation();
+  const vt = videoHandlers(`${variant}${isAmerican ? "-us" : ""}`, "hero");
 
   const playWithSound = () => {
     const v = ref.current;
@@ -56,7 +58,12 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
           playsInline
           controls
           preload="metadata"
-          onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+          onVolumeChange={(e) => {
+            setMuted(e.currentTarget.muted);
+            vt.onVolumeChange(e);
+          }}
+          onPlay={vt.onPlay}
+          onTimeUpdate={vt.onTimeUpdate}
           aria-label="Demo with voiceover by Adrian Simpson: answering the questions, previewing the speech free, then editing it and creating new versions in the speech suite"
         />
       </div>
