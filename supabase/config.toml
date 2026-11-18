@@ -48,3 +48,6 @@ verify_jwt = false
 verify_jwt = false
 
 # deploy trigger
+
+[functions.submit-contact]
+verify_jwt = false
