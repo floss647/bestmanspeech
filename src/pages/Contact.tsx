@@ -26,15 +26,19 @@ const Contact = () => {
     }
 
     setLoading(true);
-    const { error } = await supabase.from("contact_submissions").insert({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      message: form.message.trim(),
+    // Saves the message and emails it to Adrian (Reply-To: the visitor)
+    const { data, error } = await supabase.functions.invoke("submit-contact", {
+      body: {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        message: form.message.trim(),
+        page: document.referrer || window.location.href,
+      },
     });
     setLoading(false);
 
-    if (error) {
-      toast({ title: "Something went wrong. Please try again.", variant: "destructive" });
+    if (error || data?.error) {
+      toast({ title: data?.error || "Something went wrong. Please try again.", variant: "destructive" });
       return;
     }
 
