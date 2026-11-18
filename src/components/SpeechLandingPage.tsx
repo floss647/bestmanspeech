@@ -263,7 +263,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         </div>
       </section>
 
-      <SpeechSuiteShowcase />
+      <SpeechSuiteShowcase variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
 
       {/* Pricing — moved up, right after How It Works */}
       <Pricing speechType={data.speechType} />

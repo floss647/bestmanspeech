@@ -2,8 +2,10 @@ import { motion } from "framer-motion";
 import { Check, PenLine, RefreshCw, Mic, Clock } from "lucide-react";
 import { packageSummary } from "@/lib/speechPackage";
 
-export const DEMO_VIDEO_SRC = "/media/speech-suite-demo.mp4";
-export const DEMO_VIDEO_POSTER = "/media/speech-suite-demo-poster.jpg";
+/** Each kind of speech has its own demo, with a fitting example speech on screen. */
+export type DemoVariant = "wedding" | "eulogy" | "corporate" | "social";
+const demoVideo = (v: DemoVariant) => `/media/speech-suite-demo-${v}.mp4`;
+const demoPoster = (v: DemoVariant) => `/media/speech-suite-demo-${v}-poster.jpg`;
 
 const points = [
   {
@@ -29,7 +31,7 @@ const points = [
 ];
 
 /** Explains what a buyer gets after paying, with the demo video. */
-const SpeechSuiteShowcase = () => (
+const SpeechSuiteShowcase = ({ variant = "wedding" }: { variant?: DemoVariant }) => (
   <section id="speech-suite" className="py-24 md:py-32 bg-background">
     <div className="container mx-auto px-6 max-w-6xl">
       <motion.div
@@ -56,8 +58,8 @@ const SpeechSuiteShowcase = () => (
         >
           <video
             className="w-full h-auto block"
-            src={DEMO_VIDEO_SRC}
-            poster={DEMO_VIDEO_POSTER}
+            src={demoVideo(variant)}
+            poster={demoPoster(variant)}
             controls
             playsInline
             muted
