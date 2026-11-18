@@ -1,74 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { toAmerican, startUsEnglish } from "@/lib/usEnglish";
 import { detectUserCurrency, getPricingForCountry, type CountryPricing } from "@/lib/geolocation";
-
-// British → American spelling map
-const britishToAmerican: [RegExp, string][] = [
-  [/\bpersonalised\b/gi, "personalized"],
-  [/\bPersonalised\b/g, "Personalized"],
-  [/\bhonour\b/gi, "honor"],
-  [/\bHonour\b/g, "Honor"],
-  [/\bfavourite\b/gi, "favorite"],
-  [/\bFavourite\b/g, "Favorite"],
-  [/\bhumour\b/gi, "humor"],
-  [/\bHumour\b/g, "Humor"],
-  [/\bcolour\b/gi, "color"],
-  [/\bColour\b/g, "Color"],
-  [/\borganisation\b/gi, "organization"],
-  [/\bOrganisation\b/g, "Organization"],
-  [/\borganise\b/gi, "organize"],
-  [/\bOrganise\b/g, "Organize"],
-  [/\brecognise\b/gi, "recognize"],
-  [/\bRecognise\b/g, "Recognize"],
-  [/\brealise\b/gi, "realize"],
-  [/\bRealise\b/g, "Realize"],
-  [/\bspecialise\b/gi, "specialize"],
-  [/\bSpecialise\b/g, "Specialize"],
-  [/\bapologise\b/gi, "apologize"],
-  [/\bApologise\b/g, "Apologize"],
-  [/\bbehaviour\b/gi, "behavior"],
-  [/\bBehaviour\b/g, "Behavior"],
-  [/\bcentre\b/gi, "center"],
-  [/\bCentre\b/g, "Center"],
-  [/\bdefence\b/gi, "defense"],
-  [/\bDefence\b/g, "Defense"],
-  [/\btravelling\b/gi, "traveling"],
-  [/\bTravelling\b/g, "Traveling"],
-  [/\bcancelled\b/gi, "canceled"],
-  [/\bCancelled\b/g, "Canceled"],
-  [/\blabour\b/gi, "labor"],
-  [/\bLabour\b/g, "Labor"],
-  [/\bneighbour\b/gi, "neighbor"],
-  [/\bNeighbour\b/g, "Neighbor"],
-  [/\bsavour\b/gi, "savor"],
-  [/\bSavour\b/g, "Savor"],
-  [/\bflavour\b/gi, "flavor"],
-  [/\bFlavour\b/g, "Flavor"],
-  [/\bhonourable\b/gi, "honorable"],
-  [/\bHonourable\b/g, "Honorable"],
-  [/\bfavourable\b/gi, "favorable"],
-  [/\bFavourable\b/g, "Favorable"],
-  [/\bmarvellous\b/gi, "marvelous"],
-  [/\bMarvellous\b/g, "Marvelous"],
-  [/\bfavourites\b/gi, "favorites"],
-  [/\bFavourites\b/g, "Favorites"],
-  [/\bhonours\b/gi, "honors"],
-  [/\bHonours\b/g, "Honors"],
-  [/\bcolours\b/gi, "colors"],
-  [/\bColours\b/g, "Colors"],
-  [/\bneighbours\b/gi, "neighbors"],
-  [/\bNeighbours\b/g, "Neighbors"],
-  [/\bhumourous\b/gi, "humorous"],
-  [/\bHumourous\b/g, "Humorous"],
-  [/\benthralments\b/gi, "enthrallments"],
-  [/\bprogramme\b/gi, "program"],
-  [/\bProgramme\b/g, "Program"],
-  [/\bcatalogue\b/gi, "catalog"],
-  [/\bCatalogue\b/g, "Catalog"],
-  [/\bdialogue\b/gi, "dialog"],
-  [/\bDialogue\b/g, "Dialog"],
-  [/\banalyse\b/gi, "analyze"],
-  [/\bAnalyse\b/g, "Analyze"],
-];
 
 const americanEnglishCountries = new Set(["US", "CA"]);
 
@@ -116,25 +48,18 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
         symbol: location.symbol,
         pricing: prices,
         isAmerican,
-        localize: isAmerican
-          ? (text: string) => {
-              let result = text;
-              for (const [pattern, replacement] of britishToAmerican) {
-                // Keep the capitalisation of the word being replaced ("Honour" -> "Honor")
-                result = result.replace(pattern, (match: string) =>
-                  match === match.toUpperCase() && match.length > 1
-                    ? replacement.toUpperCase()
-                    : match[0] === match[0].toUpperCase()
-                      ? replacement[0].toUpperCase() + replacement.slice(1)
-                      : replacement);
-              }
-              return result;
-            }
-          : (text: string) => text,
+        localize: isAmerican ? toAmerican : (text: string) => text,
         loading: false,
       });
     });
   }, []);
+
+  // American visitors get American spelling everywhere on the page, including
+  // text from data files and anything that appears later.
+  useEffect(() => {
+    if (!state.isAmerican) return;
+    return startUsEnglish();
+  }, [state.isAmerican]);
 
   return (
     <GeolocationContext.Provider value={state}>

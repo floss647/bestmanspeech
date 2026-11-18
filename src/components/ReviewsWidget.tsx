@@ -186,7 +186,7 @@ const ReviewsWidget = ({ heading = true }: { heading?: boolean }) => {
   }, [containerId]);
 
   return (
-    <section id="reviews" className="py-16 px-6 bg-background scroll-mt-20">
+    <section id="reviews" data-no-localize className="py-16 px-6 bg-background scroll-mt-20">
       <div className="container mx-auto">
         {heading && (
           <>

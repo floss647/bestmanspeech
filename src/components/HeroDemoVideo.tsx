@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { PlayCircle, Volume2 } from "lucide-react";
+import { useGeolocation } from "@/contexts/GeolocationContext";
 import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuiteShowcase";
 
 /** The demo video, sized for the top of the page beside the headline.
@@ -9,6 +10,7 @@ import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuit
 const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const { isAmerican } = useGeolocation();
 
   const playWithSound = () => {
     const v = ref.current;
@@ -45,8 +47,9 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
         <video
           ref={ref}
           className="w-full h-auto block"
-          src={demoVideo(variant)}
-          poster={demoPoster(variant)}
+          key={isAmerican ? "us" : "uk"}
+          src={demoVideo(variant, isAmerican)}
+          poster={demoPoster(variant, isAmerican)}
           autoPlay
           muted
           loop
