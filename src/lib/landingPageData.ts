@@ -55,14 +55,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect best man speech in minutes. Personalised, funny, and heartfelt. Built on professional speechwriting methodology. Money back guarantee.",
     heroCtaText: "Write My Best Man Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "James W.", role: "Best Man, London", text: "I was dreading the speech. This tool gave me something I was genuinely proud to deliver. People were crying and laughing." },
-      { name: "Tom H.", role: "Best Man, Bristol", text: "Saved me weeks of stress. The speech was personal, funny, and heartfelt. Got a standing ovation." },
-      { name: "Mark L.", role: "Best Man, New York", text: "I'm not a public speaker at all, but this made me sound like one. Everyone kept asking how I wrote something so good." },
-      { name: "Ryan D.", role: "Best Man, Melbourne", text: "I left it to the last minute and still delivered a belter. The groom said it was the highlight of the day." },
-      { name: "Sam K.", role: "Best Man, Dublin", text: "Honestly thought I'd freeze up on the day. Instead I got laughs, tears, and a round of applause. Unreal." },
-      { name: "Alex P.", role: "Best Man, Toronto", text: "My mate's been my best friend for 20 years. This speech captured that perfectly. His mum came up to me in tears afterwards." },
-    ],
     faqs: [
       { q: "Will it actually be funny?", a: "Yes. The AI is trained to weave humour naturally into the speech using the stories you provide. It won't feel forced or generic." },
       sharedFAQs.howLong,
@@ -84,14 +76,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect groom's speech. Personalised, emotional, and expertly structured. Built on professional methodology. Money back guarantee.",
     heroCtaText: "Write My Groom's Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "Chris P.", role: "Groom, Surrey", text: "I'm terrible with words but this captured exactly what I felt. My wife cried, her parents cried, I nearly cried reading it." },
-      { name: "James W.", role: "Best Man, London", text: "I recommended this to the groom after using it myself. His speech was incredible. The whole room was moved." },
-      { name: "David R.", role: "Father of the Bride, Manchester", text: "The groom's speech was one of the best I've heard. You could tell it came from the heart." },
-      { name: "Michael T.", role: "Groom, Glasgow", text: "I thanked everyone without it sounding like an Oscar acceptance speech. It flowed naturally and people actually listened." },
-      { name: "Ben S.", role: "Groom, Leeds", text: "My wife said the speech was her favourite part of the whole wedding. That says it all." },
-      { name: "Daniel M.", role: "Groom, Auckland", text: "I was terrified of being too soppy or too jokey. This hit the perfect balance. Her dad shook my hand afterwards." },
-    ],
     faqs: [
       { q: "How do I thank everyone without it sounding like a list?", a: "Our methodology weaves gratitude into a natural narrative. It will feel genuine, not like a roll call." },
       sharedFAQs.howLong,
@@ -112,14 +96,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect father of the bride speech. Emotional, personal, and expertly structured. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "David R.", role: "Father of the Bride, Manchester", text: "At 62, I've been to a lot of weddings. This was the best father of the bride speech I've ever heard, and it was mine." },
-      { name: "Sarah M.", role: "Maid of Honour, Edinburgh", text: "The father of the bride's speech had everyone in tears. It was beautiful." },
-      { name: "Emily K.", role: "Maid of Honour, Sydney", text: "My friend's dad used this and his speech was absolutely stunning. Not a dry eye in the house." },
-      { name: "Richard H.", role: "Father of the Bride, Cardiff", text: "I've never been good at expressing emotions. This put into words everything I've felt about my little girl for 30 years." },
-      { name: "Peter G.", role: "Father of the Bride, Chicago", text: "My daughter said my speech was the moment she cried the most. In a good way, obviously." },
-      { name: "Graham W.", role: "Father of the Bride, Perth", text: "I rehearsed it three times and choked up every time. On the day, I held it together and the room was spellbound." },
-    ],
     faqs: [
       { q: "I'm not good with words. Will it still sound like me?", a: "That's exactly what this is for. You share the stories and feelings, we shape them into something beautiful that sounds naturally like you." },
       sharedFAQs.howLong,
@@ -140,14 +116,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect maid of honour speech. Warm, witty, and deeply personal. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "Sarah M.", role: "Maid of Honour, Edinburgh", text: "The AI captured exactly what I wanted to say but couldn't find the words for. My best friend cried the whole way through." },
-      { name: "Emily K.", role: "Maid of Honour, Sydney", text: "I rewrote my speech four times before finding this. Within minutes I had something beautiful that sounded exactly like me." },
-      { name: "Tom H.", role: "Best Man, Bristol", text: "The maid of honour used this too and her speech was incredible. We both got standing ovations." },
-      { name: "Lucy R.", role: "Maid of Honour, Brighton", text: "I was so nervous but the speech was so good it practically delivered itself. My best friend said it was the best gift." },
-      { name: "Jess T.", role: "Maid of Honour, Vancouver", text: "I wanted to be funny without overshadowing the bride. This nailed that balance perfectly." },
-      { name: "Hannah B.", role: "Maid of Honour, Cork", text: "Twenty years of friendship summed up in five minutes. I didn't think it was possible but here we are." },
-    ],
     faqs: [
       { q: "Will it be too emotional or too funny?", a: "The AI balances warmth and humour based on the stories you share. You control the tone by what you provide." },
       sharedFAQs.howLong,
@@ -168,14 +136,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a beautiful bride's speech. Personal, emotional, and expertly crafted. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "Emily K.", role: "Maid of Honour, Sydney", text: "The bride's speech was the highlight of the day. Everyone was speechless." },
-      { name: "Sarah M.", role: "Maid of Honour, Edinburgh", text: "She surprised everyone by giving a speech and it was absolutely beautiful." },
-      { name: "David R.", role: "Father of the Bride, Manchester", text: "When my daughter stood up to speak, I didn't expect to cry. But I did." },
-      { name: "Rachel F.", role: "Bride, Liverpool", text: "I wanted to thank my parents properly and tell my husband what he means to me. This captured it all without being cheesy." },
-      { name: "Sophie L.", role: "Bride, Wellington", text: "Nobody expected the bride to speak. The look on my husband's face was priceless. Best decision I made." },
-      { name: "Claire D.", role: "Bride, Belfast", text: "I'm not one for public speaking but this made me feel like a natural. Even my gran said it was magnificent." },
-    ],
     faqs: [
       sharedFAQs.howLong,
       sharedFAQs.howPersonal,
@@ -195,14 +155,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a beautiful mother of the bride speech. Warm, personal, and expertly structured. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "David R.", role: "Father of the Bride, Manchester", text: "My wife used this for her speech and it was magnificent. The whole room was in tears." },
-      { name: "Sarah M.", role: "Maid of Honour, Edinburgh", text: "The mother of the bride's speech was one of the most beautiful things I've ever heard at a wedding." },
-      { name: "Emily K.", role: "Maid of Honour, Sydney", text: "My friend's mum gave the speech of the day. Not a dry eye." },
-      { name: "Janet P.", role: "Mother of the Bride, Bath", text: "I wanted to say everything a mother feels without rambling. This was structured, emotional, and perfect." },
-      { name: "Margaret T.", role: "Mother of the Bride, Adelaide", text: "My daughter said my speech meant more to her than the vows. I'll treasure that forever." },
-      { name: "Linda S.", role: "Mother of the Bride, Kent", text: "I was so worried I'd just stand there crying. Instead I delivered something beautiful and only cried a little." },
-    ],
     faqs: [
       sharedFAQs.howLong,
       sharedFAQs.howPersonal,
@@ -222,14 +174,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect father of the groom speech. Warm, proud, and personal. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "David R.", role: "Father of the Bride, Manchester", text: "The father of the groom nailed it. Warm, funny, and genuinely touching." },
-      { name: "James W.", role: "Best Man, London", text: "Both fathers gave incredible speeches. This tool clearly works for all generations." },
-      { name: "Tom H.", role: "Best Man, Bristol", text: "The groom's dad brought the house down. A real highlight of the day." },
-      { name: "Keith M.", role: "Father of the Groom, Nottingham", text: "I welcomed my new daughter-in-law into the family and even she said it felt completely genuine." },
-      { name: "Robert J.", role: "Father of the Groom, Boston", text: "I'm a man of few words normally. This helped me say everything I've always felt about my son." },
-      { name: "Colin B.", role: "Father of the Groom, Aberdeen", text: "My son told me afterwards it was the proudest he's ever been of his old man. Worth every penny." },
-    ],
     faqs: [
       sharedFAQs.howLong,
       sharedFAQs.howPersonal,
@@ -249,14 +193,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a beautiful mother of the groom speech. Personal, emotional, and expertly crafted. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "Sarah M.", role: "Maid of Honour, Edinburgh", text: "The mother of the groom's speech was so touching. You could feel the love in every word." },
-      { name: "David R.", role: "Father of the Bride, Manchester", text: "Both mothers gave beautiful speeches. The room was moved." },
-      { name: "Emily K.", role: "Maid of Honour, Sydney", text: "His mum's speech was one of the highlights. So personal and warm." },
-      { name: "Patricia H.", role: "Mother of the Groom, York", text: "I didn't want to be the mum who just cries at the microphone. This gave me something beautiful to actually say." },
-      { name: "Carol W.", role: "Mother of the Groom, Brisbane", text: "Welcoming my son's wife into our family with the right words meant everything. This was perfect." },
-      { name: "Diane F.", role: "Mother of the Groom, Devon", text: "My son isn't one for emotions but even he had a tear in his eye. That's how I know the speech worked." },
-    ],
     faqs: [
       sharedFAQs.howLong,
       sharedFAQs.howPersonal,
@@ -276,14 +212,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect brother of the bride speech. Personal, funny, and heartfelt. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "James W.", role: "Best Man, London", text: "The bride's brother absolutely nailed his speech. Funny and moving in equal measure." },
-      { name: "Tom H.", role: "Best Man, Bristol", text: "One of the most genuine speeches I've heard. You could tell he meant every word." },
-      { name: "Sarah M.", role: "Maid of Honour, Edinburgh", text: "Her brother's speech was a beautiful surprise. The bride was in tears." },
-      { name: "Liam C.", role: "Brother of the Bride, Dublin", text: "Growing up with three sisters I've got plenty of stories. This wove them together brilliantly." },
-      { name: "Matt G.", role: "Brother of the Bride, Birmingham", text: "I teased her just enough and then hit them with the emotional stuff. Perfect structure." },
-      { name: "Jake R.", role: "Brother of the Bride, Cape Town", text: "My sister said it was the most thoughtful thing I've ever done. She's not wrong." },
-    ],
     faqs: [
       sharedFAQs.howLong,
       sharedFAQs.howPersonal,
@@ -305,14 +233,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a beautiful eulogy that honours your loved one. Warm, dignified, and deeply personal. Money back guarantee.",
     heroCtaText: "Write My Eulogy",
     benefits: socialBenefits,
-    testimonials: [
-      { name: "Helen T.", role: "Daughter, Birmingham", text: "I couldn't think straight when I needed to write this. The eulogy captured my dad perfectly. It gave me the words when I had none." },
-      { name: "Mark L.", role: "Friend, New York", text: "Writing a eulogy for my best friend felt impossible. This gave me something truly beautiful to deliver." },
-      { name: "David R.", role: "Son, Manchester", text: "The eulogy was warm, personal, and dignified. Exactly what mum would have wanted." },
-      { name: "Catherine B.", role: "Daughter, Oxford", text: "People came up to me afterwards saying it was one of the most moving eulogies they'd ever heard. I couldn't have done it alone." },
-      { name: "Stephen K.", role: "Brother, Dublin", text: "In the worst week of my life, this gave me something to hold onto. My brother would have been proud." },
-      { name: "Anne W.", role: "Wife, Edinburgh", text: "After 40 years of marriage, I needed to do him justice. This captured our life together beautifully." },
-    ],
     faqs: [
       { q: "Is it appropriate to use AI for a eulogy?", a: "Absolutely. The AI helps you organise your thoughts and memories into a coherent, beautiful tribute. Every word comes from what you share about your loved one." },
       sharedFAQs.howLong,
@@ -333,14 +253,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect birthday speech. Personal, warm, and entertaining. Money back guarantee.",
     heroCtaText: "Write My Birthday Speech",
     benefits: socialBenefits,
-    testimonials: [
-      { name: "Sarah M.", role: "Best Friend, Edinburgh", text: "The birthday speech I gave for my best friend had everyone laughing and crying. It was perfect." },
-      { name: "James W.", role: "Brother, London", text: "My sister's 50th speech was the highlight of the party. So personal and funny." },
-      { name: "Emily K.", role: "Daughter, Sydney", text: "I gave a speech for my dad's 60th and he said it was the best gift he received." },
-      { name: "Karen P.", role: "Wife, Bristol", text: "My husband's 40th surprise party needed the perfect speech. This delivered it. He was so touched." },
-      { name: "Nick J.", role: "Son, Glasgow", text: "Mum's 70th deserved something special. The whole family said it was the best part of the celebration." },
-      { name: "Paula D.", role: "Friend, Toronto", text: "I'm always asked to give speeches and this was by far the easiest and best one I've ever delivered." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -355,14 +267,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect retirement speech. Warm, witty, and personal. Money back guarantee.",
     heroCtaText: "Write My Retirement Speech",
     benefits: [...corporateBenefits.slice(0, 3), ...socialBenefits.slice(3)],
-    testimonials: [
-      { name: "Mark L.", role: "Colleague, New York", text: "The retirement speech I gave for my boss was genuinely moving. He thanked me afterwards with tears in his eyes." },
-      { name: "David R.", role: "Retiree, Manchester", text: "After 35 years, I wanted to get my own send off speech right. This nailed it." },
-      { name: "Sarah M.", role: "Team Lead, Edinburgh", text: "The speech perfectly captured what our colleague meant to the team. Everyone was moved." },
-      { name: "Brian C.", role: "Director, Birmingham", text: "I've seen a lot of retirement speeches. This was head and shoulders above anything else. Genuinely special." },
-      { name: "Janet R.", role: "Retiree, Wellington", text: "I wanted to thank 30 years of colleagues without it turning into a list. This was warm, funny, and perfect." },
-      { name: "George T.", role: "HR Manager, Leeds", text: "We used this for our CEO's retirement dinner. The board were genuinely impressed." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -377,14 +281,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a beautiful anniversary speech. Romantic, warm, and deeply personal. Money back guarantee.",
     heroCtaText: "Write My Anniversary Speech",
     benefits: socialBenefits,
-    testimonials: [
-      { name: "David R.", role: "Husband, Manchester", text: "50 years of marriage and I finally found the words to tell her what she means to me." },
-      { name: "Sarah M.", role: "Daughter, Edinburgh", text: "The speech I gave for my parents' 40th anniversary was the centrepiece of the celebration." },
-      { name: "Emily K.", role: "Best Friend, Sydney", text: "My friend asked me to speak at their 25th. This gave me something truly special." },
-      { name: "Christine L.", role: "Wife, Cardiff", text: "Our silver wedding anniversary deserved something memorable. My husband was speechless, which is ironic." },
-      { name: "Robert H.", role: "Son, Chicago", text: "Speaking at my parents' golden anniversary was daunting. This made it feel effortless and heartfelt." },
-      { name: "Angela M.", role: "Daughter, Perth", text: "Mum and Dad have been together 45 years. This speech celebrated every one of them beautifully." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -399,14 +295,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write an inspiring graduation speech. Personal, motivating, and memorable. Money back guarantee.",
     heroCtaText: "Write My Graduation Speech",
     benefits: socialBenefits,
-    testimonials: [
-      { name: "Emily K.", role: "Graduate, Sydney", text: "I was asked to speak at my graduation and had no idea where to start. This saved me." },
-      { name: "David R.", role: "Father, Manchester", text: "The speech I gave for my daughter's graduation left everyone in tears." },
-      { name: "Sarah M.", role: "Graduate, Edinburgh", text: "My classmates said it was the best speech of the ceremony. I couldn't believe it." },
-      { name: "Priya S.", role: "Valedictorian, London", text: "I needed to represent 300 graduates and somehow make it personal. This did exactly that." },
-      { name: "Tom B.", role: "Parent, Auckland", text: "My son's not one for words. This gave him a speech his whole class applauded." },
-      { name: "Rebecca W.", role: "Graduate, Dublin", text: "My professor came up afterwards and said it was the most inspiring student speech he'd heard in 20 years." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -421,14 +309,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect baby shower speech. Warm, funny, and heartfelt. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: socialBenefits,
-    testimonials: [
-      { name: "Sarah M.", role: "Best Friend, Edinburgh", text: "My baby shower speech had everyone laughing and crying. The mum to be loved it." },
-      { name: "Emily K.", role: "Sister, Sydney", text: "I wanted something special for my sister and this delivered beyond my expectations." },
-      { name: "James W.", role: "Brother, London", text: "Even as a bloke giving a baby shower speech, it was perfect. Funny and genuine." },
-      { name: "Lisa T.", role: "Best Friend, Brighton", text: "I've known her since school and this captured our whole journey to this moment. She was in tears." },
-      { name: "Katie R.", role: "Sister-in-law, Glasgow", text: "Short, sweet, and had the whole room smiling. The mum-to-be said it made her day." },
-      { name: "Mel H.", role: "Colleague, Toronto", text: "I organised the work baby shower and the speech was the highlight. Everyone loved it." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -443,14 +323,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect engagement party speech. Warm, celebratory, and personal. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: socialBenefits,
-    testimonials: [
-      { name: "James W.", role: "Best Friend, London", text: "The engagement speech I gave set the perfect tone. Everyone was buzzing." },
-      { name: "David R.", role: "Father, Manchester", text: "I spoke at my daughter's engagement party and it was a lovely preview of the wedding speeches." },
-      { name: "Emily K.", role: "Friend, Sydney", text: "Short, sweet, and absolutely perfect for the occasion." },
-      { name: "Nicky F.", role: "Mother, Bristol", text: "I wanted to welcome our future son-in-law properly. This was warm, witty, and set the perfect tone." },
-      { name: "Paul D.", role: "Father, Dublin", text: "The engagement party speech got everyone excited for the wedding. Job done perfectly." },
-      { name: "Clare H.", role: "Best Friend, Melbourne", text: "I toasted my best friend and her fiancé and people were already saying they can't wait for the wedding speeches." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
 
@@ -467,14 +339,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a polished corporate event speech. Professional, engaging, and tailored to your audience. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: corporateBenefits,
-    testimonials: [
-      { name: "Mark L.", role: "CEO, New York", text: "The conference speech was exactly what I needed. Professional but personal. The audience loved it." },
-      { name: "David R.", role: "Director, Manchester", text: "I've given dozens of corporate speeches. This was the first time I actually enjoyed delivering one." },
-      { name: "Sarah M.", role: "VP Marketing, Edinburgh", text: "Polished, engaging, and it captured our company story perfectly." },
-      { name: "Andrew T.", role: "Managing Director, London", text: "Our annual conference speech went from dreaded obligation to genuine highlight. The team noticed." },
-      { name: "Michelle K.", role: "COO, Chicago", text: "I needed to rally 500 employees. This struck the right balance between inspiration and authenticity." },
-      { name: "Simon P.", role: "Founder, Melbourne", text: "Investors said it was the clearest, most compelling pitch they'd heard all year." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -489,14 +353,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write the perfect awards ceremony speech. Whether accepting or presenting, make it memorable. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: corporateBenefits,
-    testimonials: [
-      { name: "Mark L.", role: "Award Winner, New York", text: "I had 48 hours notice that I'd won. This gave me a speech that sounded like I'd been preparing for weeks." },
-      { name: "David R.", role: "Presenter, Manchester", text: "Presenting an award is harder than it looks. This made me sound genuinely eloquent." },
-      { name: "Sarah M.", role: "Recipient, Edinburgh", text: "My acceptance speech got a standing ovation. I couldn't believe it." },
-      { name: "Laura B.", role: "Award Winner, London", text: "I thanked everyone who mattered without it turning into a ramble. Gracious and heartfelt." },
-      { name: "Richard N.", role: "Presenter, Sydney", text: "I presented five awards in one evening and each introduction felt fresh and specific. Brilliant." },
-      { name: "Deborah K.", role: "Industry Award Winner, Dublin", text: "People quoted my acceptance speech on LinkedIn for weeks afterwards. That's never happened before." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -511,14 +367,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a heartfelt farewell speech. Warm, genuine, and professionally crafted. Money back guarantee.",
     heroCtaText: "Write My Farewell Speech",
     benefits: corporateBenefits,
-    testimonials: [
-      { name: "Mark L.", role: "Colleague, New York", text: "The farewell speech for my colleague was so good, even HR teared up." },
-      { name: "David R.", role: "Leaver, Manchester", text: "After 20 years, I wanted to leave on a high. This speech was the perfect ending." },
-      { name: "Sarah M.", role: "Manager, Edinburgh", text: "Sending off a team member is emotional. This helped me say what I really meant." },
-      { name: "Jenny T.", role: "Colleague, Birmingham", text: "She'd been with us for 15 years. The speech honoured every one of them. There wasn't a dry eye." },
-      { name: "Phil R.", role: "Leaver, Auckland", text: "I wanted to go out with grace, not an awkward ramble. This was exactly right." },
-      { name: "Helen M.", role: "Team Lead, Glasgow", text: "The whole team signed a card but the speech was what he said he'd remember most." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -541,14 +389,6 @@ export const LANDING_PAGES: LandingPageData[] = [
       "Fully editable",
       "Money back guarantee",
     ],
-    testimonials: [
-      { name: "James W.", role: "Club Captain, London", text: "Best captain's speech in the club's history. Their words, not mine. I just read what the AI wrote." },
-      { name: "David R.", role: "Chairman, Manchester", text: "After years of dreading the annual dinner speech, I actually enjoyed this one." },
-      { name: "Tom H.", role: "Social Secretary, Bristol", text: "The whole room was laughing. People kept buying me drinks afterwards." },
-      { name: "Ian S.", role: "Captain, St Andrews", text: "I followed a 20 year tradition of boring captain's speeches and completely broke the mould. They loved it." },
-      { name: "Mike D.", role: "President, Dublin", text: "The cricket club dinner has never been funnier. Members are still quoting lines from my speech." },
-      { name: "Gary L.", role: "Vice Captain, Surrey", text: "I thanked the greenkeepers, the committee, and the bar staff without sending anyone to sleep. A first for our club." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -563,14 +403,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write an inspiring charity gala speech. Move your audience to action with a powerful, personal speech. Money back guarantee.",
     heroCtaText: "Write My Speech",
     benefits: corporateBenefits,
-    testimonials: [
-      { name: "Sarah M.", role: "Charity Founder, Edinburgh", text: "Donations were up 40% compared to last year. The speech made all the difference." },
-      { name: "Mark L.", role: "Patron, New York", text: "The audience was visibly moved. Several people approached me afterwards wanting to get involved." },
-      { name: "David R.", role: "Trustee, Manchester", text: "Finally a gala speech that didn't put people to sleep. It was powerful and genuine." },
-      { name: "Victoria P.", role: "CEO, London", text: "We raised more in one evening than the entire previous quarter. The speech set the tone perfectly." },
-      { name: "Thomas K.", role: "Ambassador, Sydney", text: "I've spoken at galas before but this was the first time people opened their wallets during the speech." },
-      { name: "Fiona B.", role: "Director, Glasgow", text: "The board said it was the most compelling case for our cause they'd ever heard. Incredible." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
   {
@@ -585,14 +417,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write a powerful keynote speech. Authoritative, engaging, and memorable. Money back guarantee.",
     heroCtaText: "Write My Keynote",
     benefits: corporateBenefits,
-    testimonials: [
-      { name: "Mark L.", role: "Keynote Speaker, New York", text: "The keynote was the best I've ever delivered. Clear, compelling, and it got the audience on their feet." },
-      { name: "David R.", role: "Conference Speaker, Manchester", text: "I've spoken at dozens of events. This was the first time the organiser asked me back on the spot." },
-      { name: "Sarah M.", role: "Industry Speaker, Edinburgh", text: "The audience engagement was unlike anything I'd experienced. People were quoting my speech back to me." },
-      { name: "Jonathan H.", role: "Tech CEO, San Francisco", text: "My keynote went viral on LinkedIn. Over 50,000 views. The content was that good." },
-      { name: "Amanda R.", role: "Conference Speaker, London", text: "I opened a 2,000 person conference and set the bar for the entire event. The organiser's words, not mine." },
-      { name: "Patrick O.", role: "Industry Leader, Dublin", text: "Clear, authoritative, and surprisingly personal. Three audience members asked to partner with us afterwards." },
-    ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
   },
 
@@ -609,14 +433,6 @@ export const LANDING_PAGES: LandingPageData[] = [
     metaDescription: "Write beautiful, personalised wedding vows in minutes. Deeply personal, authentic, and unforgettable. Built on professional speechwriting methodology.",
     heroCtaText: "Write My Wedding Vows",
     benefits: weddingBenefits,
-    testimonials: [
-      { name: "Sarah M.", role: "Bride, Edinburgh", text: "I spent weeks trying to write my vows and nothing felt right. This captured everything I wanted to say. My husband was in tears." },
-      { name: "Chris P.", role: "Groom, Surrey", text: "I'm not a words person at all. These vows sounded like the best version of me. Everyone said they were incredible." },
-      { name: "Emily K.", role: "Bride, Sydney", text: "Personal, beautiful, and they didn't sound like every other vow you hear at weddings. They sounded like us." },
-      { name: "Nathan R.", role: "Groom, Brighton", text: "My wife's vows were so good I was worried mine would fall flat. I used this too and we were both in tears." },
-      { name: "Aoife D.", role: "Bride, Dublin", text: "Our officiant said they were the most beautiful vows she'd heard in 15 years of doing ceremonies." },
-      { name: "Laura S.", role: "Bride, Vancouver", text: "I wanted something deeply personal without being cringeworthy. These were absolutely perfect." },
-    ],
     faqs: [
       { q: "Will they sound like me or like a template?", a: "Every word is built from the details you share about your relationship. They will sound authentically like you, not a greeting card." },
       { q: "How long will the vows be?", a: "Around 2 to 3 minutes when spoken aloud, which is the perfect length for the ceremony. Long enough to say something meaningful, short enough to hold the room." },

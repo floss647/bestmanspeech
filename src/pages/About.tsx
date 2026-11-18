@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const stats = [
-  { value: "10,000+", label: "Speeches Written" },
+  { value: "421", label: "Verified Reviews" },
   { value: "25+", label: "Years Experience" },
   { value: "30+", label: "Countries Served" },
 ];

@@ -31,8 +31,8 @@ const AboutAdrian = () => {
             </p>
             <div className="flex items-center gap-8">
               <div>
-                <p className="font-display text-3xl font-bold text-foreground">10,000+</p>
-                <p className="font-body text-muted-foreground text-sm">Speeches Written</p>
+                <p className="font-display text-3xl font-bold text-foreground">421</p>
+                <p className="font-body text-muted-foreground text-sm">Verified Reviews</p>
               </div>
               <div className="w-px h-12 bg-border" />
               <div>
