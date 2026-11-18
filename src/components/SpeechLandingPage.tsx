@@ -173,9 +173,9 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="font-body text-sm text-primary-foreground/60 mb-6"
+            className="font-body text-sm md:text-base font-semibold text-accent mb-6"
           >
-            Ready in under 5 minutes · No sign-up required
+            Preview free · Edit any line · Unlimited new versions
           </motion.p>
 
           <motion.div
@@ -192,6 +192,12 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               <Sparkles className="w-4 h-4" />
               {localize(data.heroCtaText)}
             </Link>
+            <a
+              href="#speech-suite"
+              className="inline-flex items-center justify-center px-8 py-4 border border-primary-foreground/30 text-primary-foreground font-body font-medium text-base rounded-lg transition-all duration-300 hover:border-accent hover:text-accent"
+            >
+              Watch How It Works
+            </a>
           </motion.div>
 
           {/* Risk-reversal micro-copy */}
@@ -201,7 +207,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="font-body text-sm text-primary-foreground/50 mb-8"
           >
-            No sign-up required · Preview your speech for free
+            No sign-up · One payment · Money-back guarantee
           </motion.p>
 
           <motion.div
