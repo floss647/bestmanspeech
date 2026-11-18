@@ -46,7 +46,7 @@ const TrustBar = () => (
           <Star key={i} className="w-4 h-4 fill-accent text-accent" />
         ))}
       </div>
-      <span className="font-body text-sm text-primary-foreground/70">4.9/5 rating</span>
+      <span className="font-body text-sm text-primary-foreground/70">4.99 from 421 reviews</span>
     </div>
     <div className="flex items-center gap-2">
       <CheckCircle2 className="w-4 h-4 text-accent" />

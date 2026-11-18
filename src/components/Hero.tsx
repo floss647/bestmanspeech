@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { trackStartSpeech } from "@/lib/gtagEvents";
-import { ArrowRight, Clock, Star, Users } from "lucide-react";
+import { ArrowRight, Tag, Star, Users } from "lucide-react";
+import { useGeolocation } from "@/contexts/GeolocationContext";
 import heroImage from "@/assets/hero-wedding.jpg";
 import HeroDemoVideo from "@/components/HeroDemoVideo";
 
 const Hero = () => {
+  const { pricing } = useGeolocation();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 lg:pt-28">
       {/* Background image */}
@@ -26,7 +28,7 @@ const Hero = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <p className="font-body text-accent tracking-[0.25em] uppercase text-xs md:text-sm mb-6">
-            From the creator of All Speeches Great &amp; Small — the world's highest-rated speechwriter
+            By speechwriter Adrian Simpson · As seen in The Times
           </p>
         </motion.div>
 
@@ -36,8 +38,8 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
           className="font-display text-5xl md:text-6xl xl:text-7xl font-bold text-primary-foreground leading-[1.1] mb-6"
         >
-          Speeches That{" "}
-          <span className="text-gradient-gold italic">Move</span> People
+          Your Perfect Speech,{" "}
+          <span className="text-gradient-gold italic">Written in Minutes</span>
         </motion.h1>
 
         <motion.p
@@ -46,8 +48,8 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           className="font-body text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto lg:mx-0 mb-4 leading-relaxed"
         >
-          Preview your speech free in 5 minutes. Then make it perfect in your own
-          speech suite: edit any line and get unlimited new versions.
+          Answer a few questions and preview it free. Then make it yours: edit
+          any line and get unlimited new versions.
         </motion.p>
 
         {/* Social proof strip */}
@@ -59,15 +61,15 @@ const Hero = () => {
         >
           <span className="inline-flex items-center gap-1.5 font-body text-sm text-primary-foreground/60">
             <Star className="w-3.5 h-3.5 text-accent fill-accent" />
-            4.9/5 rated
+            4.99 from 421 reviews
           </span>
           <span className="inline-flex items-center gap-1.5 font-body text-sm text-primary-foreground/60">
             <Users className="w-3.5 h-3.5 text-accent" />
-            Writing speeches since 2012
+            Speechwriter since 2012
           </span>
           <span className="inline-flex items-center gap-1.5 font-body text-sm text-primary-foreground/60">
-            <Clock className="w-3.5 h-3.5 text-accent" />
-            Ready in under 5 mins
+            <Tag className="w-3.5 h-3.5 text-accent" />
+            {pricing.basic.price}, once
           </span>
         </motion.div>
 
@@ -99,7 +101,7 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.7 }}
           className="font-body text-sm text-primary-foreground/50 mt-4"
         >
-          No sign-up · Preview free · One payment · Money-back guarantee
+          No sign-up · Money-back guarantee
         </motion.p>
         </div>
 
