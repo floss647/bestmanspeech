@@ -24,6 +24,9 @@ verify_jwt = false
 [functions.regenerate-speech]
 verify_jwt = false
 
+[functions.save-speech-edit]
+verify_jwt = false
+
 [functions.send-remarketing-webhook]
 verify_jwt = false
 

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, PenLine, RefreshCw, Sparkles, Shield } from "lucide-react";
+import { packageFeatures } from "@/lib/speechPackage";
 import { useNavigate } from "react-router-dom";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { trackStartSpeech } from "@/lib/gtagEvents";
@@ -8,15 +8,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
   const { localize, pricing } = useGeolocation();
   const navigate = useNavigate();
 
-  const features = [
-    { icon: Sparkles, text: localize("Full personalised speech based on your answers") },
-    { icon: PenLine, text: "Dedicated Speech Editing Suite" },
-    { icon: RefreshCw, text: "Unlimited edits & alternative versions" },
-    { icon: Check, text: "Tone & style adjustments" },
-    { icon: Check, text: "Professional delivery tips & timing guide" },
-    { icon: Check, text: "Priority email support" },
-    { icon: Shield, text: "100% money-back guarantee" },
-  ];
+  const features = packageFeatures.map((f) => ({ ...f, text: localize(f.text) }));
 
   return (
     <section id="pricing" className="py-24 md:py-32 bg-gradient-warm">
@@ -35,7 +27,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
             One Price. Everything Included.
           </h2>
           <p className="font-body text-muted-foreground text-lg max-w-xl mx-auto">
-            {localize("Your personalised speech, a dedicated editing suite, and unlimited rewrites. No upsells.")}
+            {localize("Your speech, your own speech suite to edit it in, and unlimited new versions. One payment, no upsells.")}
           </p>
         </motion.div>
 
@@ -49,7 +41,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
           <div className="rounded-2xl bg-charcoal text-primary-foreground ring-2 ring-gold shadow-2xl shadow-gold/10 p-8 md:p-10">
             <div className="text-center mb-8">
               <span className="font-body text-xs font-semibold tracking-widest uppercase text-gold mb-3 block">
-                All-Inclusive Package
+                Speech + Speech Suite
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
@@ -57,7 +49,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
                 </span>
               </div>
               <p className="font-body text-sm text-primary-foreground/60">
-                One-time purchase · Instant delivery
+                One payment · Yours to keep · Preview free first
               </p>
             </div>
 

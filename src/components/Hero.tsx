@@ -44,8 +44,9 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           className="font-body text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-4 leading-relaxed"
         >
-          Answer a few simple questions about your relationship — and get a
-          heartfelt, personalised speech in under 5 minutes.
+          Answer a few questions and preview your personalised speech free in under
+          5 minutes. Buy it once and it's yours in your own speech suite: edit any
+          line, get unlimited new versions, and be coached to deliver it.
         </motion.p>
 
         {/* Social proof strip */}
@@ -84,10 +85,10 @@ const Hero = () => {
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </a>
           <a
-            href="#how-it-works"
+            href="#speech-suite"
             className="inline-flex items-center justify-center px-8 py-5 border border-primary-foreground/30 text-primary-foreground font-body font-medium text-base rounded-lg transition-all duration-300 hover:border-accent hover:text-accent"
           >
-            See How It Works
+            Watch How It Works
           </a>
         </motion.div>
 

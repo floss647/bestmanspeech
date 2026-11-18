@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, Star, Shield, Clock, Users, Award, Lock, RotateCcw, Sparkles, PenLine, RefreshCw, Timer } from "lucide-react";
+import { Check, Star, Shield, Clock, Users, Award, Lock, RotateCcw, Timer } from "lucide-react";
+import { packageFeatures } from "@/lib/speechPackage";
 import { toast } from "sonner";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { getPricingForCountry } from "@/lib/geolocation";
@@ -88,15 +89,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
 
   const preview = getPersonalisedPreview();
 
-  const features = [
-    { icon: Sparkles, text: localize("Full personalised speech") },
-    { icon: PenLine, text: "Dedicated Speech Editing Suite" },
-    { icon: RefreshCw, text: "Unlimited edits & rewrites" },
-    { icon: Check, text: "Tone & style adjustments" },
-    { icon: Check, text: "Professional delivery tips & timing guide" },
-    { icon: Check, text: "Priority email support" },
-    { icon: Shield, text: "100% money-back guarantee" },
-  ];
+  const features = packageFeatures.map((f) => ({ ...f, text: localize(f.text) }));
 
   const handlePurchase = () => {
     if (!userEmail) {
@@ -211,7 +204,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <div className="rounded-2xl bg-charcoal text-primary-foreground ring-2 ring-accent shadow-2xl shadow-accent/10 p-8 md:p-10">
             <div className="text-center mb-6">
               <span className="font-body text-xs font-semibold tracking-widest uppercase text-accent mb-3 block">
-                All-Inclusive Package
+                Speech + Speech Suite
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
@@ -219,7 +212,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
                 </span>
               </div>
               <p className="font-body text-xs text-primary-foreground/60">
-                One-time · Instant delivery
+                One payment · Opens instantly · Yours to keep
               </p>
             </div>
 
@@ -239,7 +232,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               disabled={loadingPurchase}
               className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >
-              Unlock My Speech — {pricing.basic.price}
+              Unlock My Speech Suite — {pricing.basic.price}
             </button>
 
             <p className="font-body text-xs text-primary-foreground/50 text-center mt-3">
@@ -340,7 +333,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             Ready to deliver the speech of a lifetime?
           </h2>
           <p className="font-body text-muted-foreground mb-6 max-w-lg mx-auto">
-            Unlimited edits, a dedicated editing suite, and a 100% money-back guarantee.
+            Edit it yourself, get unlimited new versions, and keep it all in your own speech suite. 100% money-back guarantee.
           </p>
           <button
             onClick={handlePurchase}

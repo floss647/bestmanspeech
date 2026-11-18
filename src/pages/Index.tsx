@@ -7,6 +7,7 @@ import SampleSpeeches from "@/components/SampleSpeeches";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import AsSeenIn from "@/components/AsSeenIn";
+import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
 
 const Index = () => {
   return (
@@ -16,6 +17,7 @@ const Index = () => {
       <AsSeenIn />
       <SpeechTypes />
       <HowItWorks />
+      <SpeechSuiteShowcase />
       <Pricing />
       <SampleSpeeches />
       <CTASection />

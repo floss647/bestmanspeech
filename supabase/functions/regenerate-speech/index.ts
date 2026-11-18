@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { MAX_VERSIONS, readVersions } from "../_shared/versions.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -120,15 +121,28 @@ Write a completely fresh speech that uses the same information but with differen
       .map((b: { text: string }) => b.text)
       .join("");
 
-    // Increment regeneration count
+    // Save the new version alongside the others, and count the regeneration
+    const versions = readVersions(speech);
+    const toneLabel = toneAdjustment ? ` (${toneAdjustment.toLowerCase().trim()})` : "";
+    versions.push({
+      text: newSpeech,
+      label: `Version ${versions.length + 1}${toneLabel}`,
+      created_at: new Date().toISOString(),
+      edited_at: null,
+    });
+    const keptVersions = versions.length > MAX_VERSIONS
+      ? [versions[0], ...versions.slice(versions.length - (MAX_VERSIONS - 1))]
+      : versions;
+
     await supabase
       .from("speeches")
-      .update({ regenerations_used: speech.regenerations_used + 1 })
+      .update({ regenerations_used: speech.regenerations_used + 1, versions: keptVersions })
       .eq("id", speechId);
 
     return new Response(
       JSON.stringify({
         speech: newSpeech,
+        versions: keptVersions,
         regenerationsUsed: speech.regenerations_used + 1,
         maxRegenerations: speech.max_regenerations,
         tier,

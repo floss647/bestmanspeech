@@ -2,9 +2,9 @@ import type { LandingPageData } from "@/components/SpeechLandingPage";
 
 /** Shared FAQ items reused across multiple pages */
 const sharedFAQs = {
-  howLong: { q: "How long does it take?", a: "Answer a few questions (about 5 minutes), and your personalised speech is generated in under 60 seconds. You can start editing immediately." },
+  howLong: { q: "How long does it take?", a: "Answer a few questions (about 5 minutes), and your personalised speech is generated in under 60 seconds. Read a free preview straight away, then unlock the full speech in your own speech suite." },
   aiOrHuman: { q: "Is this written by AI or a human?", a: "Our AI is trained on the methodology of Adrian Simpson, one of the world's leading speechwriters. The result is a speech that sounds authentically human, personal, and polished." },
-  canEdit: { q: "Can I edit the speech?", a: "Absolutely. Your speech is fully editable. We encourage you to add your own touches, adjust the tone, and make it yours." },
+  canEdit: { q: "Can I edit the speech?", a: "Yes. When you buy, your speech opens in your own speech suite. Tap Edit to change any line yourself and your changes are saved. You can also ask for unlimited new versions (funnier, shorter, warmer or a fresh take), and every version is kept so you can mix the best bits." },
   moneyBack: { q: "What if I'm not happy with it?", a: "We offer a money back guarantee. If you're not satisfied, contact us and we'll either revise it or refund you." },
   howPersonal: { q: "How personal will it be?", a: "Very. The speech is built entirely from the details you provide. The more you share, the more personal and authentic it sounds." },
   dataPrivacy: { q: "Is my data safe?", a: "Yes. Your answers are encrypted and only used to generate your speech. We never share your personal stories with anyone." },
@@ -17,7 +17,8 @@ const weddingBenefits = [
   "Structured for maximum emotional impact",
   "Natural, spoken English that sounds like you",
   "Ready to deliver in under 10 minutes",
-  "Unlimited edits after purchase",
+  "Your own speech suite: edit any line yourself",
+  "Unlimited new versions, every one saved",
   "Money back guarantee",
 ];
 
@@ -27,7 +28,8 @@ const corporateBenefits = [
   "Personalised with your stories and data points",
   "Structured for clarity and impact",
   "Ready to deliver in minutes",
-  "Fully editable after purchase",
+  "Your own speech suite: edit any line yourself",
+  "Unlimited new versions, every one saved",
   "Money back guarantee",
 ];
 
@@ -37,7 +39,8 @@ const socialBenefits = [
   "Warm, authentic tone that sounds like you",
   "Structured for emotional impact",
   "Ready in under 10 minutes",
-  "Fully editable",
+  "Your own speech suite: edit any line yourself",
+  "Unlimited new versions, every one saved",
   "Money back guarantee",
 ];
 
@@ -386,7 +389,8 @@ export const LANDING_PAGES: LandingPageData[] = [
       "Balances humour with genuine appreciation",
       "Thanks the right people without boring the room",
       "Ready to deliver with confidence",
-      "Fully editable",
+      "Your own speech suite: edit any line yourself",
+      "Unlimited new versions, every one saved",
       "Money back guarantee",
     ],
     faqs: [sharedFAQs.howLong, sharedFAQs.howPersonal, sharedFAQs.canEdit, sharedFAQs.moneyBack],
