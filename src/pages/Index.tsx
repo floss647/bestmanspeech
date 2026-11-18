@@ -8,16 +8,18 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import AsSeenIn from "@/components/AsSeenIn";
 import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
+import ReviewsWidget from "@/components/ReviewsWidget";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
       <Hero />
+      <ReviewsWidget />
       <AsSeenIn />
       <SpeechTypes />
       <HowItWorks />
-      <SpeechSuiteShowcase />
+      <SpeechSuiteShowcase showVideo={false} />
       <Pricing />
       <SampleSpeeches />
       <CTASection />

@@ -120,7 +120,13 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
           ? (text: string) => {
               let result = text;
               for (const [pattern, replacement] of britishToAmerican) {
-                result = result.replace(pattern, replacement);
+                // Keep the capitalisation of the word being replaced ("Honour" -> "Honor")
+                result = result.replace(pattern, (match: string) =>
+                  match === match.toUpperCase() && match.length > 1
+                    ? replacement.toUpperCase()
+                    : match[0] === match[0].toUpperCase()
+                      ? replacement[0].toUpperCase() + replacement.slice(1)
+                      : replacement);
               }
               return result;
             }

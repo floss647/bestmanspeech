@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import ReviewsWidget from "@/components/ReviewsWidget";
 import Pricing from "@/components/Pricing";
 import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
+import HeroDemoVideo from "@/components/HeroDemoVideo";
 import AsSeenIn from "@/components/AsSeenIn";
 
 const heroImages: Record<string, string> = {
@@ -38,7 +39,7 @@ export interface LandingPageData {
 }
 
 const TrustBar = () => (
-  <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+  <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3">
     <div className="flex items-center gap-2">
       <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -139,7 +140,8 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           <div className="absolute inset-0 bg-gradient-to-b from-charcoal/85 via-charcoal/65 to-charcoal/90" />
         </div>
 
-        <div className="relative z-10 container mx-auto px-6 text-center max-w-4xl py-20">
+        <div className="relative z-10 container mx-auto px-6 max-w-7xl py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
+        <div className="text-center lg:text-left">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -153,7 +155,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-[1.1] mb-6"
+            className="font-display text-4xl md:text-6xl xl:text-[4.25rem] font-bold text-primary-foreground leading-[1.1] mb-6"
           >
             {localize(data.headline)}{" "}
             <span className="text-gradient-gold italic">{localize(data.headlineAccent)}</span>
@@ -163,7 +165,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-body text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-4 leading-relaxed"
+            className="font-body text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto lg:mx-0 mb-4 leading-relaxed"
           >
             {localize(data.subtitle)}
           </motion.p>
@@ -182,7 +184,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-4"
+            className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-4"
           >
             <Link
               to={`/write?type=${data.speechType}`}
@@ -193,10 +195,10 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               {localize(data.heroCtaText)}
             </Link>
             <a
-              href="#speech-suite"
+              href="#reviews"
               className="inline-flex items-center justify-center px-8 py-4 border border-primary-foreground/30 text-primary-foreground font-body font-medium text-base rounded-lg transition-all duration-300 hover:border-accent hover:text-accent"
             >
-              Watch How It Works
+              Read the Reviews
             </a>
           </motion.div>
 
@@ -218,9 +220,14 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             <TrustBar />
           </motion.div>
         </div>
+
+        <HeroDemoVideo variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
+        </div>
       </section>
 
       <AsSeenIn />
+
+      <ReviewsWidget />
 
       {/* How it works, quick 3 step */}
       <section className="py-20 md:py-28 bg-gradient-warm">
@@ -263,12 +270,11 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         </div>
       </section>
 
-      <SpeechSuiteShowcase variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
+      <SpeechSuiteShowcase showVideo={false} />
 
       {/* Pricing — moved up, right after How It Works */}
       <Pricing speechType={data.speechType} />
 
-      <ReviewsWidget />
 
       {/* Benefits */}
       <section className="py-20 md:py-28 bg-charcoal">
