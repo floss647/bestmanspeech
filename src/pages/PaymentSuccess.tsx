@@ -53,16 +53,10 @@ const PaymentSuccess = () => {
             currency: data.currency || "GBP",
             transaction_id: data.transactionId || "",
           };
+          // One purchase per sale. "Purchase (1)" and "Purchase (2)" in the same Ads
+          // account were also primary, so sending to all three counted every sale three times.
           w.gtag("event", "conversion", {
             send_to: "AW-670106207/iLsTCMOXksABEN-ExL8C",
-            ...conversionParams,
-          });
-          w.gtag("event", "conversion", {
-            send_to: "AW-670106207/dJwDCLjzuoUcEN-ExL8C",
-            ...conversionParams,
-          });
-          w.gtag("event", "conversion", {
-            send_to: "AW-670106207/HapQCN74jK8aEN-ExL8C",
             ...conversionParams,
           });
         }
