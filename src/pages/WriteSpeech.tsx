@@ -40,7 +40,7 @@ const speechTypeCards = [
 ];
 
 const WriteSpeech = () => {
-  const { localize } = useGeolocation();
+  const { localize, country } = useGeolocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const speechType = searchParams.get("type") || "";
   const config = SPEECH_TYPE_CONFIGS[speechType];
@@ -173,6 +173,7 @@ const WriteSpeech = () => {
           speechType,
           lastQuestionReached: currentIndex,
           partialAnswers: answers,
+          country,
         },
       });
 
@@ -201,7 +202,7 @@ const WriteSpeech = () => {
     } catch (err) {
       console.error("Lead capture error:", err);
     }
-  }, [speechType, currentIndex, answers, leadStorageKey]);
+  }, [speechType, currentIndex, answers, leadStorageKey, country]);
 
   // Sync partial answers as the user progresses, via the token-authorized
   // edge function.
@@ -278,7 +279,7 @@ const WriteSpeech = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ speechType, details: answers }),
+          body: JSON.stringify({ speechType, details: answers, country }),
         }
       );
 

@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { email, speechType, lastQuestionReached, partialAnswers } = await req.json();
+    const { email, speechType, lastQuestionReached, partialAnswers, country } = await req.json();
 
     const cleanEmail = typeof email === "string" ? email.trim() : "";
     if (!EMAIL_RE.test(cleanEmail)) {
@@ -38,6 +38,7 @@ serve(async (req) => {
     const { data, error } = await supabase
       .from("leads")
       .insert({
+        country: typeof country === "string" ? country.slice(0, 2).toUpperCase() : null,
         email: cleanEmail,
         speech_type: speechType,
         last_question_reached: Number.isFinite(lastQuestionReached) ? lastQuestionReached : 0,
