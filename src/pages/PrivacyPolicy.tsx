@@ -82,7 +82,7 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="font-display text-xl font-semibold text-foreground mb-3">8. Cookies</h2>
             <p className="font-body text-muted-foreground leading-relaxed">
-              We use cookies and similar technologies to improve your experience on our website. Essential cookies are necessary for the site to function. Analytics and marketing cookies are only set with your consent. You can manage your cookie preferences at any time using the cookie banner.
+              We use cookies and similar technologies to improve your experience on our website. Essential cookies are necessary for the site to function. Analytics and marketing cookies (Google Analytics, Google Ads and the Meta pixel, which helps us measure and improve our adverts on Facebook and Instagram) are only set with your consent. You can manage your cookie preferences at any time using the cookie banner.
             </p>
           </section>
 

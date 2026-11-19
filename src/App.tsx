@@ -19,6 +19,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import CookieBanner from "./components/CookieBanner";
+import MetaPageViews from "./components/MetaPageViews";
 import { GeolocationProvider } from "./contexts/GeolocationContext";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ export const AppShell = ({ router: Router }: { router: (p: { children: ReactNode
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieBanner />
+          <MetaPageViews />
         </Router>
       </TooltipProvider>
     </GeolocationProvider>

@@ -13,7 +13,8 @@ const COOKIE_KEY = "cookie_consent";
 // Update Google Consent Mode so analytics/ads storage follows the visitor's
 // choice. Gated here rather than firing tags unconditionally on page load.
 function updateConsent(granted: boolean) {
-  const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+  const w = window as unknown as { gtag?: (...args: unknown[]) => void; fbq?: (...args: unknown[]) => void };
+  if (typeof w.fbq === "function") w.fbq("consent", granted ? "grant" : "revoke");
   if (typeof w.gtag === "function") {
     const state = granted ? "granted" : "denied";
     w.gtag("consent", "update", {
@@ -31,9 +32,14 @@ const CookieBanner = () => {
 
   useEffect(() => {
     if (loading) return;
-    // Outside the UK/EEA tracking is on by default, so no banner is needed there.
-    if (!CONSENT_COUNTRIES.has(country)) return;
     const consent = localStorage.getItem(COOKIE_KEY);
+    // Outside the UK/EEA tracking is on by default, so no banner is needed there.
+    // The Meta pixel starts revoked everywhere, so grant it here unless declined.
+    if (!CONSENT_COUNTRIES.has(country)) {
+      const w = window as unknown as { fbq?: (...args: unknown[]) => void };
+      if (consent !== "declined" && typeof w.fbq === "function") w.fbq("consent", "grant");
+      return;
+    }
     if (!consent) {
       // Small delay so it doesn't flash on load
       const timer = setTimeout(() => setVisible(true), 1000);
