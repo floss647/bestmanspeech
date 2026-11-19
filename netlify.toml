@@ -6,6 +6,56 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Old WordPress addresses still known to Google: send them permanently to the
+# nearest current page so they stop showing as soft 404s.
+[[redirects]]
+  from = "/2023/*"
+  to = "/best-man-speech"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/best-man-order/*"
+  to = "/best-man-speech"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/best-man-order"
+  to = "/best-man-speech"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/terms-of-service/*"
+  to = "/terms"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/terms-of-service"
+  to = "/terms"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/index.php"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/barking-dog/*"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/barking-dog"
+  to = "/"
+  status = 301
+  force = true
+
 # Marketing pages are prerendered to real HTML at build time (scripts/prerender.mjs)
 # and Netlify serves those files directly. Everything else (/write, /checkout, …)
 # falls back to the empty app shell, which React renders client-side.
