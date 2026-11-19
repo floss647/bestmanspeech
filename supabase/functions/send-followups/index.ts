@@ -10,6 +10,7 @@ const ORIGIN = "https://www.bestmanspeech.com";
 const FROM = "Adrian Simpson <noreply@bestmanspeech.com>";
 const REPLY_TO = "adrian@allspeechesgreatandsmall.com";
 const HOUR = 60 * 60 * 1000;
+const POSTAL = "All Speeches Great and Small, Judins, Heathfield Road, East Sussex, United Kingdom";
 
 const TITLES: Record<string, string> = {
   "best-man": "best man speech", "groom": "groom's speech", "bride": "bride's speech",
@@ -48,7 +49,7 @@ function layout(paragraphs: string[], button: { href: string; label: string }, u
   <p style="margin:24px 0"><a href="${button.href}" style="display:inline-block;background:#d4a72c;color:#1a1a1a;text-decoration:none;font-family:Arial,sans-serif;font-weight:bold;font-size:16px;padding:14px 26px;border-radius:8px">${button.label}</a></p>
   <p style="margin:0 0 4px">Adrian Simpson</p>
   <p style="margin:0 0 24px;color:#666;font-size:15px">Speechwriter since 2012 · bestmanspeech.com</p>
-  <p style="margin:0;color:#999;font-family:Arial,sans-serif;font-size:12px">You're getting this because you started a speech at bestmanspeech.com. <a href="${unsubscribe}" style="color:#999">Unsubscribe</a></p>
+  <p style="margin:0;color:#999;font-family:Arial,sans-serif;font-size:12px">You're getting this because you started a speech at bestmanspeech.com. <a href="${unsubscribe}" style="color:#999">Unsubscribe</a><br>${POSTAL}</p>
 </div>`;
 }
 
@@ -143,7 +144,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: FROM, to, reply_to: REPLY_TO, subject: mail.subject,
         html: layout(mail.paragraphs, mail.button, unsub),
-        text: `${mail.paragraphs.join("\n\n").replace(/<[^>]+>/g, "")}\n\n${mail.button.label}: ${mail.button.href}\n\nAdrian Simpson\nbestmanspeech.com\n\nUnsubscribe: ${unsub}`,
+        text: `${mail.paragraphs.join("\n\n").replace(/<[^>]+>/g, "")}\n\n${mail.button.label}: ${mail.button.href}\n\nAdrian Simpson\nbestmanspeech.com\n\nUnsubscribe: ${unsub}\n${POSTAL}`,
         headers: { "List-Unsubscribe": `<${unsub}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
       }),
     });
