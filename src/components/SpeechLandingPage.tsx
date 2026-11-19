@@ -15,6 +15,7 @@ import Pricing from "@/components/Pricing";
 import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
 import HeroDemoVideo from "@/components/HeroDemoVideo";
 import AsSeenIn from "@/components/AsSeenIn";
+import SampleEulogy from "@/components/SampleEulogy";
 
 const heroImages: Record<string, string> = {
   wedding: heroWedding,
@@ -36,6 +37,13 @@ export interface LandingPageData {
   heroCtaText: string;
   faqs: { q: string; a: string }[];
   benefits: string[];
+  /** Optional overrides for gentler pages such as eulogies */
+  promiseLine?: string;
+  microCopy?: string;
+  secondaryCta?: { label: string; href: string };
+  personalNote?: string;
+  navBrand?: "adrian";
+  showSample?: "eulogy";
 }
 
 const TrustBar = () => (
@@ -128,7 +136,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
   const { localize } = useGeolocation();
   return (
     <div className="min-h-screen">
-      <Navbar />
+      <Navbar brand={data.navBrand} />
 
       {/* Sticky mobile CTA */}
       <StickyMobileCTA speechType={data.speechType} ctaText={localize(data.heroCtaText)} />
@@ -177,7 +185,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="font-body text-sm md:text-base font-semibold text-accent mb-6"
           >
-            Preview free · Edit any line · Unlimited new versions
+            {data.promiseLine ?? "Preview free · Edit any line · Unlimited new versions"}
           </motion.p>
 
           <motion.div
@@ -195,10 +203,10 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               {localize(data.heroCtaText)}
             </Link>
             <a
-              href="#reviews"
+              href={data.secondaryCta?.href ?? "#reviews"}
               className="inline-flex items-center justify-center px-8 py-4 border border-primary-foreground/30 text-primary-foreground font-body font-medium text-base rounded-lg transition-all duration-300 hover:border-accent hover:text-accent"
             >
-              Read the Reviews
+              {data.secondaryCta?.label ?? "Read the Reviews"}
             </a>
           </motion.div>
 
@@ -209,7 +217,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="font-body text-sm text-primary-foreground/50 mb-8"
           >
-            No sign-up · One payment · Money-back guarantee
+            {data.microCopy ?? "No sign-up · One payment · Money-back guarantee"}
           </motion.p>
 
           <motion.div
@@ -225,9 +233,21 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         </div>
       </section>
 
+      {data.showSample === "eulogy" && <SampleEulogy />}
+
       <AsSeenIn />
 
-      <ReviewsWidget />
+      {data.personalNote ? (
+        <section className="bg-background py-14 md:py-16">
+          <div className="container mx-auto px-6 max-w-2xl text-center">
+            <p className="font-body text-accent tracking-[0.3em] uppercase text-sm mb-5">A note from Adrian</p>
+            <p className="font-display text-xl md:text-2xl leading-relaxed text-foreground/90 mb-5">{localize(data.personalNote)}</p>
+            <p className="font-body text-base text-muted-foreground">Adrian Simpson · Speechwriter since 2012</p>
+          </div>
+        </section>
+      ) : (
+        <ReviewsWidget />
+      )}
 
       {/* How it works, quick 3 step */}
       <section className="py-20 md:py-28 bg-gradient-warm">

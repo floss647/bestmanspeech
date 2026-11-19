@@ -537,3 +537,15 @@ export const SPEECH_TYPE_CONFIGS: Record<string, SpeechTypeConfig> = {
   "charity-gala": { id: "charity-gala", title: "Charity Gala Speech", description: "Inspire generosity with a speech that moves the room.", questions: charityGalaQuestions },
   "keynote": { id: "keynote", title: "Keynote / Conference Speech", description: "Open or close an event with impact and authority.", questions: keynoteQuestions },
 };
+
+// Ask for the email a few questions in, once people have put something in,
+// rather than straight after their name. It still comes well before the
+// preview, so follow-up emails keep working.
+const EMAIL_DELAY = 3;
+for (const cfg of Object.values(SPEECH_TYPE_CONFIGS)) {
+  const qs = cfg.questions;
+  const i = qs.findIndex((q) => q.id === "email");
+  if (i === -1) continue;
+  const [email] = qs.splice(i, 1);
+  qs.splice(Math.min(i + EMAIL_DELAY, qs.length), 0, email);
+}

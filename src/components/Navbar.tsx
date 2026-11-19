@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-const Navbar = () => {
+const Navbar = ({ brand }: { brand?: "adrian" } = {}) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -33,9 +33,15 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5">
-            <span className="font-body text-xl font-extrabold tracking-tight text-primary-foreground">
-              bestmanspeech<span className="text-gold">.com</span>
-            </span>
+            {brand === "adrian" ? (
+              <span className="font-display text-xl font-bold text-primary-foreground">
+                Adrian Simpson <span className="font-body text-sm font-normal text-primary-foreground/60">· Speechwriter</span>
+              </span>
+            ) : (
+              <span className="font-body text-xl font-extrabold tracking-tight text-primary-foreground">
+                bestmanspeech<span className="text-gold">.com</span>
+              </span>
+            )}
           </a>
 
           {/* Desktop */}
