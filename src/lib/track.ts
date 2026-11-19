@@ -13,8 +13,45 @@ export function track(event: string, params: Params = {}, onceKey?: string) {
     sent.add(onceKey);
   }
   const w = window as unknown as { gtag?: (...args: unknown[]) => void };
-  if (typeof w.gtag !== "function") return;
-  w.gtag("event", event, { ...params, send_to: GA4_ID });
+  if (typeof w.gtag === "function") w.gtag("event", event, { ...params, send_to: GA4_ID });
+  metaTrack(event, params);
+}
+
+// Meta pixel: standard events where one fits, custom events otherwise.
+const META_STANDARD: Record<string, string> = {
+  share_email: "Lead",
+  view_preview: "ViewContent",
+  begin_checkout: "InitiateCheckout",
+  purchase: "Purchase",
+};
+const META_CUSTOM: Record<string, string> = {
+  start_questions: "StartQuestions",
+  finish_questions: "FinishQuestions",
+  video_start: "VideoStart",
+  video_complete: "VideoComplete",
+};
+
+function metaTrack(event: string, params: Params) {
+  const w = window as unknown as { fbq?: (...args: unknown[]) => void };
+  if (typeof w.fbq !== "function") return;
+  const data: Params = {};
+  if (params.speech_type) data.content_category = params.speech_type;
+  if (params.value !== undefined) data.value = params.value;
+  if (params.currency) data.currency = params.currency;
+  if (params.video_title) data.content_name = params.video_title;
+  const std = META_STANDARD[event];
+  if (std) {
+    const opts = event === "purchase" && params.transaction_id ? { eventID: String(params.transaction_id) } : undefined;
+    w.fbq("track", std, data, opts);
+  } else if (META_CUSTOM[event]) {
+    w.fbq("trackCustom", META_CUSTOM[event], data);
+  }
+}
+
+/** Meta PageView for client-side route changes (the first load is sent in index.html). */
+export function metaPageView() {
+  const w = window as unknown as { fbq?: (...args: unknown[]) => void };
+  if (typeof w.fbq === "function") w.fbq("track", "PageView");
 }
 
 /** Video events for the demo videos. A view only counts once the sound is on

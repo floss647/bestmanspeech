@@ -35,6 +35,23 @@
       gtag('config', 'AW-968218322');
       gtag('config', 'G-MPYF6WKEHS');
     </script>
+    <!-- Meta pixel. Consent starts revoked: events queue in the browser and are only
+         sent once consent is granted (stored "accepted", or the visitor is outside
+         the UK/EEA - CookieBanner grants that once geolocation has loaded). -->
+    <script>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      (function(){
+        var c = null;
+        try { c = localStorage.getItem('cookie_consent'); } catch (e) {}
+        fbq('consent', c === 'accepted' ? 'grant' : 'revoke');
+      })();
+      fbq('init', '1738303087709337');
+      fbq('track', 'PageView');
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>bestmanspeech.com | AI Speeches by Adrian Simpson</title>
     <meta name="description" content="Create unforgettable speeches powered by world-renowned speechwriter Adrian Simpson. Wedding, corporate, social and more." />
