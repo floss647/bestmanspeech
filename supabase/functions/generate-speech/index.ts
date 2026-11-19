@@ -55,7 +55,7 @@ serve(async (req) => {
       );
     }
 
-    const { speechType, details } = await req.json();
+    const { speechType, details, country } = await req.json();
 
     // Validate input size
     const detailsStr = JSON.stringify(details);
@@ -138,6 +138,7 @@ serve(async (req) => {
         email,
         speech_type: speechType,
         answers: details ?? {},
+        country: typeof country === "string" ? country.slice(0, 2).toUpperCase() : null,
         generated_speech: fullSpeech,
         paid: false,
         tier: "basic",
