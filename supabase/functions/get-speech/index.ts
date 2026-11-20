@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { readVersions } from "../_shared/versions.ts";
+import { previewWords, PREVIEW_WORDS } from "../_shared/preview.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -40,8 +41,7 @@ serve(async (req) => {
 
     // For unpaid speeches, return a truncated preview so the paywall can display it
     if (!speechData.paid) {
-      const words = (speechData.generated_speech || "").split(/\s+/);
-      const preview = words.slice(0, 100).join(" ");
+      const preview = previewWords(speechData.generated_speech || "", PREVIEW_WORDS);
       return new Response(JSON.stringify({ ...speechData, generated_speech: preview }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,

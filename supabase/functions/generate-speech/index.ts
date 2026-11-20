@@ -1,10 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { previewWords, PREVIEW_WORDS } from "../_shared/preview.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { SPEECH_PROMPTS } from "./speechPrompts.ts";
 
 // Number of words returned to the (unpaid) client as a preview. The full speech
 // is stored server-side and only released by get-speech once paid = true.
-const PREVIEW_WORDS = 100;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -155,7 +155,7 @@ serve(async (req) => {
       );
     }
 
-    const preview = fullSpeech.split(/\s+/).slice(0, PREVIEW_WORDS).join(" ");
+    const preview = previewWords(fullSpeech, PREVIEW_WORDS);
 
     return new Response(
       JSON.stringify({
