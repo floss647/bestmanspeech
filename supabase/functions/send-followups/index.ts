@@ -64,7 +64,7 @@ function previewEmail(step: 1 | 2, type: string, country: string | null, name: s
           subject: "Your eulogy is saved, for whenever you're ready",
           paragraphs: [hi, "I'm sorry for your loss.",
             "The eulogy you started is written and saved. You've read the opening, and the rest is there whenever you feel ready to come back to it.",
-            "Once it's yours you can change any line so it sounds like you, make it shorter or warmer, and print or download it for the day.",
+            "Once it's yours you can change any line so it sounds like you, make it shorter or warmer, and print or download it for the day. And when you're ready, you can practise reading it aloud on my autocue, gently marked up with where to pause and breathe.",
             "If anything is holding you back, or you'd like a hand with it, just reply to this email. It comes straight to me."],
           button: { href: link, label: "Return to my eulogy" },
         }
@@ -82,13 +82,15 @@ function previewEmail(step: 1 | 2, type: string, country: string | null, name: s
         subject: isVows(type) ? "Your wedding vows are ready to finish" : `Your ${title} is ready to finish`,
         paragraphs: [hi, `${yourThing} written and saved. You've seen the opening, and the rest is waiting for you.`,
           "Once it's yours, you can edit any line yourself and get as many new versions as you like (funnier, shorter, warmer, more emotional) until it sounds exactly like you. There's a money-back guarantee too.",
+          "Then I'll help you deliver it. Your speech comes with my rehearsal coach: it's marked up with where to pause and exactly where to wait for the laugh, and you rehearse it out loud on an autocue. I listen back and tell you what to fix.",
           "Any questions at all, just reply to this email. It comes straight to me."],
         button: { href: link, label: isVows(type) ? "Finish my vows" : "Finish my speech" },
       }
     : {
         subject: isVows(type) ? "Still need your vows?" : `Still need your ${title}?`,
         paragraphs: [hi, `Just a quick reminder: ${yourThing.toLowerCase()} still saved and ready to finish.`,
-          "If something didn't feel right in the opening, that's exactly what the editing is for. Change any line, or ask for a new version that's funnier, warmer or shorter.",
+          "Most people tell me the writing isn't the scary part. It's standing up and giving it. That's why every speech comes with my rehearsal coach: an autocue with your speech marked up, and honest coaching on your timing and delivery before the day.",
+          "And if something didn't feel right in the opening, that's what the editing is for. Change any line, or ask for a new version that's funnier, warmer or shorter.",
           "And if anything's holding you back, reply and tell me. I read every one."],
         button: { href: link, label: isVows(type) ? "Finish my vows" : "Finish my speech" },
       };

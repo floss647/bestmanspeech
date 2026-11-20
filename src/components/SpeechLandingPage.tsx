@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import ReviewsWidget from "@/components/ReviewsWidget";
 import Pricing from "@/components/Pricing";
 import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
+import RehearsalShowcase from "@/components/RehearsalShowcase";
 import HeroDemoVideo from "@/components/HeroDemoVideo";
 import AsSeenIn from "@/components/AsSeenIn";
 import SampleEulogy from "@/components/SampleEulogy";
@@ -291,6 +292,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
       </section>
 
       <SpeechSuiteShowcase showVideo={false} />
+      <RehearsalShowcase tone="dark" variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
 
       {/* Pricing — moved up, right after How It Works */}
       <Pricing speechType={data.speechType} />

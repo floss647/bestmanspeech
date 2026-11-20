@@ -2,7 +2,7 @@ import { track, videoHandlers } from "@/lib/track";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, Star, Shield, Clock, Users, Award, Lock, RotateCcw, PenLine, RefreshCw, Mic, PlayCircle } from "lucide-react";
+import { Check, Star, Shield, Clock, Users, Award, Lock, RotateCcw, PenLine, RefreshCw, Mic, PlayCircle, ScrollText } from "lucide-react";
 import { packageFeatures } from "@/lib/speechPackage";
 import { toast } from "sonner";
 import { useGeolocation } from "@/contexts/GeolocationContext";
@@ -115,7 +115,14 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
     },
     {
       icon: Mic,
-      title: "Deliver it well",
+      title: "Rehearse it with my autocue",
+      text: speechType === "eulogy"
+        ? "Read it aloud on an autocue, gently marked up with where to pause and breathe. I'll listen back and help you find your pace."
+        : "Your speech, marked up with where to pause and when to wait for the laugh. Say it out loud and I'll coach your timing and delivery.",
+    },
+    {
+      icon: ScrollText,
+      title: "Know exactly how it will go",
       text: "A timing breakdown, delivery tips and a delivery guide, so you stand up knowing exactly how it will go.",
     },
   ];
@@ -229,7 +236,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             {localize(`It's more than a speech for ${pricing.basic.price}`)}
           </h2>
           <p className="font-body text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
-            You get your full speech plus your own speech suite to shape it, try it different ways and practise it.
+            You get your full speech, your own speech suite to shape it, and my rehearsal coach to get you ready to stand up and give it.
           </p>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl bg-charcoal">
