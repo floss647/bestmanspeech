@@ -130,9 +130,15 @@ Give 3-6 moments, mixing what landed and what missed.`;
       return null;
     }
     const d = await r.json();
-    const text: string = d.choices?.[0]?.message?.content || "";
+    const msg = d.choices?.[0]?.message || {};
+    const text: string = typeof msg.content === "string" ? msg.content
+      : Array.isArray(msg.content) ? msg.content.map((c: { text?: string }) => c.text || "").join("") : "";
     const m = text.match(/\{[\s\S]*\}/);
-    try { return m ? JSON.parse(m[0]) : null; } catch { return null; }
+    try {
+      if (m) return JSON.parse(m[0]);
+    } catch { /* fall through */ }
+    console.error("[rehearsal-feedback] listen unparsed", model, JSON.stringify(d).slice(0, 600));
+    return null;
   }
   return null;
 }
@@ -187,18 +193,24 @@ function analyseTiming(sections: Section[], words: Word[]) {
     });
 
     const ratio = actual && s.seconds ? actual / s.seconds : null;
-    const status = !said ? "skipped" : ratio === null ? "unclear" : ratio < 0.8 ? "rushed" : ratio > 1.4 ? "slow" : "good";
+    const wpm = actual ? (toks.length / actual) * 60 : null;
+    const status = !said ? "skipped" : ratio === null ? "unclear"
+      : ratio < 0.8 || (wpm !== null && wpm > 170 && ratio < 0.95) ? "rushed" : ratio > 1.4 ? "slow" : "good";
     return {
       i,
       label: s.text.split(/\s+/).slice(0, 7).join(" ") + "…",
       planned: s.seconds,
       actual: actual === null ? null : Math.round(actual),
-      wpm: actual ? Math.round((toks.length / actual) * 60) : null,
+      wpm: wpm === null ? null : Math.round(wpm),
       status,
       pauses,
       endIndex: end,
     };
   });
+
+  // Sections after the last one said weren't skipped: the speaker stopped there.
+  const lastSaid = Math.max(-1, ...out.filter((x) => x.status !== "skipped" && x.status !== "unclear").map((x) => x.i));
+  for (const x of out) if (x.i > lastSaid && x.status === "skipped") x.status = "not reached";
 
   // Hesitations: long silences that weren't at a marked pause.
   const hesitations: { before: string; seconds: number }[] = [];
@@ -254,11 +266,12 @@ serve(async (req) => {
     const timing = analyseTiming(sections, tx.words);
     const said = timing.sections.filter((s) => s.status !== "skipped");
     const skipped = timing.sections.filter((s) => s.status === "skipped");
+    const notReached = timing.sections.filter((s) => s.status === "not reached");
     const speakingSeconds = tx.words.length ? tx.words[tx.words.length - 1].end - tx.words[0].start : recordedSeconds;
     const totalPlanned = sections.reduce((s, x) => s + x.seconds, 0);
     const saidPlanned = said.reduce((s, x) => s + x.planned, 0);
     const paceRatio = saidPlanned ? speakingSeconds / saidPlanned : 1;
-    const estimatedFullSeconds = Math.round(speakingSeconds + skipped.reduce((s, x) => s + x.planned * paceRatio, 0));
+    const estimatedFullSeconds = Math.round(speakingSeconds + [...skipped, ...notReached].reduce((s, x) => s + x.planned * paceRatio, 0));
     const allPauses = said.flatMap((s) => s.pauses).filter((p) => p.held !== null);
     const spokenTokens = norm(tx.text);
     const fillerTotal = Math.max(spokenTokens.filter((t) => FILLERS.has(t)).length, Number(heard?.fillersHeard) || 0);
@@ -276,6 +289,7 @@ serve(async (req) => {
       pausesTotal: allPauses.length,
       sections: timing.sections.map(({ endIndex: _e, ...s }) => s),
       skipped: skipped.map((s) => s.label),
+      stoppedAt: notReached.length ? notReached[0].label : null,
       hesitations: timing.hesitations,
       voice: heard ? (["energy", "variety", "warmth", "clarity"] as const)
         .map((k) => heard[k] ? { label: k, score: Math.max(1, Math.min(5, Math.round(Number(heard[k]!.score) || 3))), note: String(heard[k]!.note || "") } : null)
@@ -285,8 +299,10 @@ serve(async (req) => {
     };
 
     const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+    const speakerName = String((speech.answers as Record<string, unknown>).firstName || "").trim().split(/\s+/)[0] || "";
     const prompt = `You are Adrian Simpson: former BBC Top Gear and Sky News presenter, speechwriter and speech coach since 2012. A client has just rehearsed their speech out loud from your coached autocue script. Write their coaching notes. They are probably nervous and not a natural speaker: be warm and encouraging, but honest and SPECIFIC. Every fix must be something they can do on the next run, ending with a directable stage cue, e.g. 'Drop your voice on "my brother", pause two seconds, then raise your glass.'
 
+THE SPEAKER: ${speakerName ? `${speakerName}, the person giving this speech. Other names in the speech are the people they're talking about, not them.` : "the person giving this speech (don't name them; names in the speech are other people)."}
 OCCASION: ${a.occasion}. TARGET: ${a.targetMinutes[0]}-${a.targetMinutes[1]} minutes.
 
 YOUR COACHED SCRIPT (cue, stage direction, words to hit, pauses) AND HOW THEY DID EACH SECTION:
@@ -294,10 +310,11 @@ ${sections.map((s, i) => {
   const t = timing.sections[i];
   return `[${i}] ${s.text}
    coached: cue "${s.cue}"${s.action ? `, action "${s.action}"` : ""}; hit ${s.emphasis.map((e) => `"${e}"`).join(", ") || "-"}; pauses ${s.pauses.map((p) => `${p.type} after "${p.after}"`).join(", ") || "-"}; planned ${s.seconds}s
-   measured: ${t.status === "skipped" ? "SKIPPED" : `${t.actual ?? "?"}s (${t.status})${t.wpm ? `, ${t.wpm} wpm` : ""}`}${t.pauses.length ? `; pauses: ${t.pauses.map((p) => `${p.type} after "${p.after}" ${p.gap === null ? "not found" : `${p.gap}s ${p.held ? "HELD" : "NOT HELD"}`}`).join("; ")}` : ""}`;
+   measured: ${t.status === "skipped" ? "SKIPPED" : t.status === "not reached" ? "NOT REACHED (they stopped before this; don't critique it)" : `${t.actual ?? "?"}s (${t.status})${t.wpm ? `, ${t.wpm} wpm` : ""}`}${t.pauses.length ? `; pauses: ${t.pauses.map((p) => `${p.type} after "${p.after}" ${p.gap === null ? "not found" : `${p.gap}s ${p.held ? "HELD" : "NOT HELD"}`}`).join("; ")}` : ""}`;
 }).join("\n")}
 
 MEASUREMENTS
+- ${notReached.length ? `They stopped after section ${notReached[0].i - 1} (${notReached.length} sections not reached). Coach what they did; estimate the full length from their pace.` : "They reached the end."}
 - Spoke for ${fmt(speakingSeconds)}; at this pace the whole speech would take about ${fmt(estimatedFullSeconds)} (target ${a.targetMinutes[0]}-${a.targetMinutes[1]} min; coached timing ${fmt(totalPlanned)}).
 - Pace ${stats.wordsPerMinute ?? "?"} words a minute (comfortable for a speech: 120-145).
 - Marked pauses held: ${stats.pausesHeld} of ${stats.pausesTotal}.

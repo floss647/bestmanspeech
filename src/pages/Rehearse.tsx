@@ -21,7 +21,7 @@ interface Feedback {
   stats: {
     speakingSeconds: number; estimatedFullSeconds: number; plannedSeconds: number; targetMinutes: [number, number];
     wordsPerMinute: number | null; coverage: number; fillerTotal: number; pausesHeld: number; pausesTotal: number;
-    sections: SectionStat[]; skipped: string[]; hesitations: { before: string; seconds: number }[];
+    sections: SectionStat[]; skipped: string[]; stoppedAt?: string | null; hesitations: { before: string; seconds: number }[];
     voice: { label: string; score: number; note: string }[]; emphasis: { phrase: string; hit: boolean; note: string }[]; listened: boolean;
   };
 }
@@ -434,6 +434,7 @@ const STATUS: Record<string, { color: string; text: string }> = {
   rushed: { color: "bg-amber-500", text: "rushed" },
   slow: { color: "bg-sky-500", text: "slow" },
   skipped: { color: "bg-muted-foreground/40", text: "skipped" },
+  "not reached": { color: "bg-transparent", text: "not reached" },
   unclear: { color: "bg-muted-foreground/40", text: "–" },
 };
 
@@ -490,7 +491,7 @@ const Report = ({ f, onAgain, backLink }: { f: Feedback; onAgain: () => void; ba
       <Card icon={Clock} title="Your timing, section by section">
         {f.timing && <p className="font-body text-sm text-foreground mb-4">{f.timing}</p>}
         <div className="space-y-2.5">
-          {s.sections.map((x) => (
+          {s.sections.filter((x) => x.status !== "not reached").map((x) => (
             <div key={x.i}>
               <div className="flex justify-between font-body text-xs mb-1">
                 <span className="text-foreground truncate pr-3">{x.label}</span>
@@ -503,6 +504,7 @@ const Report = ({ f, onAgain, backLink }: { f: Feedback; onAgain: () => void; ba
             </div>
           ))}
         </div>
+        {s.stoppedAt && <p className="font-body text-sm text-foreground mt-4">You stopped before “{s.stoppedAt}” The full-length estimate assumes you'd carry on at the same pace.</p>}
         <p className="font-body text-xs text-muted-foreground mt-3">Bar: how long you took. Line: the coached timing, including its pauses.</p>
       </Card>
 
