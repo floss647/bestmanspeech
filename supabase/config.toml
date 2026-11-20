@@ -57,3 +57,10 @@ verify_jwt = false
 
 [functions.unsubscribe]
 verify_jwt = false
+
+# Live-audience rehearsal: authorised by the speech access token inside.
+[functions.rehearsal-start]
+verify_jwt = false
+
+[functions.rehearsal-feedback]
+verify_jwt = false
