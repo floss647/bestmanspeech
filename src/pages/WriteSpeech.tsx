@@ -504,7 +504,7 @@ const WriteSpeech = () => {
             {localize(config.title)}
           </a>
           {currentIndex >= 0 && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <span className="font-body text-sm text-primary-foreground/50">
                 {currentIndex + 1} of {totalVisible}
               </span>
