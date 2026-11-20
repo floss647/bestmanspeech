@@ -6,7 +6,6 @@
 //  3. Claude, writing as Adrian, turns all of that into notes with stage directions.
 // The recording is deleted once analysed.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import { audienceFor } from "../_shared/audiences.ts";
 import {
   adminClient, AUDIO_BUCKET, claudeJson, corsHeaders, json, loadPaidSpeech, paragraphsOf, sha256,
@@ -22,6 +21,33 @@ const PAUSE_NEEDED: Record<PauseType, number> = { laugh: 1.2, beat: 0.6, breath:
 const FILLERS = new Set(["um", "umm", "uh", "uhh", "er", "erm", "ah", "hmm"]);
 
 const norm = (t: string) => (t.toLowerCase().replace(/[’‘]/g, "'").match(/[a-z0-9']+/g) || []);
+
+/** Base64 in chunks: std's encodeBase64 needs ~40x the file size in memory. */
+function toBase64(bytes: Uint8Array): string {
+  const parts: string[] = [];
+  const CHUNK = 0x8000 * 3;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    const sub = bytes.subarray(i, i + CHUNK);
+    let s = "";
+    for (let j = 0; j < sub.length; j += 0x8000) s += String.fromCharCode(...sub.subarray(j, j + 0x8000));
+    parts.push(btoa(s));
+  }
+  return parts.join("");
+}
+
+/** The first `seconds` of a 16-bit PCM WAV, with a corrected header. */
+function wavHead(buf: Uint8Array, seconds: number): Uint8Array {
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  const bytesPerSec = dv.getUint32(28, true);
+  const keep = Math.min(buf.length - 44, Math.floor((seconds * bytesPerSec) / 2) * 2);
+  if (keep >= buf.length - 44) return buf;
+  const out = new Uint8Array(44 + keep);
+  out.set(buf.subarray(0, 44 + keep));
+  const ov = new DataView(out.buffer);
+  ov.setUint32(4, 36 + keep, true);
+  ov.setUint32(40, keep, true);
+  return out;
+}
 
 function wavSeconds(buf: Uint8Array) {
   if (buf.length < 44) return 0;
@@ -92,7 +118,7 @@ Give 3-6 moments, mixing what landed and what missed.`;
         model,
         modalities: ["text"],
         messages: [{ role: "user", content: [
-          { type: "input_audio", input_audio: { data: encodeBase64(audio), format: "wav" } },
+          { type: "input_audio", input_audio: { data: toBase64(audio), format: "wav" } },
           { type: "text", text: prompt },
         ] }],
       }),
@@ -219,7 +245,7 @@ serve(async (req) => {
 
     const [tx, heard] = await Promise.all([
       transcribe(audio, key),
-      listen(audio, key, a.occasion, sections.flatMap((s) => s.emphasis).slice(0, 14)),
+      listen(wavHead(audio, 8 * 60), key, a.occasion, sections.flatMap((s) => s.emphasis).slice(0, 14)),
     ]);
     if (!tx || norm(tx.text).length < 15) {
       return json({ error: "We couldn't hear enough of your speech. Check your microphone and try again somewhere quiet." }, 422);

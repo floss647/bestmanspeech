@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy, Check, RefreshCw, Clock, Lightbulb, BookOpen, ChevronDown, ChevronUp, Loader2,
-  PenLine, Save, X, Download, Sparkles, Mic, Users,
+  PenLine, Save, X, Download, Sparkles, Mic,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -303,13 +303,13 @@ const SpeechDashboard = () => {
               <Mic className="w-6 h-6 text-accent-foreground" />
             </div>
             <div className="flex-1">
-              <p className="font-display text-lg md:text-xl font-bold">Rehearse it to a live audience</p>
+              <p className="font-display text-lg md:text-xl font-bold">Rehearse it with Adrian's autocue</p>
               <p className="font-body text-sm text-primary-foreground/70">
-                Say it out loud and hear the room react, then get Adrian's notes on your pace, length and the lines to fix.
+                Your speech, marked up with where to pause and what to hit. Say it out loud and get coaching on your timing, voice and delivery.
               </p>
             </div>
             <span className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent text-accent-foreground font-body font-semibold text-sm group-hover:bg-gold-dark">
-              <Users className="w-4 h-4" /> Start
+              <Mic className="w-4 h-4" /> Start
             </span>
           </Link>
         </motion.div>
