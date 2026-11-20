@@ -64,3 +64,6 @@ verify_jwt = false
 
 [functions.rehearsal-feedback]
 verify_jwt = false
+
+[functions.rehearsal-prepare]
+verify_jwt = false
