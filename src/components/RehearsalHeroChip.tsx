@@ -10,7 +10,7 @@ const RehearsalHeroChip = ({ eulogy = false, delay = 0.35 }: { eulogy?: boolean;
     <motion.a
       href="#rehearsal-coach"
       onClick={() => track("rehearsal_hero_click", {})}
-      initial={{ opacity: 0, y: 10 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }}
       className="group inline-flex items-start gap-3 text-left rounded-xl border border-accent/50 bg-accent/10 hover:bg-accent/20 px-4 py-3 mb-7 max-w-xl transition-colors"

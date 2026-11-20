@@ -153,7 +153,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         <div className="relative z-10 container mx-auto px-6 max-w-7xl py-20 lg:py-24 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
         <div className="text-center lg:text-left">
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="font-body text-accent tracking-[0.3em] uppercase text-sm mb-6"
@@ -162,7 +162,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-display text-4xl md:text-6xl xl:text-[4.25rem] font-bold text-primary-foreground leading-[1.1] mb-6"
@@ -172,7 +172,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-body text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto lg:mx-0 mb-4 leading-relaxed"
@@ -182,7 +182,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
 
           {/* Risk-reversal hint */}
           <motion.p
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.25 }}
             className="font-body text-sm md:text-base font-semibold text-accent mb-6"
@@ -193,7 +193,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           <RehearsalHeroChip eulogy={data.speechType === "eulogy"} delay={0.28} />
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-4"
@@ -216,7 +216,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
 
           {/* Risk-reversal micro-copy */}
           <motion.p
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             className="font-body text-sm text-primary-foreground/50 mb-8"
@@ -225,7 +225,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
