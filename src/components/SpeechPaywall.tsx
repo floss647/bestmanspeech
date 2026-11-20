@@ -104,6 +104,13 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
 
   const valueCards = [
     {
+      icon: Mic,
+      title: "Rehearse it with my autocue",
+      text: speechType === "eulogy"
+        ? "Read it aloud on an autocue, gently marked up with where to pause and breathe. I'll listen back and help you find your pace."
+        : "Your speech, marked up with where to pause and when to wait for the laugh. Say it out loud and I'll coach your timing and delivery.",
+    },
+    {
       icon: PenLine,
       title: "Make it yours",
       text: "Your own speech suite. Change any line, add a joke, cut a story. It's saved for you.",
@@ -112,13 +119,6 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
       icon: RefreshCw,
       title: "Try it different ways",
       text: "Unlimited new versions: funnier, shorter, warmer. Every version is kept, so you never lose a line you liked.",
-    },
-    {
-      icon: Mic,
-      title: "Rehearse it with my autocue",
-      text: speechType === "eulogy"
-        ? "Read it aloud on an autocue, gently marked up with where to pause and breathe. I'll listen back and help you find your pace."
-        : "Your speech, marked up with where to pause and when to wait for the laugh. Say it out loud and I'll coach your timing and delivery.",
     },
     {
       icon: ScrollText,
@@ -258,12 +258,13 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               />
             </div>
             <div className="space-y-5">
-              {valueCards.map((c) => (
-                <div key={c.title} className="flex gap-4 bg-background border border-border rounded-xl p-5">
-                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <c.icon className="w-5 h-5 text-accent" />
+              {valueCards.map((c, i) => (
+                <div key={c.title} className={`flex gap-4 rounded-xl p-5 ${i === 0 ? "bg-accent/10 border-2 border-accent" : "bg-background border border-border"}`}>
+                  <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${i === 0 ? "bg-accent" : "bg-accent/10"}`}>
+                    <c.icon className={`w-5 h-5 ${i === 0 ? "text-accent-foreground" : "text-accent"}`} />
                   </div>
                   <div>
+                    {i === 0 && <p className="font-body text-[11px] uppercase tracking-[0.2em] text-accent font-semibold mb-1">Only at bestmanspeech.com</p>}
                     <h3 className="font-display text-lg font-bold text-foreground mb-1">{c.title}</h3>
                     <p className="font-body text-sm text-muted-foreground leading-relaxed">{localize(c.text)}</p>
                   </div>

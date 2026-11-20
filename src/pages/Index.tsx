@@ -18,10 +18,10 @@ const Index = () => {
       <Hero />
       <ReviewsWidget />
       <AsSeenIn />
+      <RehearsalShowcase tone="light" />
       <SpeechTypes />
       <HowItWorks />
       <SpeechSuiteShowcase showVideo={false} />
-      <RehearsalShowcase tone="dark" />
       <Pricing />
       <SampleSpeeches />
       <CTASection />

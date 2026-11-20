@@ -4,6 +4,7 @@ import { ArrowRight, Tag, Star, Users } from "lucide-react";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import heroImage from "@/assets/hero-wedding.jpg";
 import HeroDemoVideo from "@/components/HeroDemoVideo";
+import RehearsalHeroChip from "@/components/RehearsalHeroChip";
 
 const Hero = () => {
   const { pricing } = useGeolocation();
@@ -51,6 +52,8 @@ const Hero = () => {
           Answer a few questions and preview it free. Then make it yours: edit
           any line and get unlimited new versions.
         </motion.p>
+
+        <RehearsalHeroChip />
 
         {/* Social proof strip */}
         <motion.div
