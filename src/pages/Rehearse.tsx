@@ -69,7 +69,7 @@ function marked(s: Section): ReactNode[] {
   return out;
 }
 
-async function invoke<T>(name: string, body: unknown): Promise<{ data?: T; error?: string; code?: string }> {
+async function invoke<T>(name: string, body: Record<string, unknown>): Promise<{ data?: T; error?: string; code?: string }> {
   const { data, error } = await supabase.functions.invoke(name, { body });
   if (!error) return data?.error ? { error: data.error, code: data.code } : { data };
   try {
