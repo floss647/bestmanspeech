@@ -335,7 +335,7 @@ ${heard ? JSON.stringify({ energy: heard.energy, variety: heard.variety, warmth:
 WHAT THEY SAID (transcript)
 ${tx.text.slice(0, 12000)}
 
-${speech.american ? "Write in American English." : "Write in British English."} Address them as "you". No scores, no jargon.
+${speech.american ? "Write in American English." : "Write in British English."} Address them as "you". No scores, no jargon. NEVER refer to section numbers (they can't see them): name the story or quote the first few words instead, e.g. "the primary school story" or "the bit starting 'When it came to writing this speech'".
 Return ONLY JSON:
 {
  "headline": "one sentence verdict, max 22 words",
