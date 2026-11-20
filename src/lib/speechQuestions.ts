@@ -19,10 +19,6 @@ export interface SpeechTypeConfig {
 }
 
 export const bestManQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Wilson" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
-  { id: "aboutYou", label: "How old are you, what's your job, where do you live etc", type: "textarea", placeholder: "Tell us a bit about yourself, this helps us write in your voice" },
   { id: "groomName", label: "The groom's name?", type: "text", required: true, placeholder: "e.g. Tom" },
   { id: "howKnowGroom", label: "How do you know the groom?", type: "textarea", required: true, placeholder: "e.g. We've been best friends since primary school" },
   { id: "groomJob", label: "What does he do for a living?", type: "text", placeholder: "e.g. Software engineer" },
@@ -42,12 +38,13 @@ export const bestManQuestions: Question[] = [
   { id: "howTheyMet", label: "How did they meet?", type: "textarea", required: true, placeholder: "The full story, the more detail, the better the speech" },
   { id: "brideEffect", label: "What sort of effect has she had on him?", type: "textarea", placeholder: "How has he changed? What's different about him now?" },
   { id: "helpedYou", label: "In what ways has he helped you out in the past?", type: "textarea", placeholder: "Times he showed up for you, this adds real depth to the speech" },
+  { id: "aboutYou", label: "Now a bit about you: how old are you, what do you do, where do you live?", type: "textarea", placeholder: "Tell us a bit about yourself, this helps us write in your voice" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Wilson" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const groomQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Tom" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Smith" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "brideName", label: "Your bride's name?", type: "text", required: true, placeholder: "e.g. Sarah" },
   { id: "howMet", label: "How did you meet?", type: "textarea", required: true, placeholder: "The full story" },
   { id: "firstImpression", label: "What was your first impression of her?", type: "textarea", placeholder: "What did you think?" },
@@ -72,12 +69,12 @@ export const groomQuestions: Question[] = [
   { id: "weddingVenue", label: "Where are you getting married?", type: "text", placeholder: "e.g. St. Mary's Church, London" },
   { id: "honeymoon", label: "Where are you going on honeymoon?", type: "text", placeholder: "e.g. Amalfi Coast" },
   { id: "closingMessage", label: "Any final message you want to include?", type: "textarea", placeholder: "Your closing sentiment" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Tom" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Smith" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const brideQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Sarah" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Jones" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "groomName", label: "Your groom's name?", type: "text", required: true, placeholder: "e.g. Tom" },
   { id: "howMet", label: "How did you meet?", type: "textarea", required: true, placeholder: "The full story" },
   { id: "firstImpression", label: "What was your first impression of him?", type: "textarea", placeholder: "What did you think?" },
@@ -99,12 +96,12 @@ export const brideQuestions: Question[] = [
   { id: "futurePlans", label: "What are you most looking forward to in your future together?", type: "textarea", placeholder: "Dreams, plans, adventures..." },
   { id: "funnyStory", label: "A funny story about you and your groom?", type: "textarea", placeholder: "Something that captures your relationship" },
   { id: "closingMessage", label: "Any final message you want to include?", type: "textarea", placeholder: "Your closing sentiment" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Sarah" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Jones" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const fatherOfBrideQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. John" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Smith" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "wifeName", label: "Your wife/partner's name?", type: "text", placeholder: "e.g. Mary" },
   { id: "stillMarried", label: "Are you still married?", type: "yesno", required: true },
   { id: "hasPartner", label: "Do you have a long term partner?", type: "yesno", conditionField: "stillMarried", conditionValue: "No" },
@@ -139,12 +136,12 @@ export const fatherOfBrideQuestions: Question[] = [
   { id: "engagementFeelings", label: "Succinctly describe your feelings when they announced their engagement.", type: "textarea", placeholder: "Joy? Relief? A funny reaction?" },
   { id: "absentFriends", label: "Would you like to make a toast to absent friends?", type: "yesno" },
   { id: "absentFriendsDetails", label: "Tell me about them", type: "textarea", conditionField: "absentFriends", conditionValue: "Yes" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. John" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Smith" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const motherOfBrideQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Mary" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Smith" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "husbandName", label: "Your daughter's father's name?", type: "text", required: true, placeholder: "e.g. John" },
   { id: "fatherDeceased", label: "Is your daughter's father deceased?", type: "yesno" },
   { id: "marriedUntilDemise", label: "Were you married until his demise?", type: "yesno", conditionField: "fatherDeceased", conditionValue: "Yes" },
@@ -181,13 +178,12 @@ export const motherOfBrideQuestions: Question[] = [
   { id: "engagementFeelings", label: "Succinctly describe your feelings when they announced their engagement.", type: "textarea" },
   { id: "absentFriends", label: "Would you like to make a toast to absent friends?", type: "yesno" },
   { id: "absentFriendsDetails", label: "Tell me about them", type: "textarea", conditionField: "absentFriends", conditionValue: "Yes" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Mary" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Smith" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const maidOfHonourQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Emma" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Taylor" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
-  { id: "aboutYou", label: "How old are you, what's your job, where do you live etc", type: "textarea" },
   { id: "brideName", label: "The bride's name?", type: "text", required: true, placeholder: "e.g. Sarah" },
   { id: "howKnowBride", label: "How do you know the bride?", type: "textarea", required: true },
   { id: "firstMet", label: "Do you remember the first time you met?", type: "textarea" },
@@ -204,12 +200,13 @@ export const maidOfHonourQuestions: Question[] = [
   { id: "hasChildren", label: "Does the bride have children?", type: "yesno" },
   { id: "childrenNames", label: "What are their names?", type: "text", conditionField: "hasChildren", conditionValue: "Yes" },
   { id: "closingWish", label: "What's your wish for the happy couple?", type: "textarea" },
+  { id: "aboutYou", label: "Now a bit about you: how old are you, what do you do, where do you live?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Emma" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Taylor" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const fatherOfGroomQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. David" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Brown" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "wifeName", label: "Your son's mother's name?", type: "text", required: true },
   { id: "stillMarried", label: "Are you still married?", type: "yesno", required: true },
   { id: "hasPartner", label: "Do you have a long term partner?", type: "yesno", conditionField: "stillMarried", conditionValue: "No" },
@@ -244,13 +241,12 @@ export const fatherOfGroomQuestions: Question[] = [
   { id: "engagementFeelings", label: "Succinctly describe your feelings when they announced their engagement.", type: "textarea" },
   { id: "absentFriends", label: "Would you like to make a toast to absent friends?", type: "yesno" },
   { id: "absentFriendsDetails", label: "Tell me about them", type: "textarea", conditionField: "absentFriends", conditionValue: "Yes" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. David" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Brown" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const brotherOfBrideQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Jack" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Smith" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
-  { id: "aboutYou", label: "How old are you, what's your job, where do you live etc", type: "textarea" },
   { id: "sisterName", label: "Your sister's name?", type: "text", required: true, placeholder: "e.g. Sarah" },
   { id: "olderOrYounger", label: "Are you older or younger than your sister?", type: "text", placeholder: "e.g. Two years older" },
   { id: "childhoodMemory", label: "What is your favourite childhood memory with her?", type: "textarea", required: true },
@@ -263,12 +259,13 @@ export const brotherOfBrideQuestions: Question[] = [
   { id: "whatMakesThemGreat", label: "What makes them a great couple?", type: "textarea" },
   { id: "groomEffect", label: "What sort of effect has he had on her?", type: "textarea" },
   { id: "closingWish", label: "What's your wish for the happy couple?", type: "textarea" },
+  { id: "aboutYou", label: "Now a bit about you: how old are you, what do you do, where do you live?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Jack" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Smith" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const motherOfGroomQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Jane" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Brown" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "husbandName", label: "Your son's father's name?", type: "text", required: true },
   { id: "fatherDeceased", label: "Is your son's father deceased?", type: "yesno" },
   { id: "marriedUntilDemise", label: "Were you married until his demise?", type: "yesno", conditionField: "fatherDeceased", conditionValue: "Yes" },
@@ -305,12 +302,13 @@ export const motherOfGroomQuestions: Question[] = [
   { id: "engagementFeelings", label: "Succinctly describe your feelings when they announced their engagement.", type: "textarea" },
   { id: "absentFriends", label: "Would you like to make a toast to absent friends?", type: "yesno" },
   { id: "absentFriendsDetails", label: "Tell me about them", type: "textarea", conditionField: "absentFriends", conditionValue: "Yes" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Jane" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Brown" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const weddingVowsQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Sarah" },
   { id: "partnerName", label: "Your partner's name?", type: "text", required: true, placeholder: "e.g. Tom" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your finished vows here", type: "email", required: true, placeholder: "you@example.com" },
   { id: "howMet", label: "How did you meet?", type: "textarea", required: true },
   { id: "whenKnew", label: "When did you know they were the one?", type: "textarea" },
   { id: "whatLove", label: "What do you love most about them?", type: "textarea", required: true },
@@ -319,12 +317,12 @@ export const weddingVowsQuestions: Question[] = [
   { id: "futureDreams", label: "What are your dreams for your future together?", type: "textarea" },
   { id: "promisesToMake", label: "What promises do you want to make?", type: "textarea", required: true, placeholder: "The commitments that matter most to you" },
   { id: "tone", label: "What tone do you want? Romantic, humorous, poetic, or simple?", type: "text", placeholder: "e.g. Romantic with a touch of humour" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Sarah" },
+  { id: "email", label: "Where shall I send your vows?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const birthdayQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "birthdayPersonName", label: "Who is the birthday speech for?", type: "text", required: true, placeholder: "e.g. Dad, Sarah, Grandma" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Son, best friend, colleague" },
   { id: "age", label: "What age are they turning?", type: "text", placeholder: "e.g. 50" },
   { id: "characterDescription", label: "How would you describe their character?", type: "textarea", required: true },
@@ -334,12 +332,12 @@ export const birthdayQuestions: Question[] = [
   { id: "passions", label: "What are their passions and interests?", type: "textarea" },
   { id: "wish", label: "What do you wish for them in the year ahead?", type: "textarea" },
   { id: "tone", label: "What tone do you want? Funny, heartfelt, or a mix?", type: "text", placeholder: "e.g. Funny with a heartfelt ending" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const retirementQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "retireeName", label: "Who is retiring?", type: "text", required: true, placeholder: "e.g. John" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Colleague, manager, friend" },
   { id: "yearsWorked", label: "How many years have they worked at the company/profession?", type: "text", placeholder: "e.g. 30 years" },
   { id: "role", label: "What was their role?", type: "text", placeholder: "e.g. Head of Sales" },
@@ -349,12 +347,12 @@ export const retirementQuestions: Question[] = [
   { id: "impact", label: "What impact have they had on colleagues and the workplace?", type: "textarea" },
   { id: "retirementPlans", label: "What are their plans for retirement?", type: "textarea" },
   { id: "closingWish", label: "What do you wish for them in retirement?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const anniversaryQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "coupleName", label: "Who is the anniversary speech for?", type: "text", required: true, placeholder: "e.g. Mum and Dad, John and Mary" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Son, daughter, friend" },
   { id: "yearsMarried", label: "How many years are they celebrating?", type: "text", placeholder: "e.g. 25, 50" },
   { id: "howTheyMet", label: "How did they meet?", type: "textarea", required: true },
@@ -363,12 +361,12 @@ export const anniversaryQuestions: Question[] = [
   { id: "funnyStory", label: "Any funny stories about them?", type: "textarea" },
   { id: "challenges", label: "What challenges have they overcome together?", type: "textarea" },
   { id: "closingWish", label: "What do you wish for them?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const eulogyQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "deceasedName", label: "Who is the eulogy for?", type: "text", required: true, placeholder: "e.g. Dad, Grandma, John" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Son, granddaughter, friend" },
   { id: "age", label: "How old were they?", type: "text", placeholder: "e.g. 82" },
   { id: "characterDescription", label: "How would you describe their character?", type: "textarea", required: true },
@@ -380,12 +378,12 @@ export const eulogyQuestions: Question[] = [
   { id: "whatYoullMiss", label: "What will you miss most about them?", type: "textarea" },
   { id: "favouriteSaying", label: "Did they have a favourite saying or phrase?", type: "text" },
   { id: "closingMessage", label: "Any final message you want to include?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const graduationQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "graduateName", label: "Who is the speech for?", type: "text", required: true, placeholder: "e.g. My daughter Emily, the class of 2026" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Parent, teacher, guest speaker" },
   { id: "institution", label: "What school, college, or university?", type: "text", placeholder: "e.g. University of Oxford" },
   { id: "courseOrField", label: "What did they study?", type: "text", placeholder: "e.g. Engineering, Business" },
@@ -394,12 +392,12 @@ export const graduationQuestions: Question[] = [
   { id: "funnyStory", label: "Any funny stories from their time studying?", type: "textarea" },
   { id: "advice", label: "What advice would you give them for the future?", type: "textarea" },
   { id: "closingWish", label: "What do you wish for them?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const babyShowerQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. Emma" },
   { id: "parentNames", label: "Who are the expectant parents?", type: "text", required: true, placeholder: "e.g. Sarah and Tom" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Best friend, sister, colleague" },
   { id: "babyGender", label: "Do they know the gender? If so, what is it?", type: "text", placeholder: "e.g. Boy, Girl, Surprise" },
   { id: "babyName", label: "Have they chosen a name?", type: "text", placeholder: "e.g. Oliver, or not yet decided" },
@@ -408,24 +406,23 @@ export const babyShowerQuestions: Question[] = [
   { id: "funnyStory", label: "Any funny stories about them?", type: "textarea" },
   { id: "advice", label: "Any parenting advice or wishes?", type: "textarea" },
   { id: "closingWish", label: "What do you wish for the new family?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. Emma" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const engagementPartyQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "coupleNames", label: "Names of the engaged couple?", type: "text", required: true, placeholder: "e.g. Sarah and Tom" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Father, best friend, colleague" },
   { id: "howTheyMet", label: "How did they meet?", type: "textarea", required: true },
   { id: "proposalStory", label: "How did the proposal happen?", type: "textarea" },
   { id: "whatMakesThemGreat", label: "What makes them a great couple?", type: "textarea", required: true },
   { id: "funnyStory", label: "Any funny stories about them?", type: "textarea" },
   { id: "closingWish", label: "What do you wish for them?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const corporateEventQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Wilson" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "role", label: "What is your role/title?", type: "text", required: true, placeholder: "e.g. CEO, Head of Marketing" },
   { id: "companyName", label: "What company or organisation?", type: "text", required: true },
   { id: "eventType", label: "What type of event is it?", type: "text", required: true, placeholder: "e.g. Annual conference, product launch, team dinner" },
@@ -435,12 +432,12 @@ export const corporateEventQuestions: Question[] = [
   { id: "thanksTo", label: "Anyone you want to thank specifically?", type: "textarea" },
   { id: "tone", label: "What tone do you want? Formal, conversational, inspirational?", type: "text", placeholder: "e.g. Professional but warm" },
   { id: "closingMessage", label: "Any final message or call to action?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Wilson" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const awardsCeremonyQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Wilson" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "presentingOrAccepting", label: "Are you presenting an award or accepting one?", type: "text", required: true, placeholder: "e.g. Presenting, Accepting" },
   { id: "awardName", label: "What is the award called?", type: "text", required: true },
   { id: "recipientName", label: "If presenting, who is the recipient?", type: "text" },
@@ -449,12 +446,13 @@ export const awardsCeremonyQuestions: Question[] = [
   { id: "funnyStory", label: "Any anecdotes or stories to share?", type: "textarea" },
   { id: "thanksTo", label: "Anyone you want to thank?", type: "textarea" },
   { id: "tone", label: "What tone do you want?", type: "text", placeholder: "e.g. Witty and warm, formal and respectful" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Wilson" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const farewellQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
   { id: "leaverName", label: "Who is leaving?", type: "text", required: true, placeholder: "e.g. Sarah" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "relationship", label: "What is your relationship to them?", type: "text", required: true, placeholder: "e.g. Colleague, manager, friend" },
   { id: "whereAreTheyGoing", label: "Where are they going?", type: "text", placeholder: "e.g. New job, moving abroad, travelling" },
   { id: "howLongKnown", label: "How long have you known them?", type: "text", placeholder: "e.g. 5 years" },
@@ -463,12 +461,11 @@ export const farewellQuestions: Question[] = [
   { id: "funnyStory", label: "Any funny stories?", type: "textarea" },
   { id: "impact", label: "What impact have they had?", type: "textarea" },
   { id: "closingWish", label: "What do you wish for them?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const golfClubQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Wilson" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "clubName", label: "What is the club or organisation?", type: "text", required: true, placeholder: "e.g. Royal St Andrews Golf Club" },
   { id: "role", label: "What is your role at the club?", type: "text", placeholder: "e.g. Captain, Chairman, Committee Member" },
   { id: "eventType", label: "What is the occasion?", type: "text", required: true, placeholder: "e.g. Annual dinner, Captains day, Prize giving" },
@@ -478,12 +475,12 @@ export const golfClubQuestions: Question[] = [
   { id: "thanksTo", label: "Anyone you want to thank?", type: "textarea" },
   { id: "tone", label: "What tone do you want?", type: "text", placeholder: "e.g. Witty after dinner style" },
   { id: "closingMessage", label: "Any final message?", type: "textarea" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Wilson" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const charityGalaQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Wilson" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "charityName", label: "What is the charity or cause?", type: "text", required: true },
   { id: "role", label: "What is your role?", type: "text", placeholder: "e.g. Founder, Patron, Guest speaker" },
   { id: "eventName", label: "What is the event called?", type: "text", placeholder: "e.g. Annual Gala Dinner" },
@@ -494,12 +491,12 @@ export const charityGalaQuestions: Question[] = [
   { id: "callToAction", label: "What do you want the audience to do?", type: "textarea", placeholder: "e.g. Donate, volunteer, spread the word" },
   { id: "thanksTo", label: "Anyone you want to thank?", type: "textarea" },
   { id: "tone", label: "What tone do you want?", type: "text", placeholder: "e.g. Inspiring and heartfelt" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Wilson" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const keynoteQuestions: Question[] = [
-  { id: "firstName", label: "Your first name", type: "text", required: true, placeholder: "e.g. James" },
-  { id: "surname", label: "Your surname", type: "text", required: true, placeholder: "e.g. Wilson" },
-  { id: "email", label: "Your email address", subtitle: "We'll send your speech here, and a reminder if you don't finish", type: "email", required: true, placeholder: "you@example.com" },
   { id: "role", label: "What is your role/title?", type: "text", required: true },
   { id: "eventName", label: "What is the event or conference?", type: "text", required: true, placeholder: "e.g. TED, industry summit" },
   { id: "audience", label: "Who is the audience?", type: "textarea", required: true, placeholder: "e.g. 500 tech professionals" },
@@ -510,6 +507,9 @@ export const keynoteQuestions: Question[] = [
   { id: "callToAction", label: "What do you want the audience to do after your talk?", type: "textarea" },
   { id: "tone", label: "What tone do you want?", type: "text", placeholder: "e.g. Thought provoking, energetic, conversational" },
   { id: "speechLength", label: "How long should the speech be?", type: "text", placeholder: "e.g. 10 minutes, 20 minutes" },
+  { id: "firstName", label: "Nearly done. What's your first name?", type: "text", required: true, placeholder: "e.g. James" },
+  { id: "surname", label: "And your surname?", subtitle: "Optional", type: "text", placeholder: "e.g. Wilson" },
+  { id: "email", label: "Where shall I send your speech?", subtitle: "You'll see your preview on the next screen. I'll email you a copy too, so you never lose it.", type: "email", required: true, placeholder: "you@example.com" },
 ];
 
 export const SPEECH_TYPE_CONFIGS: Record<string, SpeechTypeConfig> = {

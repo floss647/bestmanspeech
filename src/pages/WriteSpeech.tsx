@@ -68,7 +68,13 @@ const WriteSpeech = () => {
         const parsed = JSON.parse(saved);
         if (parsed.answers && Object.keys(parsed.answers).length > 0) {
           setAnswers(parsed.answers);
-          setCurrentIndex(parsed.currentIndex ?? 0);
+          // Resume at the first question they haven't answered (question order can change
+          // between visits), never later than where they were.
+          const saved: Record<string, string> = parsed.answers;
+          const visible = (config?.questions || []).filter((q) => !q.conditionField || saved[q.conditionField] === q.conditionValue);
+          const firstGap = visible.findIndex((q) => !saved[q.id]?.trim());
+          const idx = parsed.currentIndex ?? 0;
+          setCurrentIndex(firstGap === -1 ? Math.min(idx, visible.length - 1) : Math.min(idx, firstGap));
           toast.success("Welcome back! We've saved your answers — pick up where you left off.");
         }
       }
@@ -84,7 +90,7 @@ const WriteSpeech = () => {
       }
     } catch {}
     setRestored(true);
-  }, [speechType, storageKey, restored]);
+  }, [speechType, storageKey, restored, config]);
 
   // Auto-save progress to localStorage
   useEffect(() => {
