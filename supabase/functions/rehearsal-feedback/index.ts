@@ -89,7 +89,10 @@ interface Listening {
 }
 
 async function listen(audio: Uint8Array, key: string, occasion: string, emphasis: string[]): Promise<Listening | null> {
-  const prompt = `You are an elite speech delivery coach LISTENING to a recording of someone rehearsing ${occasion}. Judge what you HEAR (the voice), not just the words: energy, pitch variation, warmth, pace, pauses, emphasis, volume and clarity.
+  const system = "You are a speech delivery coach. The user has recorded THEMSELVES rehearsing their own speech and has asked for feedback on how they delivered it. You never identify or guess who is speaking, and you are not asked to: you only assess delivery (energy, pitch variation, warmth, pace, pauses, emphasis, volume, clarity). Always answer with the JSON requested.";
+  const prompt = `This is my own rehearsal recording. I'm practising ${occasion} and I want honest coaching on my delivery.
+
+Listen to the recording. Judge what you HEAR (the voice), not just the words: energy, pitch variation, warmth, pace, pauses, emphasis, volume and clarity.
 
 Be honest. Most nervous speakers sound flatter and faster than they think. If the delivery is flat or monotone, say so plainly and score it low. Do not inflate.
 
@@ -109,6 +112,7 @@ Return ONLY JSON:
  "summary": "two sentences: the single most important thing you heard"
 }
 Give 3-6 moments, mixing what landed and what missed.`;
+  const b64 = toBase64(audio);
   for (const model of AUDIO_MODELS) {
     const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -117,10 +121,13 @@ Give 3-6 moments, mixing what landed and what missed.`;
       body: JSON.stringify({
         model,
         modalities: ["text"],
-        messages: [{ role: "user", content: [
-          { type: "input_audio", input_audio: { data: toBase64(audio), format: "wav" } },
-          { type: "text", text: prompt },
-        ] }],
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: [
+            { type: "text", text: prompt },
+            { type: "input_audio", input_audio: { data: b64, format: "wav" } },
+          ] },
+        ],
       }),
     });
     if (!r.ok) {
@@ -137,8 +144,8 @@ Give 3-6 moments, mixing what landed and what missed.`;
     try {
       if (m) return JSON.parse(m[0]);
     } catch { /* fall through */ }
-    console.error("[rehearsal-feedback] listen unparsed", model, JSON.stringify(d).slice(0, 600));
-    return null;
+    // A refusal or chatty reply: try the next model.
+    console.error("[rehearsal-feedback] listen unparsed", model, text.slice(0, 300));
   }
   return null;
 }
@@ -210,7 +217,7 @@ function analyseTiming(sections: Section[], words: Word[]) {
 
   // Sections after the last one said weren't skipped: the speaker stopped there.
   const lastSaid = Math.max(-1, ...out.filter((x) => x.status !== "skipped" && x.status !== "unclear").map((x) => x.i));
-  for (const x of out) if (x.i > lastSaid && x.status === "skipped") x.status = "not reached";
+  for (const x of out) if (x.i > lastSaid) { x.status = "not reached"; x.actual = null; x.wpm = null; }
 
   // Hesitations: long silences that weren't at a marked pause.
   const hesitations: { before: string; seconds: number }[] = [];
