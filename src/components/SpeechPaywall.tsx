@@ -1,13 +1,14 @@
-import { track } from "@/lib/track";
+import { track, videoHandlers } from "@/lib/track";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, Star, Shield, Clock, Users, Award, Lock, RotateCcw, Timer } from "lucide-react";
+import { Check, Star, Shield, Clock, Users, Award, Lock, RotateCcw, PenLine, RefreshCw, Mic, PlayCircle } from "lucide-react";
 import { packageFeatures } from "@/lib/speechPackage";
 import { toast } from "sonner";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { getPricingForCountry } from "@/lib/geolocation";
 import ReviewsWidget from "@/components/ReviewsWidget";
+import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuiteShowcase";
 
 interface SpeechPaywallProps {
   speech: string;
@@ -65,32 +66,59 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
   };
   const primaryName = getPersonName();
 
-  // 24-hour countdown urgency timer
-  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
-  useEffect(() => {
-    const savedExpiry = sessionStorage.getItem(`speech-expiry-${speechType}`);
-    const expiry = savedExpiry ? parseInt(savedExpiry) : Date.now() + 24 * 60 * 60 * 1000;
-    if (!savedExpiry) sessionStorage.setItem(`speech-expiry-${speechType}`, expiry.toString());
-
-    const tick = () => {
-      const diff = Math.max(0, expiry - Date.now());
-      setTimeLeft({
-        hours: Math.floor(diff / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-        seconds: Math.floor((diff % 60000) / 1000),
-      });
-    };
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [speechType]);
-
+  // Show the whole opening, so people see their own story come back to them:
+  // whole paragraphs until we have about 120 words (capped near 170, cut at a
+  // sentence end), then a short blurred teaser of what follows.
   const getPersonalisedPreview = () => {
-    const words = speech.split(/\s+/);
-    const visibleText = words.slice(0, 40).join(" ");
-    const blurredText = words.slice(40, 70).join(" ");
-    return { visible: visibleText, blurred: blurredText };
+    const paras = speech.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+    const count = (t: string) => t.split(/\s+/).filter(Boolean).length;
+    const shown: string[] = [];
+    let words = 0;
+    let i = 0;
+    while (i < paras.length && words < 120) {
+      shown.push(paras[i]);
+      words += count(paras[i]);
+      i++;
+    }
+    let visible = shown.join("\n\n");
+    let rest = paras.slice(i).join("\n\n");
+    if (words > 170 || i >= paras.length) {
+      // One very long paragraph (or a short speech): cut at the last sentence end before ~150 words.
+      const all = speech.trim().split(/\s+/);
+      const head = all.slice(0, Math.min(150, Math.floor(all.length * 0.5))).join(" ");
+      const cut = Math.max(head.lastIndexOf(". "), head.lastIndexOf("! "), head.lastIndexOf("? "));
+      const visibleWords = cut > 40 ? head.slice(0, cut + 1) : head;
+      visible = visibleWords;
+      rest = speech.trim().slice(visibleWords.length).trim();
+    }
+    const blurred = rest.split(/\s+/).slice(0, 45).join(" ");
+    return { visible, blurred };
   };
+
+  const demoVariant: DemoVariant =
+    speechType === "eulogy" ? "eulogy"
+    : ["corporate-event", "awards-ceremony", "keynote", "charity-gala", "farewell", "retirement", "golf-club"].includes(speechType) ? "corporate"
+    : ["birthday", "anniversary", "graduation", "baby-shower"].includes(speechType) ? "social"
+    : "wedding";
+  const vt = videoHandlers(`${demoVariant}${isAmerican ? "-us" : ""}`, "paywall");
+
+  const valueCards = [
+    {
+      icon: PenLine,
+      title: "Make it yours",
+      text: "Your own speech suite. Change any line, add a joke, cut a story. It's saved for you.",
+    },
+    {
+      icon: RefreshCw,
+      title: "Try it different ways",
+      text: "Unlimited new versions: funnier, shorter, warmer. Every version is kept, so you never lose a line you liked.",
+    },
+    {
+      icon: Mic,
+      title: "Deliver it well",
+      text: "A timing breakdown, delivery tips and a delivery guide, so you stand up knowing exactly how it will go.",
+    },
+  ];
 
   const preview = getPersonalisedPreview();
 
@@ -158,18 +186,10 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           )}
         </motion.div>
 
-        {/* Urgency countdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="flex items-center justify-center gap-2 mb-8 py-3 px-5 rounded-lg bg-destructive/10 border border-destructive/20 mx-auto w-fit"
-        >
-          <Timer className="w-4 h-4 text-destructive" />
-          <span className="font-body text-sm font-medium text-destructive">
-            Speech saved for {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-          </span>
-        </motion.div>
+        <p className="font-body text-sm text-muted-foreground text-center mb-8">
+          <Clock className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+          We'll keep your speech for you for 24 hours.
+        </p>
 
         {/* Blurred speech preview */}
         <motion.div
@@ -184,7 +204,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <div className="font-body text-foreground leading-relaxed whitespace-pre-wrap mb-2 text-sm md:text-base">
             {preview.visible}
           </div>
-          <div className="relative max-h-[80px]">
+          <div className="relative max-h-[80px] overflow-hidden">
             <div className="font-body text-foreground leading-relaxed whitespace-pre-wrap blur-[6px] select-none pointer-events-none text-sm md:text-base">
               {preview.blurred}
             </div>
@@ -193,8 +213,56 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2">
             <Lock className="w-5 h-5 text-accent" />
             <p className="font-body text-sm text-muted-foreground font-medium">
-              Unlock your full speech below
+              The rest of your speech is ready below
             </p>
+          </div>
+        </motion.div>
+
+        {/* What you get */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="max-w-5xl mx-auto mb-12"
+        >
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
+            {localize(`It's more than a speech for ${pricing.basic.price}`)}
+          </h2>
+          <p className="font-body text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
+            You get your full speech plus your own speech suite to shape it, try it different ways and practise it.
+          </p>
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl bg-charcoal">
+              <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent text-accent-foreground font-body text-xs font-semibold shadow-lg pointer-events-none">
+                <PlayCircle className="w-4 h-4" />
+                See the speech suite · 40 sec
+              </span>
+              <video
+                key={isAmerican ? "us" : "uk"}
+                className="w-full h-auto block"
+                src={demoVideo(demoVariant, isAmerican)}
+                poster={demoPoster(demoVariant, isAmerican)}
+                controls
+                playsInline
+                preload="metadata"
+                onPlay={vt.onPlay}
+                onVolumeChange={vt.onVolumeChange}
+                onTimeUpdate={vt.onTimeUpdate}
+              />
+            </div>
+            <div className="space-y-5">
+              {valueCards.map((c) => (
+                <div key={c.title} className="flex gap-4 bg-background border border-border rounded-xl p-5">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <c.icon className="w-5 h-5 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg font-bold text-foreground mb-1">{c.title}</h3>
+                    <p className="font-body text-sm text-muted-foreground leading-relaxed">{localize(c.text)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
 
@@ -218,6 +286,10 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               </div>
               <p className="font-body text-xs text-primary-foreground/60">
                 One payment · Opens instantly · Yours to keep
+              </p>
+              <p className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-accent/15 font-body text-xs font-semibold text-accent">
+                <Shield className="w-3.5 h-3.5" />
+                100% money-back guarantee
               </p>
             </div>
 

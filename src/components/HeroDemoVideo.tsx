@@ -34,7 +34,7 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
       <div className="relative rounded-2xl overflow-hidden border border-primary-foreground/15 shadow-2xl shadow-black/40 bg-charcoal">
         <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent text-accent-foreground font-body text-xs md:text-sm font-semibold shadow-lg pointer-events-none">
           <PlayCircle className="w-4 h-4" />
-          How it works · 52 sec
+          How it works · 40 sec
         </span>
         {muted && (
           <button
