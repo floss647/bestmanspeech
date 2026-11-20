@@ -175,10 +175,10 @@ const Rehearse = () => {
               awkward silences, the moments that land. When you finish, you get Adrian's coaching notes on your pace, length and the lines to fix.
             </p>
             <ul className="space-y-3 mb-8 font-body text-sm text-foreground">
-              <li className="flex gap-3"><Mic className="w-5 h-5 text-accent shrink-0" /> Tap <strong>Start speaking</strong> and read a section or two from the screen.</li>
-              <li className="flex gap-3"><Hand className="w-5 h-5 text-accent shrink-0" /> Tap <strong>Pause for the room</strong> and listen to how they react.</li>
-              <li className="flex gap-3"><Flag className="w-5 h-5 text-accent shrink-0" /> Carry on to the end, then tap <strong>Finish</strong> for your notes.</li>
-              <li className="flex gap-3"><Headphones className="w-5 h-5 text-accent shrink-0" /> Somewhere quiet works best. Speak as if you're standing in front of them.</li>
+              <li className="flex gap-3"><Mic className="w-5 h-5 text-accent shrink-0" /> <span>Tap <strong>Start speaking</strong> and read a section or two from the screen.</span></li>
+              <li className="flex gap-3"><Hand className="w-5 h-5 text-accent shrink-0" /> <span>Tap <strong>Pause for the room</strong> and listen to how they react.</span></li>
+              <li className="flex gap-3"><Flag className="w-5 h-5 text-accent shrink-0" /> <span>Carry on to the end, then tap <strong>Finish</strong> for your notes.</span></li>
+              <li className="flex gap-3"><Headphones className="w-5 h-5 text-accent shrink-0" /> <span>Somewhere quiet works best. Speak as if you're standing in front of them.</span></li>
             </ul>
             <button onClick={begin} className="w-full md:w-auto px-8 py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-colors">
               Enter the room
