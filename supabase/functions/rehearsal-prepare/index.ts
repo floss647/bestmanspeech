@@ -41,7 +41,7 @@ For EACH numbered section below, give:
 - "seconds": how long the section should take delivered well at about 130 words a minute, INCLUDING its pauses (laugh pauses ~3s, beats ~1s, breaths ~1.5s).
 
 Also give:
-- "tips": exactly 3 short, specific, practical tips for delivering THIS speech in THIS room (max 22 words each), e.g. the hardest moment and how to handle it, where they will be tempted to rush, how to open.
+- "tips": exactly 3 short, specific, practical tips for delivering THIS speech in THIS room (max 22 words each). If the whole speech would take longer than ${a.targetMinutes[1]} minutes at 130 words a minute (it is about ${Math.round(paras.join(" ").split(/\s+/).length / 130)} minutes), make the first tip a specific cut: which story or section to trim, e.g. the hardest moment and how to handle it, where they will be tempted to rush, how to open.
 
 ${american ? "Use American English." : "Use British English."} Write cues and tips in plain, warm, direct language.
 

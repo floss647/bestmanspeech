@@ -271,7 +271,7 @@ serve(async (req) => {
     }
 
     const timing = analyseTiming(sections, tx.words);
-    const said = timing.sections.filter((s) => s.status !== "skipped");
+    const said = timing.sections.filter((s) => s.status !== "skipped" && s.status !== "not reached");
     const skipped = timing.sections.filter((s) => s.status === "skipped");
     const notReached = timing.sections.filter((s) => s.status === "not reached");
     const speakingSeconds = tx.words.length ? tx.words[tx.words.length - 1].end - tx.words[0].start : recordedSeconds;
@@ -323,6 +323,7 @@ ${sections.map((s, i) => {
 MEASUREMENTS
 - ${notReached.length ? `They stopped after section ${notReached[0].i - 1} (${notReached.length} sections not reached). Coach what they did; estimate the full length from their pace.` : "They reached the end."}
 - Spoke for ${fmt(speakingSeconds)}; at this pace the whole speech would take about ${fmt(estimatedFullSeconds)} (target ${a.targetMinutes[0]}-${a.targetMinutes[1]} min; coached timing ${fmt(totalPlanned)}).
+- ${totalPlanned / 60 > a.targetMinutes[1] + 0.5 ? `IMPORTANT: even delivered well, this speech takes about ${fmt(totalPlanned)}, over the ${a.targetMinutes[1]}-minute maximum. One of your 3 fixes must be a specific cut: name the section or story to trim or drop and roughly how much time it saves.` : "The script itself is a good length for the occasion."}
 - Pace ${stats.wordsPerMinute ?? "?"} words a minute (comfortable for a speech: 120-145).
 - Marked pauses held: ${stats.pausesHeld} of ${stats.pausesTotal}.
 - Filler words (um/uh/er): ${fillerTotal}.

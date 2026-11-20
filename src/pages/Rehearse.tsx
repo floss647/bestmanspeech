@@ -123,8 +123,10 @@ const Rehearse = () => {
       const r = await invoke<Script>("rehearsal-prepare", { speechId, accessToken, versionIndex });
       if (r.error || !r.data) { setLoadError(r.error || "We couldn't load your speech."); return; }
       setScript(r.data);
-      setPhase("ready");
+      const past = params.get("r");
+      if (past) analyse(past); else setPhase("ready");
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speechId, accessToken, versionIndex]);
 
   // ── Autocue: each section scrolls past the reading line in its coached time. ──
