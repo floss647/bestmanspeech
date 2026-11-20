@@ -41,20 +41,32 @@ function countFillers(text: string): Record<string, number> {
 const STOP = new Set(("the a an and or but of to in on at for with is was it i you he she we they my his her our their that this be are as so just " +
   "have had has not all me him them your from by what when who how there then than very really").split(" "));
 
-/** Script paragraphs the speaker left out (fewer than a third of their key words heard). */
-function skippedSections(script: string, spoken: string): string[] {
-  const heard = new Set(words(spoken));
-  return script
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter((p) => words(p).length >= 12)
-    .filter((p) => {
-      const key = [...new Set(words(p).filter((w) => w.length > 2 && !STOP.has(w)))];
-      if (key.length < 5) return false;
-      const hit = key.filter((w) => heard.has(w)).length;
-      return hit / key.length < 0.33;
-    })
-    .map((p) => p.split(/\s+/).slice(0, 14).join(" ") + "…");
+const FILLER_WORDS = new Set(["um", "umm", "uh", "uhh", "er", "erm", "ah", "like"]);
+const trigrams = (text: string) => {
+  const w = words(text).filter((x) => !FILLER_WORDS.has(x));
+  const out: string[] = [];
+  for (let i = 0; i + 2 < w.length; i++) out.push(`${w[i]} ${w[i + 1]} ${w[i + 2]}`);
+  return out;
+};
+
+/**
+ * Which script paragraphs were said, judged by their 3-word phrases heard. Speech recognition drops and
+ * mishears words, but a paragraph that was read still matches well above a quarter of its phrases.
+ * Coverage is the share of the script (by length) in paragraphs that were said.
+ */
+function scriptCoverage(script: string, spoken: string): { coverage: number; skipped: string[] } {
+  const heard = new Set(trigrams(spoken));
+  let total = 0, said = 0;
+  const skipped: string[] = [];
+  for (const p of script.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean)) {
+    const grams = trigrams(p);
+    if (!grams.length) continue;
+    const ratio = grams.filter((g) => heard.has(g)).length / grams.length;
+    total += grams.length;
+    if (ratio >= 0.25) said += grams.length;
+    else if (grams.length >= 10) skipped.push(p.split(/\s+/).slice(0, 14).join(" ") + "…");
+  }
+  return { coverage: total ? said / total : 1, skipped };
 }
 
 serve(async (req) => {
@@ -110,11 +122,10 @@ serve(async (req) => {
     const scriptWords = words(rehearsal.speech_text || "").length;
     const a = audienceFor(speech.speech_type);
     // Estimated full-length time: if they only did part, scale up by script length.
-    const coverage = scriptWords ? Math.min(1, spokenWords / scriptWords) : 1;
+    const { coverage, skipped } = scriptCoverage(rehearsal.speech_text || "", spoken);
     const estFullMinutes = speakingMinutes > 0 && coverage > 0.2 ? speakingMinutes / coverage : null;
     const fillers = countFillers(spoken);
     const fillerTotal = Object.values(fillers).reduce((s, n) => s + n, 0);
-    const skipped = skippedSections(rehearsal.speech_text || "", spoken);
 
     const stats = {
       spokenWords,
