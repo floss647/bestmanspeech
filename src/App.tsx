@@ -18,6 +18,7 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Rehearse from "./pages/Rehearse";
 import CookieBanner from "./components/CookieBanner";
 import MetaPageViews from "./components/MetaPageViews";
 import { GeolocationProvider } from "./contexts/GeolocationContext";
@@ -37,6 +38,7 @@ export const AppShell = ({ router: Router }: { router: (p: { children: ReactNode
             <Route path="/" element={<Index />} />
             <Route path="/write" element={<WriteSpeech />} />
             <Route path="/speech" element={<SpeechDashboard />} />
+            <Route path="/rehearse" element={<Rehearse />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/resume" element={<ResumePurchase />} />

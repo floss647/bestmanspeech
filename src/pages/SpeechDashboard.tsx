@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy, Check, RefreshCw, Clock, Lightbulb, BookOpen, ChevronDown, ChevronUp, Loader2,
-  PenLine, Save, X, Download, Sparkles,
+  PenLine, Save, X, Download, Sparkles, Mic,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -291,6 +291,27 @@ const SpeechDashboard = () => {
             This is your own speech suite. Edit any line, ask for new versions as often as you like,
             and come back any time. Everything is saved.
           </p>
+        </motion.div>
+
+        {/* Live-audience rehearsal */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
+          <Link
+            to={`/rehearse?id=${speechId}&token=${accessToken}&v=${activeVersion}`}
+            className="group flex items-center gap-4 rounded-2xl bg-charcoal text-primary-foreground p-5 md:p-6 hover:ring-2 hover:ring-accent transition-all"
+          >
+            <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shrink-0">
+              <Mic className="w-6 h-6 text-accent-foreground" />
+            </div>
+            <div className="flex-1">
+              <p className="font-display text-lg md:text-xl font-bold">Rehearse it with Adrian's autocue</p>
+              <p className="font-body text-sm text-primary-foreground/70">
+                Your speech, marked up with where to pause and what to hit. Say it out loud and get coaching on your timing, voice and delivery.
+              </p>
+            </div>
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent text-accent-foreground font-body font-semibold text-sm group-hover:bg-gold-dark">
+              <Mic className="w-4 h-4" /> Start
+            </span>
+          </Link>
         </motion.div>
 
         {/* Version tabs */}
