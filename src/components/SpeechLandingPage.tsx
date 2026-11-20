@@ -14,6 +14,7 @@ import ReviewsWidget from "@/components/ReviewsWidget";
 import Pricing from "@/components/Pricing";
 import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
 import RehearsalShowcase from "@/components/RehearsalShowcase";
+import RehearsalHeroChip from "@/components/RehearsalHeroChip";
 import HeroDemoVideo from "@/components/HeroDemoVideo";
 import AsSeenIn from "@/components/AsSeenIn";
 import SampleEulogy from "@/components/SampleEulogy";
@@ -189,6 +190,8 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             {data.promiseLine ?? "Preview free · Edit any line · Unlimited new versions"}
           </motion.p>
 
+          <RehearsalHeroChip eulogy={data.speechType === "eulogy"} delay={0.28} />
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -250,6 +253,8 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         <ReviewsWidget />
       )}
 
+      <RehearsalShowcase tone="dark" variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
+
       {/* How it works, quick 3 step */}
       <section className="py-20 md:py-28 bg-gradient-warm">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -270,7 +275,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               { step: "1", title: "Answer Questions", desc: "Tell us about the person and your relationship. The more detail, the better the speech." },
               { step: "2", title: "Preview It Free", desc: "Adrian Simpson's method writes a speech that sounds authentically you. Read the start before you pay." },
               { step: "3", title: "Unlock Your Speech Suite", desc: "Pay once and your full speech opens in your own speech suite, saved for you." },
-              { step: "4", title: "Make It Perfect", desc: "Edit any line, get unlimited new versions, and use the timing and delivery coaching." },
+              { step: "4", title: "Make It Perfect, Then Rehearse It", desc: "Edit any line, get unlimited new versions, then rehearse it on Adrian's autocue and get coached on your delivery." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -292,7 +297,6 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
       </section>
 
       <SpeechSuiteShowcase showVideo={false} />
-      <RehearsalShowcase tone="dark" variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
 
       {/* Pricing — moved up, right after How It Works */}
       <Pricing speechType={data.speechType} />
