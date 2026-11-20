@@ -27,8 +27,8 @@ const points = [
   },
   {
     icon: Mic,
-    title: "Coached to deliver it",
-    text: "A section-by-section timing breakdown, delivery tips and a full guide to the big moment.",
+    title: "Rehearse it with Adrian's autocue",
+    text: "Your speech marked up with where to pause and what to hit. Say it out loud and get coached on your timing and delivery.",
   },
 ];
 

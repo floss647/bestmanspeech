@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { purchaseEmail } from "../_shared/purchaseEmail.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -95,11 +96,45 @@ serve(async (req) => {
         stripe_session_id: transactionId,
       })
       .eq("id", speechId)
-      .select("id, email, access_token, tier, generated_speech")
+      .select("id, email, access_token, tier, speech_type, country, answers, purchase_email_sent_at")
       .single();
 
     if (updateError) {
       throw new Error(`Failed to update speech: ${updateError.message}`);
+    }
+
+    // Email the buyer their links, once. Claim the send first so a page refresh
+    // calling verify-payment again can't send it twice.
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    if (resendKey && speechData.email && !speechData.purchase_email_sent_at) {
+      const { data: claimed } = await supabaseClient
+        .from("speeches")
+        .update({ purchase_email_sent_at: new Date().toISOString() })
+        .eq("id", speechId)
+        .is("purchase_email_sent_at", null)
+        .select("id");
+      if (claimed?.length) {
+        const answers = (speechData.answers as Record<string, unknown>) || {};
+        const mail = purchaseEmail({
+          speechId: speechData.id,
+          accessToken: speechData.access_token,
+          speechType: speechData.speech_type,
+          country: speechData.country,
+          firstName: String(answers.firstName || "").trim().split(/\s+/)[0]?.slice(0, 40) || "",
+        });
+        try {
+          const r = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ ...mail, to: speechData.email }),
+          });
+          if (!r.ok) throw new Error(`Resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
+        } catch (e) {
+          console.error("[verify-payment] purchase email", e);
+          // Let a later verify retry the email.
+          await supabaseClient.from("speeches").update({ purchase_email_sent_at: null }).eq("id", speechId);
+        }
+      }
     }
 
     return new Response(

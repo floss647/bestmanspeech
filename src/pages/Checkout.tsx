@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
-import { Shield, Lock, ArrowLeft, Loader2, Check, Star, PenLine, RefreshCw } from "lucide-react";
+import { Shield, Lock, ArrowLeft, Loader2, Check, Star, PenLine, RefreshCw, Mic } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -205,6 +205,12 @@ const Checkout = () => {
                 <RefreshCw className="w-3.5 h-3.5 text-accent" />
                 <span className="font-body text-xs text-muted-foreground">
                   Unlimited edits &amp; rewrites
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mic className="w-3.5 h-3.5 text-accent" />
+                <span className="font-body text-xs text-muted-foreground">
+                  10 coached rehearsals on Adrian's autocue
                 </span>
               </div>
               <div className="flex items-center gap-2">

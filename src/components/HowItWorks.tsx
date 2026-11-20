@@ -22,9 +22,9 @@ const steps = [
   },
   {
     number: "04",
-    title: "Make It Perfect",
+    title: "Make It Perfect, Then Rehearse It",
     description:
-      "Edit any line yourself, ask for unlimited new versions, and use the timing and delivery coaching to nail it on the day.",
+      "Edit any line, ask for unlimited new versions, then rehearse it out loud on Adrian's autocue and get coached on your timing and delivery.",
   },
 ];
 

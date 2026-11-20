@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import AsSeenIn from "@/components/AsSeenIn";
 import SpeechSuiteShowcase from "@/components/SpeechSuiteShowcase";
 import ReviewsWidget from "@/components/ReviewsWidget";
+import RehearsalShowcase from "@/components/RehearsalShowcase";
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
       <SpeechTypes />
       <HowItWorks />
       <SpeechSuiteShowcase showVideo={false} />
+      <RehearsalShowcase tone="dark" />
       <Pricing />
       <SampleSpeeches />
       <CTASection />
