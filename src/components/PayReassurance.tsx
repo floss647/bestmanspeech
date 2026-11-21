@@ -24,7 +24,7 @@ const PayReassurance = ({ dark = false, className = "" }: { dark?: boolean; clas
         <div>
           <p className={`font-body text-sm font-semibold ${head}`}>Adrian Simpson, former BBC Top Gear &amp; Sky News presenter</p>
           <p className={`font-body text-xs leading-relaxed ${body}`}>
-            Writing wedding speeches since 2012. 4.9/5 from 421 verified reviews.
+            Writing speeches since 2012. 4.9/5 from 421 verified reviews.
           </p>
         </div>
       </div>
