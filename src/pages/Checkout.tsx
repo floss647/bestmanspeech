@@ -171,10 +171,10 @@ const Checkout = () => {
             bestmanspeech.com
           </a>
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(`/resume?id=${encodeURIComponent(state.speechId)}&token=${encodeURIComponent(state.accessToken)}`, { replace: true })}
             className="flex items-center gap-2 font-body text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> Back
+            <ArrowLeft className="w-4 h-4" /> Back to my speech
           </button>
         </div>
       </nav>
@@ -238,7 +238,7 @@ const Checkout = () => {
               <div className="text-center py-8">
                 <p className="font-body text-sm text-destructive mb-4">{error}</p>
                 <button
-                  onClick={() => navigate(-1)}
+                  onClick={() => navigate(`/resume?id=${encodeURIComponent(state.speechId)}&token=${encodeURIComponent(state.accessToken)}`, { replace: true })}
                   className="px-6 py-3 bg-charcoal text-primary-foreground rounded-lg font-body font-semibold text-sm transition-all hover:bg-charcoal-light"
                 >
                   Go Back

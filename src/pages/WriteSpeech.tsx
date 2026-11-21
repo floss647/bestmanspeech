@@ -60,6 +60,19 @@ const WriteSpeech = () => {
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
   // Restore progress from localStorage
+  // Once the preview is showing, give this history entry its own address
+  // (/resume shows the same preview). Then "Back" from checkout lands on the
+  // preview again instead of restarting the questions.
+  useEffect(() => {
+    if (phase === "paywall" && speech && speechId && speechAccessToken) {
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `/resume?id=${encodeURIComponent(speechId)}&token=${encodeURIComponent(speechAccessToken)}`,
+      );
+    }
+  }, [phase, speech, speechId, speechAccessToken]);
+
   useEffect(() => {
     if (!speechType || restored) return;
     try {
