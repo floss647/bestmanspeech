@@ -9,6 +9,8 @@ import { useGeolocation } from "@/contexts/GeolocationContext";
 import { getPricingForCountry } from "@/lib/geolocation";
 import ReviewsWidget from "@/components/ReviewsWidget";
 import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuiteShowcase";
+import { REHEARSAL_POSTER, REHEARSAL_VIDEO } from "@/components/RehearsalShowcase";
+import PayReassurance from "@/components/PayReassurance";
 
 interface SpeechPaywallProps {
   speech: string;
@@ -22,6 +24,7 @@ interface SpeechPaywallProps {
 
 const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle, answers, onStartOver }: SpeechPaywallProps) => {
   const [loadingPurchase, setLoadingPurchase] = useState(false);
+  const [clip, setClip] = useState<"rehearse" | "suite">("rehearse");
   const { country, currency: currencyCode, symbol, localize, isAmerican } = useGeolocation();
   const navigate = useNavigate();
 
@@ -101,6 +104,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
     : ["birthday", "anniversary", "graduation", "baby-shower"].includes(speechType) ? "social"
     : "wedding";
   const vt = videoHandlers(`${demoVariant}${isAmerican ? "-us" : ""}`, "paywall");
+  const vr = videoHandlers("rehearsal-coach", "paywall");
 
   const valueCards = [
     {
@@ -239,23 +243,53 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             You get your full speech, your own speech suite to shape it, and my rehearsal coach to get you ready to stand up and give it.
           </p>
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl bg-charcoal">
-              <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent text-accent-foreground font-body text-xs font-semibold shadow-lg pointer-events-none">
-                <PlayCircle className="w-4 h-4" />
-                See the speech suite · 40 sec
-              </span>
-              <video
-                key={isAmerican ? "us" : "uk"}
-                className="w-full h-auto block"
-                src={demoVideo(demoVariant, isAmerican)}
-                poster={demoPoster(demoVariant, isAmerican)}
-                controls
-                playsInline
-                preload="metadata"
-                onPlay={vt.onPlay}
-                onVolumeChange={vt.onVolumeChange}
-                onTimeUpdate={vt.onTimeUpdate}
-              />
+            <div>
+              <div className="flex gap-2 mb-3" role="tablist">
+                {([
+                  ["rehearse", "Watch the rehearsal coach"],
+                  ["suite", "See the speech suite"],
+                ] as const).map(([k, label]) => (
+                  <button
+                    key={k}
+                    role="tab"
+                    aria-selected={clip === k}
+                    onClick={() => setClip(k)}
+                    className={`flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full font-body text-xs font-semibold transition-colors ${clip === k ? "bg-accent text-accent-foreground" : "bg-background border border-border text-muted-foreground hover:text-foreground"}`}
+                  >
+                    <PlayCircle className="w-4 h-4" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl bg-charcoal">
+                {clip === "rehearse" ? (
+                  <video
+                    key="rehearse"
+                    className="w-full h-auto block"
+                    src={REHEARSAL_VIDEO}
+                    poster={REHEARSAL_POSTER}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    onPlay={vr.onPlay}
+                    onVolumeChange={vr.onVolumeChange}
+                    onTimeUpdate={vr.onTimeUpdate}
+                  />
+                ) : (
+                  <video
+                    key={isAmerican ? "us" : "uk"}
+                    className="w-full h-auto block"
+                    src={demoVideo(demoVariant, isAmerican)}
+                    poster={demoPoster(demoVariant, isAmerican)}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    onPlay={vt.onPlay}
+                    onVolumeChange={vt.onVolumeChange}
+                    onTimeUpdate={vt.onTimeUpdate}
+                  />
+                )}
+              </div>
             </div>
             <div className="space-y-5">
               {valueCards.map((c, i) => (
@@ -320,10 +354,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               Unlock My Speech Suite — {pricing.basic.price}
             </button>
 
-            <p className="font-body text-xs text-primary-foreground/50 text-center mt-3">
-              <Shield className="w-3 h-3 inline mr-1" />
-              100% Money-Back Guarantee
-            </p>
+            <PayReassurance dark className="mt-5" />
           </div>
         </motion.div>
 
@@ -366,10 +397,10 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
                 Created by Adrian Simpson
               </h3>
               <p className="font-body text-accent font-semibold text-sm mb-3">
-                World's Highest-Rated Speechwriter · Founder of All Speeches Great & Small
+                Former BBC Top Gear & Sky News presenter · Speechwriter since 2012
               </p>
               <p className="font-body text-muted-foreground text-sm leading-relaxed mb-4">
-                A professional speechwriter since 2012, Adrian holds a 4.9/5 rating from 421 verified reviews of his bespoke speechwriting service. His method powers every speech generated on this platform.
+                Adrian presented on BBC Top Gear and Sky News before becoming a professional speechwriter in 2012, so he knows what it takes to stand up and deliver. He holds a 4.9/5 rating from 421 verified reviews of his bespoke speechwriting service. His method powers every speech generated on this platform.
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                 <div className="flex items-center gap-1.5">
@@ -426,10 +457,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           >
             Unlock My Speech — {pricing.basic.price}
           </button>
-          <p className="font-body text-xs text-muted-foreground mt-3">
-            <Shield className="w-3 h-3 inline mr-1" />
-            Secure · Instant delivery · Money back guarantee
-          </p>
+          <PayReassurance className="mt-6 max-w-md mx-auto text-left" />
         </motion.div>
       </div>
     </div>

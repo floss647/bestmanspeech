@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Shield, Lock, ArrowLeft, Loader2, Check, Star, PenLine, RefreshCw, Mic } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import PayReassurance from "@/components/PayReassurance";
 
 // Load Stripe lazily. If the key is missing we return null instead of throwing —
 // throwing here would run at module load and white-screen the whole app, since
@@ -97,18 +98,16 @@ const CheckoutForm = ({ speechId, accessToken, price }: {
         )}
       </button>
 
+      <PayReassurance />
+
       <div className="flex items-center justify-center gap-4 text-muted-foreground">
         <div className="flex items-center gap-1">
-          <Shield className="w-3.5 h-3.5" />
-          <span className="font-body text-xs">Secure payment</span>
+          <Lock className="w-3.5 h-3.5" />
+          <span className="font-body text-xs">Secure payment by Stripe</span>
         </div>
         <div className="flex items-center gap-1">
           <Check className="w-3.5 h-3.5" />
-          <span className="font-body text-xs">Instant delivery</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <Star className="w-3.5 h-3.5" />
-          <span className="font-body text-xs">Money back guarantee</span>
+          <span className="font-body text-xs">Opens instantly</span>
         </div>
       </div>
     </form>
