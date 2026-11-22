@@ -1,6 +1,9 @@
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { captureAttribution } from "./lib/attribution";
+
+captureAttribution();
 
 const container = document.getElementById("root")!;
 

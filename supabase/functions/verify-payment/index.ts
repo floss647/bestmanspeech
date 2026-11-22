@@ -96,11 +96,56 @@ serve(async (req) => {
         stripe_session_id: transactionId,
       })
       .eq("id", speechId)
-      .select("id, email, access_token, tier, speech_type, country, answers, purchase_email_sent_at")
+      .select("id, email, access_token, tier, speech_type, country, answers, purchase_email_sent_at, attribution, purchase_tracked_at")
       .single();
 
     if (updateError) {
       throw new Error(`Failed to update speech: ${updateError.message}`);
+    }
+
+    // Credit the sale to Google Analytics from the server, once. The browser tag
+    // on the success page is often blocked (Safari, ad blockers), so without this
+    // purchases go missing from GA4 and from the Google Ads conversions it feeds.
+    // GA4 de-duplicates purchases by transaction_id, so a browser hit as well is fine.
+    const mpSecret = Deno.env.get("GA4_MP_SECRET");
+    if (mpSecret && !speechData.purchase_tracked_at) {
+      const { data: claimedTrack } = await supabaseClient
+        .from("speeches")
+        .update({ purchase_tracked_at: new Date().toISOString() })
+        .eq("id", speechId)
+        .is("purchase_tracked_at", null)
+        .select("id");
+      if (claimedTrack?.length) {
+        const attr = (speechData.attribution as Record<string, string>) || {};
+        const clientId = attr.ga_client_id || `${Math.floor(Math.random() * 1e10)}.${Math.floor(Date.now() / 1000)}`;
+        try {
+          const r = await fetch(
+            `https://www.google-analytics.com/mp/collect?measurement_id=G-MPYF6WKEHS&api_secret=${encodeURIComponent(mpSecret)}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                client_id: clientId,
+                events: [{
+                  name: "purchase",
+                  params: {
+                    transaction_id: transactionId,
+                    value: amountPaid,
+                    currency: currencyPaid,
+                    speech_type: speechData.speech_type,
+                    source: "server",
+                    items: [{ item_id: speechData.tier || "basic", item_name: speechData.speech_type, price: amountPaid, quantity: 1 }],
+                  },
+                }],
+              }),
+            },
+          );
+          if (!r.ok) throw new Error(`GA4 MP ${r.status}`);
+        } catch (e) {
+          console.error("[verify-payment] GA4 purchase", e);
+          await supabaseClient.from("speeches").update({ purchase_tracked_at: null }).eq("id", speechId);
+        }
+      }
     }
 
     // Email the buyer their links, once. Claim the send first so a page refresh

@@ -8,6 +8,7 @@ import { Shield, Lock, ArrowLeft, Loader2, Check, Star, PenLine, RefreshCw, Mic 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import PayReassurance from "@/components/PayReassurance";
+import { getAttribution } from "@/lib/attribution";
 
 // Load Stripe lazily. If the key is missing we return null instead of throwing —
 // throwing here would run at module load and white-screen the whole app, since
@@ -138,11 +139,13 @@ const Checkout = () => {
 
     track("begin_checkout", { tier: state.tier, currency: state.currency }, `checkout-${state.speechId}`);
     try {
+      const attribution = await getAttribution();
       const { data, error: fnError } = await supabase.functions.invoke("create-payment-intent", {
         body: {
           tier: state.tier,
           speechId: state.speechId,
           currency: state.currency,
+          attribution,
         },
       });
 

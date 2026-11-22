@@ -48,7 +48,7 @@ serve(async (req) => {
   }
 
   try {
-    const { speechId, currency, tier } = await req.json();
+    const { speechId, currency, tier, attribution } = await req.json();
 
     if (!speechId) {
       throw new Error("speechId is required");
@@ -105,6 +105,20 @@ serve(async (req) => {
     const customerId = customers.data.length > 0
       ? customers.data[0].id
       : (await stripe.customers.create({ email })).id;
+
+    // Remember how this buyer arrived, so verify-payment can credit the sale to
+    // Google Analytics / Google Ads server-side (browsers often block the tags).
+    if (attribution && typeof attribution === "object") {
+      const clean: Record<string, string> = {};
+      for (const [k, v] of Object.entries(attribution as Record<string, unknown>)) {
+        if (/^(gclid|gbraid|wbraid|fbclid|utm_source|utm_medium|utm_campaign|utm_term|landing|ts|ga_client_id)$/.test(k) && typeof v === "string") {
+          clean[k] = v.slice(0, 300);
+        }
+      }
+      if (Object.keys(clean).length) {
+        await supabaseServiceClient.from("speeches").update({ attribution: clean }).eq("id", speechData.id);
+      }
+    }
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: unitAmount,
