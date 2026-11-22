@@ -104,7 +104,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
     : ["birthday", "anniversary", "graduation", "baby-shower"].includes(speechType) ? "social"
     : "wedding";
   const vt = videoHandlers(`${demoVariant}${isAmerican ? "-us" : ""}`, "paywall");
-  const vr = videoHandlers("rehearsal-coach", "paywall");
+  const vr = videoHandlers("rehearsal-coach", "paywall", { silent: true });
 
   const valueCards = [
     {

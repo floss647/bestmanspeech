@@ -57,10 +57,11 @@ export function metaPageView() {
 /** Video events for the demo videos. A view only counts once the sound is on
  *  (the hero video autoplays muted for everyone, which isn't a real watch).
  *  Sends video_start, video_progress (50%) and video_complete, once each per page. */
-export function videoHandlers(title: string, placement: string) {
+export function videoHandlers(title: string, placement: string, opts: { silent?: boolean } = {}) {
   const base = { video_title: title, video_provider: "self", placement };
   const key = (step: string) => `video-${placement}-${title}-${step}`;
-  const listening = (v: HTMLVideoElement) => !v.muted && v.volume > 0;
+  // A clip with no soundtrack counts as watched as soon as it plays.
+  const listening = (v: HTMLVideoElement) => opts.silent || (!v.muted && v.volume > 0);
   return {
     onPlay: (e: { currentTarget: HTMLVideoElement }) => {
       if (listening(e.currentTarget)) track("video_start", base, key("start"));

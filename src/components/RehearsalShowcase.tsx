@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Mic, ScrollText, Ear, Quote } from "lucide-react";
+import { useRef, useState } from "react";
+import { Mic, ScrollText, Ear, Quote, Play } from "lucide-react";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { videoHandlers } from "@/lib/track";
 
@@ -63,7 +64,9 @@ const RehearsalShowcase = ({ variant = "wedding", tone = "light" }: { variant?: 
   const { localize } = useGeolocation();
   const c = COPY[variant];
   const dark = tone === "dark";
-  const vt = videoHandlers(`rehearsal-${variant}`, "rehearsal-showcase");
+  const vt = videoHandlers(`rehearsal-${variant}`, "rehearsal-showcase", { silent: true });
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [started, setStarted] = useState(false);
   return (
     <section id="rehearsal-coach" className={`py-24 md:py-32 ${dark ? "bg-charcoal" : tone === "warm" ? "bg-gradient-warm" : "bg-background"}`}>
       <div className="container mx-auto px-6 max-w-6xl">
@@ -87,19 +90,37 @@ const RehearsalShowcase = ({ variant = "wedding", tone = "light" }: { variant?: 
             transition={{ duration: 0.6 }}
             className={`rounded-2xl overflow-hidden shadow-2xl bg-charcoal border ${dark ? "border-accent/30" : "border-border"}`}
           >
-            <video
-              className="w-full h-auto block"
-              src={REHEARSAL_VIDEO}
-              poster={REHEARSAL_POSTER}
-              controls
-              playsInline
-              muted
-              preload="none"
-              onPlay={vt.onPlay}
-              onVolumeChange={vt.onVolumeChange}
-              onTimeUpdate={vt.onTimeUpdate}
-              aria-label="Demo: the marked-up speech scrolling on the autocue, then the coaching notes after a rehearsal"
-            />
+            <div className="relative">
+              <video
+                ref={videoRef}
+                className="w-full h-auto block"
+                src={REHEARSAL_VIDEO}
+                poster={REHEARSAL_POSTER}
+                controls={started}
+                playsInline
+                muted
+                preload="none"
+                onPlay={(e) => { setStarted(true); vt.onPlay(e); }}
+                onVolumeChange={vt.onVolumeChange}
+                onTimeUpdate={vt.onTimeUpdate}
+                aria-label="Demo: the marked-up speech scrolling on the autocue, then the coaching notes after a rehearsal"
+              />
+              {!started && (
+                <button
+                  type="button"
+                  onClick={() => { setStarted(true); videoRef.current?.play().catch(() => {}); }}
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-charcoal/40 hover:bg-charcoal/30 transition-colors group"
+                  aria-label="Play the 30-second rehearsal coach demo"
+                >
+                  <span className="w-20 h-20 rounded-full bg-accent text-accent-foreground flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform">
+                    <Play className="w-9 h-9 ml-1" fill="currentColor" />
+                  </span>
+                  <span className="px-4 py-1.5 rounded-full bg-charcoal/80 text-primary-foreground font-body text-sm font-semibold">
+                    Watch the 30-second demo
+                  </span>
+                </button>
+              )}
+            </div>
           </motion.div>
 
           <div className="space-y-6">
