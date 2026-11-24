@@ -228,6 +228,25 @@ serve(async (req) => {
     return new Response(JSON.stringify({ sent, errors }), { headers: { "Content-Type": "application/json" } });
   }
 
+  // 0. Offers opened by hand (offer_until set in the database, email not yet sent):
+  //    send the offer email now, with that end time. Any age up to 14 days.
+  const { data: queued } = await db.from("speeches")
+    .select("id, email, speech_type, answers, access_token, country, offer_until")
+    .eq("paid", false).is("followup_3_sent_at", null).not("offer_until", "is", null)
+    .gte("created_at", iso(now - 14 * 24 * HOUR));
+  for (const s of queued ?? []) {
+    const until = new Date(s.offer_until).getTime();
+    if (until <= now + 6 * HOUR || s.speech_type === "eulogy" || skip(s.email)) continue;
+    const link = `${ORIGIN}/resume?id=${s.id}&token=${s.access_token}`;
+    try {
+      await send(s.email, offerEmail(s.speech_type, s.country, firstNameOf(s.answers), link, until));
+      await db.from("speeches").update({ followup_3_sent_at: iso(now) }).eq("id", s.id);
+      sent.push(`offer:${s.speech_type}`);
+    } catch (e) {
+      errors.push(`offer:${s.id}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
   // 1. Previews not paid for (within the last 3 days)
   const { data: previews } = await db.from("speeches")
     .select("id, email, speech_type, answers, access_token, country, created_at, followup_1_sent_at, followup_2_sent_at, followup_3_sent_at")
