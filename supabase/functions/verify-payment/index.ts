@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { purchaseEmail } from "../_shared/purchaseEmail.ts";
+import { OFFER_PRICES } from "../_shared/offer.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -58,7 +59,9 @@ serve(async (req) => {
       const tier = paymentIntent.metadata?.tier ?? "";
       const cur = (paymentIntent.currency || "").toLowerCase();
       const expected = PRICING[tier]?.[cur];
-      if (!expected || paymentIntent.amount !== expected) {
+      // A follow-up offer was priced server-side in create-payment-intent.
+      const offerPrice = paymentIntent.metadata?.offer === "1" && tier === "basic" ? OFFER_PRICES[cur] : undefined;
+      if (!expected || (paymentIntent.amount !== expected && paymentIntent.amount !== offerPrice)) {
         throw new Error("Payment amount does not match the expected price");
       }
 

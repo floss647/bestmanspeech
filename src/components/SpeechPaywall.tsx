@@ -20,9 +20,19 @@ interface SpeechPaywallProps {
   speechTitle: string;
   answers: Record<string, string>;
   onStartOver: () => void;
+  /** Set when this person arrived from the limited-time follow-up offer email. */
+  offerUntil?: string | null;
 }
 
-const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle, answers, onStartOver }: SpeechPaywallProps) => {
+// Must match supabase/functions/_shared/offer.ts
+const OFFER_PRICE: Record<string, { now: string; was: string }> = {
+  GBP: { now: "£22", was: "£29" },
+  USD: { now: "$29", was: "$39" },
+  AUD: { now: "A$39", was: "A$49" },
+  CAD: { now: "CA$29", was: "CA$39" },
+};
+
+const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle, answers, onStartOver, offerUntil }: SpeechPaywallProps) => {
   const [loadingPurchase, setLoadingPurchase] = useState(false);
   const [clip, setClip] = useState<"rehearse" | "suite">("rehearse");
   const { country, currency: currencyCode, symbol, localize, isAmerican } = useGeolocation();
@@ -30,6 +40,11 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
 
   const userEmail = answers.email || "";
   const pricing = getPricingForCountry(country);
+  const offer = offerUntil && new Date(offerUntil).getTime() > Date.now() ? OFFER_PRICE[pricing.currency] : undefined;
+  const price = offer ? offer.now : pricing.basic.price;
+  const offerEnds = offerUntil
+    ? new Date(offerUntil).toLocaleString(undefined, { weekday: "long", hour: "numeric", minute: "2-digit" })
+    : "";
 
   useEffect(() => {
     track("view_preview", { speech_type: speechType, currency: pricing.currency }, `preview-${speechId}`);
@@ -145,7 +160,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
       state: {
         tier: "basic",
         tierName: "All-Inclusive",
-        price: pricing.basic.price,
+        price,
         speechId,
         accessToken,
         speechType,
@@ -171,7 +186,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-gold-dark text-accent-foreground font-body font-bold text-sm rounded-lg transition-all duration-300"
           >
             <Lock className="w-3.5 h-3.5" />
-            Unlock My Speech — {pricing.basic.price}
+            Unlock My Speech — {price}
           </button>
         </div>
       </nav>
@@ -197,10 +212,22 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           )}
         </motion.div>
 
-        <p className="font-body text-sm text-muted-foreground text-center mb-8">
-          <Clock className="w-4 h-4 inline mr-1.5 -mt-0.5" />
-          We'll keep your speech for you for 24 hours.
-        </p>
+        {offer ? (
+          <div className="max-w-xl mx-auto mb-8 rounded-xl border border-accent/40 bg-accent/10 px-5 py-4 text-center">
+            <p className="font-display text-lg font-bold text-foreground">
+              Your offer: <span className="line-through text-muted-foreground font-normal mr-1">{offer.was}</span> {offer.now}
+            </p>
+            <p className="font-body text-sm text-muted-foreground mt-1">
+              <Clock className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+              Ends {offerEnds}. Same money-back guarantee.
+            </p>
+          </div>
+        ) : (
+          <p className="font-body text-sm text-muted-foreground text-center mb-8">
+            <Clock className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+            We'll keep your speech for you for 24 hours.
+          </p>
+        )}
 
         {/* Blurred speech preview */}
         <motion.div
@@ -237,7 +264,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           className="max-w-5xl mx-auto mb-12"
         >
           <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
-            {localize(`It's more than a speech for ${pricing.basic.price}`)}
+            {localize(`It's more than a speech for ${price}`)}
           </h2>
           <p className="font-body text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
             You get your full speech, your own speech suite to shape it, and my rehearsal coach to get you ready to stand up and give it.
@@ -323,7 +350,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
-                  {pricing.basic.price}
+                  {price}
                 </span>
               </div>
               <p className="font-body text-xs text-primary-foreground/60">
@@ -351,7 +378,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               disabled={loadingPurchase}
               className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >
-              Unlock My Speech Suite — {pricing.basic.price}
+              Unlock My Speech Suite — {price}
             </button>
 
             <PayReassurance dark className="mt-5" />
@@ -455,7 +482,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             onClick={handlePurchase}
             className="inline-flex items-center gap-2 px-10 py-5 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
           >
-            Unlock My Speech — {pricing.basic.price}
+            Unlock My Speech — {price}
           </button>
           <PayReassurance className="mt-6 max-w-md mx-auto text-left" />
         </motion.div>

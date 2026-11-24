@@ -152,6 +152,13 @@ const Checkout = () => {
       if (fnError) throw fnError;
       if (!data?.clientSecret) throw new Error("Failed to create payment session");
 
+      // The server sets the price (including any follow-up offer still running);
+      // show exactly what will be charged.
+      if (typeof data.amount === "number" && state.price) {
+        const symbol = state.price.replace(/[\d.,\s]+$/, "");
+        const shown = `${symbol}${data.amount % 100 ? (data.amount / 100).toFixed(2) : data.amount / 100}`;
+        if (shown !== state.price) state.price = shown;
+      }
       setClientSecret(data.clientSecret);
       setSpeechId(state.speechId);
       setAccessToken(state.accessToken);

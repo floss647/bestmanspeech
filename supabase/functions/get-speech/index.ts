@@ -27,7 +27,7 @@ serve(async (req) => {
 
     const { data, error } = await supabaseClient
       .from("speeches")
-      .select("id, generated_speech, speech_type, answers, paid, tier, email, regenerations_used, max_regenerations, access_token, versions, created_at")
+      .select("id, generated_speech, speech_type, answers, paid, tier, email, regenerations_used, max_regenerations, access_token, versions, created_at, offer_until")
       .eq("id", speechId)
       .eq("access_token", accessToken)
       .single();
@@ -42,13 +42,16 @@ serve(async (req) => {
     // For unpaid speeches, return a truncated preview so the paywall can display it
     if (!speechData.paid) {
       const preview = previewWords(speechData.generated_speech || "", PREVIEW_WORDS);
-      return new Response(JSON.stringify({ ...speechData, generated_speech: preview }), {
+      const offer_until = speechData.offer_until && new Date(speechData.offer_until).getTime() > Date.now()
+        ? speechData.offer_until : null;
+      return new Response(JSON.stringify({ ...speechData, offer_until, generated_speech: preview }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
 
-    return new Response(JSON.stringify({ ...speechData, versions: readVersions(data) }), {
+    const { offer_until: _o, ...paidData } = speechData;
+    return new Response(JSON.stringify({ ...paidData, versions: readVersions(data) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

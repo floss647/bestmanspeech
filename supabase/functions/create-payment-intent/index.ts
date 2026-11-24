@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { OFFER_PRICES, offerActive } from "../_shared/offer.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -60,7 +61,7 @@ serve(async (req) => {
         ? currency.toLowerCase()
         : "gbp";
 
-    const unitAmount = PRICING[normalizedTier][normalizedCurrency];
+    let unitAmount = PRICING[normalizedTier][normalizedCurrency];
 
     const supabaseServiceClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -72,7 +73,7 @@ serve(async (req) => {
     // tampered with here.
     const { data: speechData, error: speechError } = await supabaseServiceClient
       .from("speeches")
-      .select("id, email, access_token, paid")
+      .select("id, email, access_token, paid, offer_until")
       .eq("id", speechId)
       .single();
 
@@ -82,6 +83,10 @@ serve(async (req) => {
     if (speechData.paid) {
       throw new Error("This speech has already been paid for");
     }
+
+    // Follow-up email offer: lower price while offer_until is in the future.
+    const onOffer = normalizedTier === "basic" && offerActive(speechData.offer_until) && !!OFFER_PRICES[normalizedCurrency];
+    if (onOffer) unitAmount = OFFER_PRICES[normalizedCurrency];
 
     // Record the selected tier on the speech before charging for it.
     const { error: updateError } = await supabaseServiceClient
@@ -128,6 +133,7 @@ serve(async (req) => {
         speech_id: speechData.id,
         tier: normalizedTier,
         currency: normalizedCurrency,
+        offer: onOffer ? "1" : "0",
       },
       automatic_payment_methods: { enabled: true },
       receipt_email: email,
@@ -139,6 +145,7 @@ serve(async (req) => {
         clientSecret: paymentIntent.client_secret,
         speechId: speechData.id,
         accessToken: speechData.access_token,
+        amount: unitAmount,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
