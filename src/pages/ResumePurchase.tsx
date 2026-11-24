@@ -17,6 +17,7 @@ const ResumePurchase = () => {
     speech: string;
     speechType: string;
     answers: Record<string, string>;
+    offerUntil: string | null;
   } | null>(null);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const ResumePurchase = () => {
         speech: data.generated_speech,
         speechType: data.speech_type,
         answers: (data.answers as Record<string, string>) || {},
+        offerUntil: data.offer_until || null,
       });
     } catch (e: any) {
       setError(e.message || "Failed to load speech.");
@@ -111,6 +113,7 @@ const ResumePurchase = () => {
       speechType={speechData.speechType}
       speechTitle={title}
       answers={speechData.answers}
+      offerUntil={speechData.offerUntil}
       onStartOver={() => (window.location.href = "/write")}
     />
   );

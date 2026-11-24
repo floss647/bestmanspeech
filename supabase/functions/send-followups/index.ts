@@ -1,8 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { OFFER_HOURS } from "../_shared/offer.ts";
 
 // Follow-up emails, run every 15 minutes by pg_cron:
-//  1. Preview seen, not paid  -> email after ~1 hour, reminder after ~24 hours
+//  1. Preview seen, not paid  -> email after ~1 hour, reminder after ~24 hours,
+//     and (only when app_secrets.followup_offer = 'on') a 48-hour offer at ~48 hours
 //  2. Email given, questions not finished -> one email after ~1 hour
 // Requires header x-cron-secret matching app_secrets.cron_secret. Every email has an unsubscribe link.
 
@@ -96,6 +98,51 @@ function previewEmail(step: 1 | 2, type: string, country: string | null, name: s
       };
 }
 
+const OFFER_LABEL: Record<string, { now: string; was: string; off: string }> = {
+  US: { now: "$29", was: "$39", off: "$10" },
+  CA: { now: "CA$29", was: "CA$39", off: "CA$10" },
+  AU: { now: "A$39", was: "A$49", off: "A$10" },
+  GB: { now: "£22", was: "£29", off: "£7" },
+};
+
+function deadlineText(untilMs: number, country: string | null) {
+  const american = !!country && AMERICAN.has(country);
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    weekday: "long", hour: "numeric", minute: "2-digit",
+    timeZone: american ? "America/New_York" : country === "AU" ? "Australia/Sydney" : "Europe/London",
+  });
+  return `${fmt.format(new Date(untilMs)).replace(":00", "").replace(" AM", "am").replace(" PM", "pm")}${american ? " ET" : ""}`;
+}
+
+function offerEmail(type: string, country: string | null, name: string, link: string, untilMs: number): Mail {
+  const title = titleFor(type, country);
+  const hi = name ? `Hi ${esc(name)},` : "Hi,";
+  const p = OFFER_LABEL[country && OFFER_LABEL[country] ? country : (country && AMERICAN.has(country) ? "US" : "GB")];
+  const when = deadlineText(untilMs, country);
+  const day = when.split(" ")[0];
+  if (isVows(type)) {
+    return {
+      subject: `Your vows are still here, and they're ${p.now} until ${day}`,
+      paragraphs: [hi,
+        `Your wedding vows are still saved. I'd love you to finish them, so for the next 48 hours they're <strong>${p.now} instead of ${p.was}</strong>.`,
+        "You get the full vows, and you can change any line or ask for a new version (more romantic, funnier, shorter) until they sound exactly like you.",
+        "Then say them out loud on my rehearsal coach: an autocue with your vows marked up, and honest feedback on your pace and pauses, so on the day you can look up at your partner instead of down at your phone.",
+        `The offer ends <strong>${when}</strong>. Same money-back guarantee.`,
+        "If something's holding you back, just reply. It comes straight to me."],
+      button: { href: link, label: `Finish my vows for ${p.now}` },
+    };
+  }
+  return {
+    subject: `Your ${title} is ${p.now} until ${day}`,
+    paragraphs: [hi,
+      `Your ${title} is still saved. To help you get it finished, it's <strong>${p.now} instead of ${p.was}</strong> for the next 48 hours.`,
+      "That's the full speech, unlimited edits and new versions until it sounds like you, and my rehearsal coach: your speech on an autocue, marked up with where to pause and where to wait for the laugh, with feedback on your delivery.",
+      `The offer ends <strong>${when}</strong>. Same money-back guarantee.`,
+      "Any questions, just reply. It comes straight to me."],
+    button: { href: link, label: `Finish my speech for ${p.now}` },
+  };
+}
+
 function unfinishedEmail(type: string, country: string | null, name: string, link: string): Mail {
   const title = titleFor(type, country);
   const hi = name ? `Hi ${esc(name)},` : "Hi,";
@@ -153,20 +200,35 @@ serve(async (req) => {
     if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
   }
 
+  const { data: offerFlag } = await db.from("app_secrets").select("value").eq("name", "followup_offer").maybeSingle();
+  const offerOn = offerFlag?.value === "on";
+
   const skip = (email: string | null) => !email || optedOut.has(email.toLowerCase()) || buyers.has(email.toLowerCase());
 
   // 1. Previews not paid for (within the last 3 days)
   const { data: previews } = await db.from("speeches")
-    .select("id, email, speech_type, answers, access_token, country, created_at, followup_1_sent_at, followup_2_sent_at")
+    .select("id, email, speech_type, answers, access_token, country, created_at, followup_1_sent_at, followup_2_sent_at, followup_3_sent_at")
     .eq("paid", false).gte("created_at", iso(now - 72 * HOUR)).lte("created_at", iso(now - HOUR))
-    .or("followup_1_sent_at.is.null,followup_2_sent_at.is.null");
+    .or("followup_1_sent_at.is.null,followup_2_sent_at.is.null,followup_3_sent_at.is.null");
   for (const s of previews ?? []) {
     if (skip(s.email)) continue;
-    const step: 1 | 2 | null = !s.followup_1_sent_at ? 1
-      : (!s.followup_2_sent_at && new Date(s.created_at).getTime() <= now - 23 * HOUR) ? 2 : null;
+    const created = new Date(s.created_at).getTime();
+    const step: 1 | 2 | 3 | null = !s.followup_1_sent_at ? 1
+      : (!s.followup_2_sent_at && created <= now - 23 * HOUR) ? 2
+      : (offerOn && s.followup_2_sent_at && !s.followup_3_sent_at && s.speech_type !== "eulogy" && created <= now - 47 * HOUR) ? 3
+      : null;
     if (!step) continue;
     const link = `${ORIGIN}/resume?id=${s.id}&token=${s.access_token}`;
     try {
+      if (step === 3) {
+        const until = now + OFFER_HOURS * HOUR;
+        // Open the offer first, so the link in the email works the moment it arrives.
+        await db.from("speeches").update({ offer_until: iso(until) }).eq("id", s.id);
+        await send(s.email, offerEmail(s.speech_type, s.country, firstNameOf(s.answers), link, until));
+        await db.from("speeches").update({ followup_3_sent_at: iso(now) }).eq("id", s.id);
+        sent.push(`offer:${s.speech_type}`);
+        continue;
+      }
       await send(s.email, previewEmail(step, s.speech_type, s.country, firstNameOf(s.answers), link));
       await db.from("speeches").update(step === 1 ? { followup_1_sent_at: iso(now) } : { followup_2_sent_at: iso(now) }).eq("id", s.id);
       sent.push(`preview-${step}:${s.speech_type}`);
