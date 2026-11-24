@@ -205,13 +205,37 @@ serve(async (req) => {
 
   const skip = (email: string | null) => !email || optedOut.has(email.toLowerCase()) || buyers.has(email.toLowerCase());
 
+  // Manual send: POST {"offer_ids": [...]} sends the 48-hour offer to those speeches
+  // now (still skipping buyers, opt-outs and anyone already sent the offer).
+  const body = await req.json().catch(() => ({}));
+  if (Array.isArray(body?.offer_ids) && body.offer_ids.length) {
+    const { data: rows } = await db.from("speeches")
+      .select("id, email, speech_type, answers, access_token, country, paid, followup_3_sent_at")
+      .in("id", body.offer_ids.slice(0, 50));
+    for (const s of rows ?? []) {
+      if (s.paid || s.followup_3_sent_at || s.speech_type === "eulogy" || skip(s.email)) { errors.push(`skipped:${s.id}`); continue; }
+      const until = now + OFFER_HOURS * HOUR;
+      const link = `${ORIGIN}/resume?id=${s.id}&token=${s.access_token}`;
+      try {
+        await db.from("speeches").update({ offer_until: iso(until) }).eq("id", s.id);
+        await send(s.email, offerEmail(s.speech_type, s.country, firstNameOf(s.answers), link, until));
+        await db.from("speeches").update({ followup_3_sent_at: iso(now) }).eq("id", s.id);
+        sent.push(`offer:${s.id}`);
+      } catch (e) {
+        errors.push(`offer:${s.id}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+    return new Response(JSON.stringify({ sent, errors }), { headers: { "Content-Type": "application/json" } });
+  }
+
   // 1. Previews not paid for (within the last 3 days)
   const { data: previews } = await db.from("speeches")
     .select("id, email, speech_type, answers, access_token, country, created_at, followup_1_sent_at, followup_2_sent_at, followup_3_sent_at")
     .eq("paid", false).gte("created_at", iso(now - 72 * HOUR)).lte("created_at", iso(now - HOUR))
     .or("followup_1_sent_at.is.null,followup_2_sent_at.is.null,followup_3_sent_at.is.null");
   for (const s of previews ?? []) {
-    if (skip(s.email)) continue;
+    // Anyone already sent the offer gets no further full-price reminders.
+    if (skip(s.email) || s.followup_3_sent_at) continue;
     const created = new Date(s.created_at).getTime();
     const step: 1 | 2 | 3 | null = !s.followup_1_sent_at ? 1
       : (!s.followup_2_sent_at && created <= now - 23 * HOUR) ? 2
