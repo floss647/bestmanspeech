@@ -11,7 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const SITE = "https://www.bestmanspeech.com";
 
-const { render, landingPages } = await import(
+const { render, landingPages, toAmerican } = await import(
   pathToFileURL(path.join(dist, "server", "entry-server.js")).href
 );
 const template = fs.readFileSync(path.join(dist, "index.html"), "utf8");
@@ -64,6 +64,29 @@ for (const page of pages) {
   urls.push(SITE + (page.url === "/" ? "/" : page.url));
 }
 
+// US copies of the ad landing pages: rendered with US pricing/video and American
+// spelling, served to US visitors by netlify/edge-functions/country.ts. Not in
+// the sitemap; the canonical stays the main URL.
+const americanText = (html) =>
+  html
+    .replace(/>([^<]+)</g, (_, t) => `>${toAmerican(t)}<`)
+    .replace(/ (alt|title|aria-label|placeholder)="([^"]*)"/g, (_, a, v) => ` ${a}="${toAmerican(v)}"`);
+let usCount = 0;
+for (const page of pages.filter((p) => p.url === "/" || p.description)) {
+  const body = americanText(render(page.url, "US"));
+  let html = withMeta(template, {
+    ...page,
+    title: page.title && toAmerican(page.title),
+    description: page.description && toAmerican(page.description),
+  }).replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+  html = html.replace("<head>", '<head>\n    <meta name="bms-variant" content="us" />');
+  const out = path.join(dist, "us", page.url === "/" ? "index.html" : `${page.url.slice(1)}.html`);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, html);
+  usCount++;
+}
+render("/", undefined);
+
 fs.writeFileSync(
   path.join(dist, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
@@ -71,4 +94,4 @@ fs.writeFileSync(
     `\n</urlset>\n`,
 );
 fs.rmSync(path.join(dist, "server"), { recursive: true, force: true });
-console.log(`Prerendered ${pages.length} pages + sitemap.xml`);
+console.log(`Prerendered ${pages.length} pages (+${usCount} US copies) + sitemap.xml`);

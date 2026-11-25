@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import { packageFeatures } from "@/lib/speechPackage";
+import { forVows } from "@/lib/vowsText";
 import { useNavigate } from "react-router-dom";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { trackStartSpeech } from "@/lib/gtagEvents";
 
 const Pricing = ({ speechType }: { speechType?: string }) => {
-  const { localize, pricing } = useGeolocation();
+  const { localize: loc, pricing } = useGeolocation();
+  const localize = (t: string) => (speechType === "wedding-vows" ? forVows(loc(t)) : loc(t));
   const navigate = useNavigate();
 
   const features = packageFeatures.map((f) => ({ ...f, text: localize(f.text) }));
@@ -41,7 +43,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
           <div className="rounded-2xl bg-charcoal text-primary-foreground ring-2 ring-gold shadow-2xl shadow-gold/10 p-8 md:p-10">
             <div className="text-center mb-8">
               <span className="font-body text-xs font-semibold tracking-widest uppercase text-gold mb-3 block">
-                Speech + Speech Suite
+                {localize("Speech + Speech Suite")}
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
@@ -71,7 +73,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
               }}
               className="block w-full text-center px-6 py-4 bg-gold hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >
-              Write My Speech
+              {localize("Write My Speech")}
             </button>
           </div>
         </motion.div>

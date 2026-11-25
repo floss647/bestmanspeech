@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { toAmerican, startUsEnglish } from "@/lib/usEnglish";
-import { detectUserCurrency, getPricingForCountry, type CountryPricing } from "@/lib/geolocation";
+import { detectUserCurrency, getPricingForCountry, knownCountry, type CountryPricing } from "@/lib/geolocation";
 
 const americanEnglishCountries = new Set(["US", "CA"]);
 
@@ -34,24 +34,32 @@ const defaultState: GeolocationState = {
 
 const GeolocationContext = createContext<GeolocationState>(defaultState);
 
+function stateFor(country: string, loading: boolean): GeolocationState {
+  const prices = getPricingForCountry(country);
+  const isAmerican = americanEnglishCountries.has(country);
+  return {
+    country,
+    currency: prices.currency,
+    symbol: prices.symbol,
+    pricing: prices,
+    isAmerican,
+    localize: isAmerican ? toAmerican : (text: string) => text,
+    loading,
+  };
+}
+
 export function GeolocationProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<GeolocationState>(defaultState);
+  // Start in the right country when it is already known (ad link, Netlify cookie,
+  // earlier visit), so US visitors never see the UK version first.
+  const [state, setState] = useState<GeolocationState>(() => {
+    const known = knownCountry();
+    return known ? stateFor(known, false) : defaultState;
+  });
 
   useEffect(() => {
-    detectUserCurrency().then((location) => {
-      const prices = getPricingForCountry(location.country);
-      const isAmerican = americanEnglishCountries.has(location.country);
-
-      setState({
-        country: location.country,
-        currency: location.currency,
-        symbol: location.symbol,
-        pricing: prices,
-        isAmerican,
-        localize: isAmerican ? toAmerican : (text: string) => text,
-        loading: false,
-      });
-    });
+    if (!state.loading) return;
+    detectUserCurrency().then((location) => setState(stateFor(location.country, false)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // American visitors get American spelling everywhere on the page, including

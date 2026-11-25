@@ -4,7 +4,7 @@ import { useGeolocation } from "@/contexts/GeolocationContext";
 import { track } from "@/lib/track";
 
 /** Hero call-out for the rehearsal coach: the thing nobody else offers. */
-const RehearsalHeroChip = ({ eulogy = false, delay = 0.35 }: { eulogy?: boolean; delay?: number }) => {
+const RehearsalHeroChip = ({ eulogy = false, vows = false, delay = 0.35 }: { eulogy?: boolean; vows?: boolean; delay?: number }) => {
   const { localize } = useGeolocation();
   return (
     <motion.a
@@ -25,7 +25,9 @@ const RehearsalHeroChip = ({ eulogy = false, delay = 0.35 }: { eulogy?: boolean;
         <span className="block font-body text-sm md:text-base text-primary-foreground/90 leading-snug">
           {eulogy
             ? localize("Then practise reading it aloud on my autocue, gently marked up with where to pause and breathe.")
-            : localize("Then rehearse it on my autocue. I mark up where to pause and when to wait for the laugh, then coach your delivery.")}
+            : vows
+            ? localize("Then practise saying them out loud on my autocue, marked up with where to pause and breathe, so on the day you can look at your partner, not your phone.")
+            : localize("Then rehearse it on my autocue. I mark up where to pause and which lines to land, then coach your delivery.")}
           <span className="inline-flex items-center gap-1 ml-1.5 text-accent font-semibold whitespace-nowrap">
             See it <ArrowDown className="w-3.5 h-3.5 transition-transform group-hover:translate-y-0.5" />
           </span>
