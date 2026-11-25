@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { previewWords, PREVIEW_WORDS } from "../_shared/preview.ts";
-import { voiceGuidance } from "../_shared/voice.ts";
+import { lengthRule, voiceGuidance } from "../_shared/voice.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { SPEECH_PROMPTS } from "./speechPrompts.ts";
 
@@ -111,7 +111,9 @@ serve(async (req) => {
     const speechConfig = SPEECH_PROMPTS[speechType];
     const cc = typeof country === "string" ? country.slice(0, 2).toUpperCase() : null;
     const systemPrompt = `${speechConfig.systemPrompt}\n\n${voiceGuidance(speechType, cc)}`;
-    const userPrompt = speechConfig.userPromptTemplate(details);
+    const length = lengthRule(speechType, typeof country === "string" ? country.slice(0, 2).toUpperCase() : null);
+    const userPrompt = speechConfig.userPromptTemplate(details) +
+      (length ? `\n\nFINAL LENGTH: ${length} This replaces any other word count in these instructions.` : "");
 
     // Generate the full speech server-side (non-streamed) so the complete text
     // never reaches the unpaid client. Uses Claude via the Anthropic API.
