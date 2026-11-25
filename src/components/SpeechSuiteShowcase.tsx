@@ -1,3 +1,4 @@
+import { forVows } from "@/lib/vowsText";
 import { motion } from "framer-motion";
 import { Check, PenLine, RefreshCw, Mic, Clock } from "lucide-react";
 import { packageSummary } from "@/lib/speechPackage";
@@ -33,7 +34,8 @@ const points = [
 ];
 
 /** Explains what a buyer gets after paying. The video is left out when it already sits in the page header. */
-const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { variant?: DemoVariant; showVideo?: boolean }) => {
+const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true, vows = false }: { variant?: DemoVariant; showVideo?: boolean; vows?: boolean }) => {
+  const v = (t: string) => (vows ? forVows(t) : t);
   const { isAmerican } = useGeolocation();
   const vt = videoHandlers(`${variant}${isAmerican ? "-us" : ""}`, "showcase");
   return (
@@ -48,9 +50,9 @@ const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { varian
       >
         <p className="font-body text-accent tracking-[0.3em] uppercase text-sm mb-4">What you get</p>
         <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-          Your Speech. Your Own Speech Suite.
+          {v("Your Speech. Your Own Speech Suite.")}
         </h2>
-        <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto">{packageSummary}</p>
+        <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto">{v(packageSummary)}</p>
       </motion.div>
 
       <div className={showVideo ? "grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" : "max-w-5xl mx-auto"}>
@@ -92,14 +94,14 @@ const SpeechSuiteShowcase = ({ variant = "wedding", showVideo = true }: { varian
                 <p.icon className="w-5 h-5 text-accent" />
               </div>
               <div>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-1">{p.title}</h3>
-                <p className="font-body text-muted-foreground text-sm leading-relaxed">{p.text}</p>
+                <h3 className="font-display text-lg font-semibold text-foreground mb-1">{v(p.title).replace("Rehearse it", vows ? "Practise them" : "Rehearse it")}</h3>
+                <p className="font-body text-muted-foreground text-sm leading-relaxed">{v(p.text)}</p>
               </div>
             </motion.div>
           ))}
           <p className={`font-body text-sm text-muted-foreground flex items-center gap-2 pt-2 ${showVideo ? "" : "md:col-span-2 justify-center"}`}>
             <Clock className="w-4 h-4 text-accent" />
-            Preview your speech free before you pay. One payment, no subscription.
+            {v("Preview your speech free before you pay. One payment, no subscription.")}
           </p>
         </div>
       </div>

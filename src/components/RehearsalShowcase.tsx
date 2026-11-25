@@ -4,7 +4,7 @@ import { Mic, ScrollText, Ear, Quote, Play } from "lucide-react";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import { videoHandlers } from "@/lib/track";
 
-export type RehearsalVariant = "wedding" | "social" | "corporate" | "eulogy";
+export type RehearsalVariant = "wedding" | "vows" | "social" | "corporate" | "eulogy";
 
 export const REHEARSAL_VIDEO = "/media/rehearsal-coach.mp4";
 export const REHEARSAL_POSTER = "/media/rehearsal-coach-poster.jpg";
@@ -24,6 +24,17 @@ const COPY: Record<RehearsalVariant, {
       { icon: Ear, title: "Coached on how you actually said it", text: "I listen back to your rehearsal: your timing against the target, the sections you rushed, the laughs you talked over, the words you didn't hit, and your ums. Then three things to fix, with exact directions." },
     ],
     quote: "You gave 'wet his pants' half a second and ploughed on. Land it, stop dead, look up at the room and count three. Let them laugh.",
+  },
+  vows: {
+    eyebrow: "The bit nobody else helps with",
+    title: "Writing them is one thing. Saying them is another.",
+    intro: "Your vows come with my rehearsal coach. Practise saying them out loud until they feel like yours, so on the day you can look at your partner instead of reading from your phone.",
+    points: [
+      { icon: ScrollText, title: "Your vows, marked up by me", text: "Where to pause, where to breathe, which words matter most, and where to look up at your partner." },
+      { icon: Mic, title: "Say them out loud on an autocue", text: "Your vows scroll at a calm, unhurried pace, waiting at the pauses. Slow it down or pause it any time, and practise as often as you like." },
+      { icon: Ear, title: "Coached on how you actually said them", text: "Your pace, the lines you rushed, where your voice dropped, and how long they run, so they match your partner's. Then three things to work on before the day." },
+    ],
+    quote: "You rushed 'I choose you, every day'. That's your promise. Look up, slow right down, and give it a full breath before the next line.",
   },
   social: {
     eyebrow: "The bit nobody else helps with",
@@ -60,7 +71,7 @@ const COPY: Record<RehearsalVariant, {
   },
 };
 
-const RehearsalShowcase = ({ variant = "wedding", tone = "light" }: { variant?: RehearsalVariant; tone?: "light" | "warm" | "dark" }) => {
+const RehearsalShowcase = ({ variant = "wedding", tone = "light", quote }: { variant?: RehearsalVariant; tone?: "light" | "warm" | "dark"; quote?: string }) => {
   const { localize } = useGeolocation();
   const c = COPY[variant];
   const dark = tone === "dark";
@@ -145,8 +156,8 @@ const RehearsalShowcase = ({ variant = "wedding", tone = "light" }: { variant?: 
             <div className={`rounded-xl text-primary-foreground p-5 flex gap-3 ${dark ? "bg-white/5 border border-accent/30" : "bg-charcoal"}`}>
               <Quote className="w-5 h-5 text-accent shrink-0 mt-0.5" />
               <div>
-                <p className="font-body text-sm italic leading-relaxed">{c.quote}</p>
-                <p className="font-body text-xs text-accent mt-2">Example coaching note · included with every speech</p>
+                <p className="font-body text-sm italic leading-relaxed">{localize(quote ?? c.quote)}</p>
+                <p className="font-body text-xs text-accent mt-2">Example coaching note · included with {variant === "vows" ? "your vows" : "every speech"}</p>
               </div>
             </div>
           </div>

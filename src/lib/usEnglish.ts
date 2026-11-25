@@ -95,7 +95,10 @@ function localizeNode(node: Node) {
 }
 
 /** Keep the whole page in American English, including text that appears later. Returns a stop function. */
+let running: (() => void) | null = null;
+
 export function startUsEnglish(): () => void {
+  if (running) return () => {};
   localizeNode(document.body);
   document.title = toAmerican(document.title);
   const obs = new MutationObserver((records) => {
@@ -108,5 +111,6 @@ export function startUsEnglish(): () => void {
     if (t !== document.title) document.title = t;
   });
   obs.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
-  return () => obs.disconnect();
+  running = () => { obs.disconnect(); running = null; };
+  return running;
 }

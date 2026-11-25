@@ -8,7 +8,7 @@ import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuit
 /** The demo video, sized for the top of the page beside the headline.
  *  Browsers only autoplay muted video, so it starts silent and offers a
  *  "Play with sound" button that restarts it from the top with the voiceover. */
-const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
+const HeroDemoVideo = ({ variant = "wedding", vows = false }: { variant?: DemoVariant; vows?: boolean }) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const { isAmerican } = useGeolocation();
@@ -68,7 +68,7 @@ const HeroDemoVideo = ({ variant = "wedding" }: { variant?: DemoVariant }) => {
         />
       </div>
       <p className="font-body text-base text-primary-foreground/90 mt-3 text-center lg:text-left">
-        Adrian walks you through it: questions, free preview, then editing and new versions in your speech suite.
+        {vows ? "Adrian walks you through it: questions, free preview, then editing and new versions in your own suite." : "Adrian walks you through it: questions, free preview, then editing and new versions in your speech suite."}
       </p>
     </motion.div>
   );

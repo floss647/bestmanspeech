@@ -43,6 +43,8 @@ export interface LandingPageData {
   promiseLine?: string;
   microCopy?: string;
   secondaryCta?: { label: string; href: string };
+  /** Example coaching note shown in the rehearsal section, matching this role. */
+  rehearsalQuote?: string;
   personalNote?: string;
   navBrand?: "adrian";
   showSample?: "eulogy";
@@ -135,6 +137,7 @@ const FAQItem = ({ q, a }: { q: string; a: string }) => {
 };
 
 const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
+  const isVows = data.speechType === "wedding-vows";
   const { localize } = useGeolocation();
   return (
     <div className="min-h-screen">
@@ -190,7 +193,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             {data.promiseLine ?? "Preview free · Edit any line · Unlimited new versions"}
           </motion.p>
 
-          <RehearsalHeroChip eulogy={data.speechType === "eulogy"} delay={0.28} />
+          <RehearsalHeroChip eulogy={data.speechType === "eulogy"} vows={isVows} delay={0.28} />
 
           <motion.div
             initial={false}
@@ -233,7 +236,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           </motion.div>
         </div>
 
-        <HeroDemoVideo variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
+        <HeroDemoVideo variant={data.speechType === "eulogy" ? "eulogy" : data.category} vows={isVows} />
         </div>
       </section>
 
@@ -253,7 +256,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         <ReviewsWidget />
       )}
 
-      <RehearsalShowcase tone="dark" variant={data.speechType === "eulogy" ? "eulogy" : data.category} />
+      <RehearsalShowcase tone="dark" variant={data.speechType === "eulogy" ? "eulogy" : isVows ? "vows" : data.category} quote={data.rehearsalQuote} />
 
       {/* How it works, quick 3 step */}
       <section className="py-20 md:py-28 bg-gradient-warm">
@@ -272,10 +275,10 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { step: "1", title: "Answer Questions", desc: "Tell us about the person and your relationship. The more detail, the better the speech." },
-              { step: "2", title: "Preview It Free", desc: "Adrian Simpson's method writes a speech that sounds authentically you. Read the start before you pay." },
-              { step: "3", title: "Unlock Your Speech Suite", desc: "Pay once and your full speech opens in your own speech suite, saved for you." },
-              { step: "4", title: "Make It Perfect, Then Rehearse It", desc: "Edit any line, get unlimited new versions, then rehearse it on Adrian's autocue and get coached on your delivery." },
+              { step: "1", title: "Answer Questions", desc: isVows ? "Tell us about your partner and your story together. The more you share, the more they'll sound like you." : "Tell us about the person and your relationship. The more detail, the better the speech." },
+              { step: "2", title: "Preview It Free", desc: isVows ? "Adrian Simpson's method turns your memories and promises into vows that sound like you. Read the start before you pay." : "Adrian Simpson's method writes a speech that sounds authentically you. Read the start before you pay." },
+              { step: "3", title: isVows ? "Unlock Your Vows" : "Unlock Your Speech Suite", desc: isVows ? "Pay once and your full vows open in your own suite, saved for you." : "Pay once and your full speech opens in your own speech suite, saved for you." },
+              { step: "4", title: "Make It Perfect, Then Rehearse It", desc: isVows ? "Change any line until every word is yours, then practise saying them out loud on Adrian's autocue." : "Edit any line, get unlimited new versions, then rehearse it on Adrian's autocue and get coached on your delivery." },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -296,7 +299,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
         </div>
       </section>
 
-      <SpeechSuiteShowcase showVideo={false} />
+      <SpeechSuiteShowcase showVideo={false} vows={isVows} />
 
       {/* Pricing — moved up, right after How It Works */}
       <Pricing speechType={data.speechType} />
@@ -316,7 +319,9 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
                 Not Just Another AI Writer
               </h2>
               <p className="font-body text-primary-foreground/60 leading-relaxed mb-6">
-                Every speech is built on the methodology of Adrian Simpson, one of the world's leading speechwriters. This isn't a template. It's a {localize("personalised")} speech that sounds like you wrote it on your best day.
+                {isVows
+                  ? <>Your vows are built from your own memories and promises, using the method of Adrian Simpson, one of the world's leading speechwriters. Not a template, and every line is yours to change.</>
+                  : <>Every speech is built on the methodology of Adrian Simpson, one of the world's leading speechwriters. This isn't a template. It's a {localize("personalised")} speech that sounds like you wrote it on your best day.</>}
               </p>
               <Link
                 to={`/write?type=${data.speechType}`}
@@ -351,7 +356,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             <Shield className="w-8 h-8 text-accent" />
             <div className="text-center md:text-left">
               <p className="font-display text-lg font-semibold text-foreground">Money Back Guarantee</p>
-              <p className="font-body text-muted-foreground text-sm">Not happy with your speech? We'll work with you to fix it, or give you your money back.</p>
+              <p className="font-body text-muted-foreground text-sm">{isVows ? "Not happy with your vows? We'll work with you to fix them, or give you your money back." : "Not happy with your speech? We'll work with you to fix it, or give you your money back."}</p>
             </div>
           </div>
         </div>
@@ -393,7 +398,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               Ready to Write Your {localize(data.title)}?
             </h2>
             <p className="font-body text-muted-foreground text-lg mb-8">
-              Answer a few questions and get a {localize("personalised")} speech in minutes. No templates. No filler.
+              Answer a few questions and get {isVows ? <>{localize("personalised")} vows</> : <>a {localize("personalised")} speech</>} in minutes. No templates. No filler.
             </p>
             <Link
               to={`/write?type=${data.speechType}`}
