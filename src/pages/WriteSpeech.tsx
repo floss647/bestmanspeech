@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Sparkles, Check, Clock, ArrowLeftRight, Cake, Pa
 import { toast } from "sonner";
 import SpeechPaywall from "@/components/SpeechPaywall";
 import { supabase } from "@/integrations/supabase/client";
-import { SPEECH_TYPE_CONFIGS, type Question } from "@/lib/speechQuestions";
+import { SPEECH_TYPE_CONFIGS, questionLength, type Question } from "@/lib/speechQuestions";
 import { useGeolocation } from "@/contexts/GeolocationContext";
 import {
   Heart, Users, Mic2, Award, Crown, HandHeart, Church,
@@ -89,7 +89,14 @@ const WriteSpeech = () => {
           const idx = parsed.currentIndex ?? 0;
           setCurrentIndex(firstGap === -1 ? Math.min(idx, visible.length - 1) : Math.min(idx, firstGap));
           toast.success("Welcome back! We've saved your answers — pick up where you left off.");
+        } else if (searchParams.get("start") === "1") {
+          // Came from a landing-page button: go straight to question 1.
+          track("start_questions", { speech_type: speechType }, `start-${speechType}`);
+          setCurrentIndex(0);
         }
+      } else if (searchParams.get("start") === "1") {
+        track("start_questions", { speech_type: speechType }, `start-${speechType}`);
+        setCurrentIndex(0);
       }
       // Restore lead credentials so progress keeps syncing after a reload.
       const savedLead = localStorage.getItem(leadStorageKey);
@@ -570,7 +577,7 @@ const WriteSpeech = () => {
                   authentically you.
                 </p>
                 <p className="font-body text-sm text-muted-foreground/70 mb-8">
-                  Ready in under 5 minutes · No commitment
+                  {`About ${questionLength(speechType).minutes} minutes · ${questionLength(speechType).count} questions · No commitment`}
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-10">

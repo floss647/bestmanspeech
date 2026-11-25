@@ -535,3 +535,11 @@ for (const cfg of Object.values(SPEECH_TYPE_CONFIGS)) {
   const [email] = qs.splice(i, 1);
   qs.splice(Math.min(i + EMAIL_DELAY, qs.length), 0, email);
 }
+
+
+/** Questions everyone is asked (conditional follow-ups excluded) and a realistic time, ~25 seconds each. */
+export function questionLength(speechType: string): { count: number; minutes: number } {
+  const qs = SPEECH_TYPE_CONFIGS[speechType]?.questions ?? [];
+  const count = qs.filter((q) => !q.conditionField).length;
+  return { count, minutes: Math.max(2, Math.ceil(count * 0.4)) };
+}
