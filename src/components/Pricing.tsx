@@ -69,7 +69,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
             <button
               onClick={() => {
                 trackStartSpeech();
-                navigate(speechType ? `/write?type=${speechType}` : "/#speech-types");
+                navigate(speechType ? `/write?type=${speechType}&start=1` : "/#speech-types");
               }}
               className="block w-full text-center px-6 py-4 bg-gold hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >

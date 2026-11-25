@@ -9,6 +9,7 @@ import heroSocial from "@/assets/hero-social.jpg";
 import heroCorporate from "@/assets/hero-corporate.jpg";
 import heroEulogy from "@/assets/hero-eulogy.jpg";
 import Navbar from "@/components/Navbar";
+import { questionLength } from "@/lib/speechQuestions";
 import Footer from "@/components/Footer";
 import ReviewsWidget from "@/components/ReviewsWidget";
 import Pricing from "@/components/Pricing";
@@ -43,6 +44,8 @@ export interface LandingPageData {
   promiseLine?: string;
   microCopy?: string;
   secondaryCta?: { label: string; href: string };
+  /** Small label above the headline; defaults to "Powered by Adrian Simpson's expertise". */
+  eyebrow?: string;
   /** Example coaching note shown in the rehearsal section, matching this role. */
   rehearsalQuote?: string;
   personalNote?: string;
@@ -138,7 +141,13 @@ const FAQItem = ({ q, a }: { q: string; a: string }) => {
 
 const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
   const isVows = data.speechType === "wedding-vows";
-  const { localize } = useGeolocation();
+  const len = questionLength(data.speechType);
+  const faqs = data.faqs.map((f) =>
+    f.q === "How long does it take?" && !isVows
+      ? { ...f, a: `About ${len.minutes} minutes: ${len.count} questions about you and the people you're speaking about. Your speech is then written in under a minute, and you read the opening free before you pay.` }
+      : f,
+  );
+  const { localize, pricing } = useGeolocation();
   return (
     <div className="min-h-screen">
       <Navbar brand={data.navBrand} />
@@ -161,7 +170,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6 }}
             className="font-body text-accent tracking-[0.3em] uppercase text-sm mb-6"
           >
-            Powered by Adrian Simpson's expertise
+            {localize(data.eyebrow ?? "Powered by Adrian Simpson's expertise")}
           </motion.p>
 
           <motion.h1
@@ -190,7 +199,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="font-body text-sm md:text-base font-semibold text-accent mb-6"
           >
-            {data.promiseLine ?? "Preview free · Edit any line · Unlimited new versions"}
+            {data.promiseLine ?? `Read the opening free · ${pricing.basic.price} only if you love it · About ${len.minutes} min`}
           </motion.p>
 
           <RehearsalHeroChip eulogy={data.speechType === "eulogy"} vows={isVows} delay={0.28} />
@@ -202,7 +211,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-4"
           >
             <Link
-              to={`/write?type=${data.speechType}`}
+              to={`/write?type=${data.speechType}&start=1`}
               onClick={trackStartSpeech}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-body font-semibold text-base rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-accent/20"
             >
@@ -224,7 +233,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="font-body text-sm text-primary-foreground/50 mb-8"
           >
-            {data.microCopy ?? "No sign-up · One payment · Money-back guarantee"}
+            {data.microCopy ?? "No sign-up · Edit any line · Money-back guarantee"}
           </motion.p>
 
           <motion.div
@@ -324,7 +333,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
                   : <>Every speech is built on the methodology of Adrian Simpson, one of the world's leading speechwriters. This isn't a template. It's a {localize("personalised")} speech that sounds like you wrote it on your best day.</>}
               </p>
               <Link
-                to={`/write?type=${data.speechType}`}
+                to={`/write?type=${data.speechType}&start=1`}
                 onClick={trackStartSpeech}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-gold-dark text-accent-foreground font-body font-semibold text-sm rounded-lg transition-all duration-300"
               >
@@ -377,7 +386,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
           </motion.div>
 
           <div className="divide-y divide-primary-foreground/10">
-            {data.faqs.map((faq, i) => (
+            {faqs.map((faq, i) => (
               <div key={i} className="border-b border-primary-foreground/10 last:border-b-0">
                 <FAQItemDark q={faq.q} a={faq.a} />
               </div>
@@ -401,7 +410,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
               Answer a few questions and get {isVows ? <>{localize("personalised")} vows</> : <>a {localize("personalised")} speech</>} in minutes. No templates. No filler.
             </p>
             <Link
-              to={`/write?type=${data.speechType}`}
+              to={`/write?type=${data.speechType}&start=1`}
               onClick={trackStartSpeech}
               className="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-body font-semibold text-base rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-accent/20"
             >
@@ -411,7 +420,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             <div className="mt-6 flex items-center justify-center gap-4">
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="font-body text-xs text-muted-foreground">Takes 5 minutes</span>
+                <span className="font-body text-xs text-muted-foreground">About {len.minutes} minutes</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5 text-muted-foreground" />
