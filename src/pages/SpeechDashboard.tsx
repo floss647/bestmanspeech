@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useGeolocation } from "@/contexts/GeolocationContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy, Check, RefreshCw, Clock, Lightbulb, BookOpen, ChevronDown, ChevronUp, Loader2,
@@ -38,6 +39,8 @@ const SpeechDashboard = () => {
   const [searchParams] = useSearchParams();
   const speechId = searchParams.get("id");
   const accessToken = searchParams.get("token");
+  const navigate = useNavigate();
+  const { pricing } = useGeolocation();
 
   const [speech, setSpeech] = useState<SpeechData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -293,7 +296,29 @@ const SpeechDashboard = () => {
           </p>
         </motion.div>
 
-        {/* Live-audience rehearsal */}
+        {/* Live-audience rehearsal (Speech + Coach), or the upgrade offer ("Your speech" package) */}
+        {speech?.tier === "speech" ? (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
+          <button
+            onClick={() => navigate("/checkout", { state: {
+              tier: "upgrade", tierName: "Add the rehearsal coach", price: pricing.upgrade.price,
+              speechId, accessToken, speechType: speech.speech_type, speechTitle: getSpeechTitle(speech.speech_type),
+              answers: {}, email: speech.email, currency: pricing.currency.toLowerCase(),
+            } })}
+            className="group w-full text-left flex items-center gap-4 rounded-2xl bg-charcoal text-primary-foreground p-5 md:p-6 hover:ring-2 hover:ring-accent transition-all"
+          >
+            <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shrink-0">
+              <Mic className="w-6 h-6 text-accent-foreground" />
+            </div>
+            <div className="flex-1">
+              <p className="font-display text-lg md:text-xl font-bold">Add Adrian's rehearsal coach — {pricing.upgrade.price}</p>
+              <p className="font-body text-sm text-primary-foreground/70">
+                Rehearse on his autocue, get coached on your timing and delivery, plus unlimited edits and new versions.
+              </p>
+            </div>
+          </button>
+        </motion.div>
+        ) : (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-8">
           <Link
             to={`/rehearse?id=${speechId}&token=${accessToken}&v=${activeVersion}`}
@@ -313,6 +338,7 @@ const SpeechDashboard = () => {
             </span>
           </Link>
         </motion.div>
+        )}
 
         {/* Version tabs */}
         {versions.length > 1 && (

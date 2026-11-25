@@ -43,7 +43,7 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
           <div className="rounded-2xl bg-charcoal text-primary-foreground ring-2 ring-gold shadow-2xl shadow-gold/10 p-8 md:p-10">
             <div className="text-center mb-8">
               <span className="font-body text-xs font-semibold tracking-widest uppercase text-gold mb-3 block">
-                {localize("Speech + Speech Suite")}
+                {localize("Speech + Coach · Most popular")}
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
@@ -52,6 +52,9 @@ const Pricing = ({ speechType }: { speechType?: string }) => {
               </div>
               <p className="font-body text-sm text-primary-foreground/60">
                 One payment · Yours to keep · Preview free first
+              </p>
+              <p className="font-body text-xs text-primary-foreground/50 mt-2">
+                Or just the speech for {pricing.speech.price}, without the rehearsal coach.
               </p>
             </div>
 

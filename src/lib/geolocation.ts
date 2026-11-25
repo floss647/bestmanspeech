@@ -7,6 +7,11 @@ export interface TierPricing {
 export interface CountryPricing {
   currency: string;
   symbol: string;
+  /** "Your speech": full speech + one new version, no coach. */
+  speech: TierPricing;
+  /** Upgrade from "Your speech" to "Speech + Coach". */
+  upgrade: TierPricing;
+  /** "Speech + Coach": everything. */
   basic: TierPricing;
   deluxe: TierPricing;
   premium: TierPricing;
@@ -15,24 +20,32 @@ export interface CountryPricing {
 export const currencyPricing: Record<string, CountryPricing> = {
   GB: {
     currency: "GBP", symbol: "£",
+    speech:  { price: "£15",   priceNum: 1500 },
+    upgrade: { price: "£14",   priceNum: 1400 },
     basic:   { price: "£29",   priceNum: 2900 },
     deluxe:  { price: "£39",   priceNum: 3900 },
     premium: { price: "£79",   priceNum: 7900 },
   },
   US: {
     currency: "USD", symbol: "$",
+    speech:  { price: "$19",   priceNum: 1900 },
+    upgrade: { price: "$20",   priceNum: 2000 },
     basic:   { price: "$39",   priceNum: 3900 },
     deluxe:  { price: "$49",   priceNum: 4900 },
     premium: { price: "$99",   priceNum: 9900 },
   },
   AU: {
     currency: "AUD", symbol: "A$",
+    speech:  { price: "A$29",  priceNum: 2900 },
+    upgrade: { price: "A$20",  priceNum: 2000 },
     basic:   { price: "A$49",  priceNum: 4900 },
     deluxe:  { price: "A$69",  priceNum: 6900 },
     premium: { price: "A$139", priceNum: 13900 },
   },
   CA: {
     currency: "CAD", symbol: "CA$",
+    speech:  { price: "CA$25", priceNum: 2500 },
+    upgrade: { price: "CA$14", priceNum: 1400 },
     basic:   { price: "CA$39", priceNum: 3900 },
     deluxe:  { price: "CA$59", priceNum: 5900 },
     premium: { price: "CA$109",priceNum: 10900 },

@@ -35,12 +35,13 @@ export async function loadPaidSpeech(
 ): Promise<PaidSpeech | null> {
   const { data: s } = await db
     .from("speeches")
-    .select("id, speech_type, answers, generated_speech, versions, created_at, country, paid")
+    .select("id, speech_type, answers, generated_speech, versions, created_at, country, paid, tier")
     .eq("id", speechId)
     .eq("access_token", accessToken)
     .eq("paid", true)
     .maybeSingle();
-  if (!s) return null;
+  // The rehearsal coach is part of Speech + Coach, not the "Your speech" package.
+  if (!s || s.tier === "speech") return null;
   const versions = readVersions(s);
   const idx = Number.isInteger(versionIndex) && (versionIndex as number) >= 0 && (versionIndex as number) < versions.length
     ? (versionIndex as number)

@@ -150,17 +150,20 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
 
   const features = packageFeatures.map((f) => ({ ...f, text: localize(f.text) }));
 
-  const handlePurchase = () => {
+  const scrollToPrices = () => document.getElementById("pricing-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const handlePurchase = (tier: "basic" | "speech" = "basic") => {
     if (!userEmail) {
       toast.error("Email address is missing. Please go back and complete all questions.");
       return;
     }
+    track("select_tier", { tier, speech_type: speechType });
 
     navigate("/checkout", {
       state: {
-        tier: "basic",
-        tierName: "All-Inclusive",
-        price,
+        tier,
+        tierName: tier === "speech" ? "Your Speech" : "Speech + Coach",
+        price: tier === "speech" ? pricing.speech.price : price,
         speechId,
         accessToken,
         speechType,
@@ -181,12 +184,12 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             {speechTitle}
           </a>
           <button
-            onClick={handlePurchase}
+            onClick={scrollToPrices}
             disabled={loadingPurchase}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-gold-dark text-accent-foreground font-body font-bold text-sm rounded-lg transition-all duration-300"
           >
             <Lock className="w-3.5 h-3.5" />
-            Unlock My Speech — {price}
+            Unlock · from {pricing.speech.price}
           </button>
         </div>
       </nav>
@@ -346,7 +349,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <div className="rounded-2xl bg-charcoal text-primary-foreground ring-2 ring-accent shadow-2xl shadow-accent/10 p-8 md:p-10">
             <div className="text-center mb-6">
               <span className="font-body text-xs font-semibold tracking-widest uppercase text-accent mb-3 block">
-                Speech + Speech Suite
+                Speech + Coach · Most popular
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
@@ -374,14 +377,35 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             </ul>
 
             <button
-              onClick={handlePurchase}
+              onClick={() => handlePurchase("basic")}
               disabled={loadingPurchase}
               className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >
-              Unlock My Speech Suite — {price}
+              Get Speech + Coach — {price}
             </button>
 
             <PayReassurance dark className="mt-5" />
+          </div>
+
+          {/* The cheaper option: just the speech */}
+          <div className="mt-4 rounded-2xl border border-border bg-background p-6">
+            <div className="flex items-baseline justify-between gap-4 mb-2">
+              <span className="font-display text-lg font-bold text-foreground">Just the speech</span>
+              <span className="font-display text-2xl font-bold text-foreground">{pricing.speech.price}</span>
+            </div>
+            <p className="font-body text-sm text-muted-foreground mb-4">
+              {localize("Your full speech to copy and download, plus one new version. No rehearsal coach (you can add it later for ")}{pricing.upgrade.price}).
+            </p>
+            <p className="font-body text-xs text-muted-foreground mb-4">
+              Giving it in front of a room full of people? Speech + Coach gets you ready to stand up and deliver it.
+            </p>
+            <button
+              onClick={() => handlePurchase("speech")}
+              disabled={loadingPurchase}
+              className="w-full py-3 border-2 border-foreground/80 hover:bg-foreground hover:text-background text-foreground font-body font-semibold rounded-xl transition-all duration-300"
+            >
+              Get just the speech — {pricing.speech.price}
+            </button>
           </div>
         </motion.div>
 
@@ -479,10 +503,10 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             Edit it yourself, get unlimited new versions, and keep it all in your own speech suite. 100% money-back guarantee.
           </p>
           <button
-            onClick={handlePurchase}
+            onClick={scrollToPrices}
             className="inline-flex items-center gap-2 px-10 py-5 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
           >
-            Unlock My Speech — {price}
+            Unlock My Speech · from {pricing.speech.price}
           </button>
           <PayReassurance className="mt-6 max-w-md mx-auto text-left" />
         </motion.div>
