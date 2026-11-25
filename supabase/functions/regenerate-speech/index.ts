@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { lengthRule, voiceGuidance } from "../_shared/voice.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { MAX_VERSIONS, readVersions } from "../_shared/versions.ts";
 
@@ -78,7 +79,8 @@ serve(async (req) => {
       toneInstruction = "\n\nGenerate a fresh alternative version of this speech. Keep the same key stories and facts but restructure, rewrite jokes differently, and find new angles on the same material.";
     }
 
-    const systemPrompt = "You are a world-class speechwriter trained in Adrian Simpson's methodology. You write wedding speeches that are personal, heartfelt, and genuinely funny. Use British English spelling throughout.";
+    const length = lengthRule(speechType, speech.country) || "at least 1400 words";
+    const systemPrompt = `You are a world-class speechwriter trained in Adrian Simpson's methodology. You write speeches and vows that are personal, heartfelt, and genuinely funny where it fits.\n\n${voiceGuidance(speechType, speech.country)}`;
 
     const prompt = `Using the following information, write a completely new version of this ${speechType} speech. It must feel genuinely different — different structure, different jokes, different transitions — while using the same facts and stories.
 
@@ -89,7 +91,7 @@ User's answers:
 ${JSON.stringify(answers, null, 2)}
 ${toneInstruction}
 
-Write a completely fresh speech that uses the same information but with different structure, different jokes, and different transitions. It should feel like a genuinely different speech, not a rewrite. Minimum 1400 words.`;
+Write a completely fresh speech that uses the same information but with different structure, different jokes, and different transitions. It should feel like a genuinely different speech, not a rewrite. Length: ${length}`;
 
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) throw new Error("AI API key not configured");

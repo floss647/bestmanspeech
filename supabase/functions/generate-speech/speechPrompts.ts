@@ -176,7 +176,7 @@ export const SPEECH_PROMPTS: Record<string, SpeechPromptConfig> = {
   "wedding-vows": {
     context: "These are personalised wedding vows. Intimate, authentic, and deeply personal. They should sound like a love letter spoken aloud.",
     systemPrompt: buildWeddingVowsPrompt(),
-    minWordCount: 500,
+    minWordCount: 250,
     userPromptTemplate: (details) => buildWeddingVowsUserPrompt(details),
   },
 };
@@ -1515,7 +1515,7 @@ function buildWeddingVowsPrompt(): string {
 Context: These are personalised wedding vows. They should sound like a love letter spoken aloud to the person you love most. Intimate, authentic, and deeply personal.
 
 CRITICAL CONSTRAINTS:
-- Target 500 to 700 words (approximately 2 to 3 minutes spoken)
+- Target 250 to 350 words (about 2 minutes spoken)
 - British spelling
 - NO hyphens of any kind
 - NO clichés like "you complete me" or "my other half" or "soulmate"

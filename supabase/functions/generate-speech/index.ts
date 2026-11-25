@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { previewWords, PREVIEW_WORDS } from "../_shared/preview.ts";
+import { voiceGuidance } from "../_shared/voice.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { SPEECH_PROMPTS } from "./speechPrompts.ts";
 
@@ -108,7 +109,8 @@ serve(async (req) => {
     if (!ANTHROPIC_API_KEY) throw new Error("API key not configured");
 
     const speechConfig = SPEECH_PROMPTS[speechType];
-    const systemPrompt = speechConfig.systemPrompt;
+    const cc = typeof country === "string" ? country.slice(0, 2).toUpperCase() : null;
+    const systemPrompt = `${speechConfig.systemPrompt}\n\n${voiceGuidance(speechType, cc)}`;
     const userPrompt = speechConfig.userPromptTemplate(details);
 
     // Generate the full speech server-side (non-streamed) so the complete text
