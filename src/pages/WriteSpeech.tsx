@@ -1,6 +1,6 @@
 import { track } from "@/lib/track";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Sparkles, Check, Clock, ArrowLeftRight, Cake, PartyPopper, Briefcase, Flower2 } from "lucide-react";
 import { toast } from "sonner";
@@ -47,7 +47,9 @@ const WriteSpeech = () => {
 
   const storageKey = `speech-progress-${speechType}`;
 
-  const [currentIndex, setCurrentIndex] = useState(-1);
+  const navigate = useNavigate();
+  // Everyone starts straight on question 1 (no intro screen).
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [speech, setSpeech] = useState("");
   const [speechId, setSpeechId] = useState("");
@@ -89,14 +91,11 @@ const WriteSpeech = () => {
           const idx = parsed.currentIndex ?? 0;
           setCurrentIndex(firstGap === -1 ? Math.min(idx, visible.length - 1) : Math.min(idx, firstGap));
           toast.success("Welcome back! We've saved your answers — pick up where you left off.");
-        } else if (searchParams.get("start") === "1") {
-          // Came from a landing-page button: go straight to question 1.
+        } else {
           track("start_questions", { speech_type: speechType }, `start-${speechType}`);
-          setCurrentIndex(0);
         }
-      } else if (searchParams.get("start") === "1") {
+      } else {
         track("start_questions", { speech_type: speechType }, `start-${speechType}`);
-        setCurrentIndex(0);
       }
       // Restore lead credentials so progress keeps syncing after a reload.
       const savedLead = localStorage.getItem(leadStorageKey);
@@ -158,7 +157,7 @@ const WriteSpeech = () => {
 
   const selectType = (type: string) => {
     setSearchParams({ type });
-    setCurrentIndex(-1);
+    setCurrentIndex(0);
     setAnswers({});
     setSpeech("");
     setPhase("questions");
@@ -278,7 +277,13 @@ const WriteSpeech = () => {
     if (isTransitioning.current) return;
     isTransitioning.current = true;
     setTimeout(() => { isTransitioning.current = false; }, 500);
-    setCurrentIndex((i) => Math.max(i - 1, -1));
+    // On question 1 there's no intro screen to go back to: return to the page they came from.
+    if (currentIndex === 0) {
+      if (window.history.length > 1) navigate(-1);
+      else navigate("/");
+      return;
+    }
+    setCurrentIndex((i) => Math.max(i - 1, 0));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -371,7 +376,7 @@ const WriteSpeech = () => {
     setAnswers({});
     setSpeech("");
     setPhase("questions");
-    setCurrentIndex(-1);
+    setCurrentIndex(0);
     try { localStorage.removeItem(storageKey); } catch {}
   };
 
