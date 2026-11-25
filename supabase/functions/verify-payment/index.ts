@@ -13,6 +13,8 @@ const corsHeaders = {
 // Catalog prices (minor units) — must match create-payment-intent. Used to
 // assert the amount actually charged matches the tier being claimed.
 const PRICING: Record<string, Record<string, number>> = {
+  speech: { gbp: 1500, usd: 1900, aud: 2900, cad: 2500 },
+  upgrade: { gbp: 1400, usd: 2000, aud: 2000, cad: 1400 },
   basic: { gbp: 2900, usd: 3900, aud: 4900, cad: 3900 },
   deluxe: { gbp: 3900, usd: 4900, aud: 6900, cad: 5900 },
   premium: { gbp: 7900, usd: 9900, aud: 13900, cad: 10900 },
@@ -37,6 +39,8 @@ serve(async (req) => {
     const stripe = new Stripe((Deno.env.get("STRIPE_SECRET_KEY") || "").trim(), {
       apiVersion: "2025-08-27.basil",
     });
+
+    let paidTier: string | null = null;
 
     let amountPaid = 0;
     let currencyPaid = "GBP";
@@ -65,6 +69,8 @@ serve(async (req) => {
         throw new Error("Payment amount does not match the expected price");
       }
 
+      // What was actually paid decides the package (an upgrade becomes Speech + Coach).
+      paidTier = tier === "upgrade" ? "basic" : tier;
       amountPaid = (paymentIntent.amount || 0) / 100;
       currencyPaid = (paymentIntent.currency || "gbp").toUpperCase();
       transactionId = paymentIntentId;
@@ -97,6 +103,7 @@ serve(async (req) => {
       .update({
         paid: true,
         stripe_session_id: transactionId,
+        ...(paidTier ? { tier: paidTier, max_regenerations: paidTier === "speech" ? 1 : 9999 } : {}),
       })
       .eq("id", speechId)
       .select("id, email, access_token, tier, speech_type, country, answers, purchase_email_sent_at, attribution, purchase_tracked_at")

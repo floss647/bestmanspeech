@@ -199,33 +199,34 @@ const Checkout = () => {
             <h2 className="font-display text-lg font-bold text-foreground mb-4">Order Summary</h2>
             <div className="flex items-center justify-between mb-3">
               <span className="font-body text-sm text-foreground font-medium">
-                {state.tierName} Speech Package
+                {state.tierName}
               </span>
               <span className="font-display text-lg font-bold text-foreground">{state.price}</span>
             </div>
             <div className="space-y-2 mb-4">
-              {state.tier !== "basic" && (
-                <div className="flex items-center gap-2">
-                  <PenLine className="w-3.5 h-3.5 text-accent" />
-                  <span className="font-body text-xs text-muted-foreground">Speech Editing Suite access</span>
+              {(state.tier === "speech"
+                ? [
+                    { icon: PenLine, text: "Your full speech to copy and download" },
+                    { icon: RefreshCw, text: "One new version if you'd like a different take" },
+                    { icon: Shield, text: "100% money-back guarantee" },
+                  ]
+                : state.tier === "upgrade"
+                ? [
+                    { icon: Mic, text: "10 coached rehearsals on Adrian's autocue" },
+                    { icon: RefreshCw, text: "Unlimited edits & new versions" },
+                    { icon: Shield, text: "100% money-back guarantee" },
+                  ]
+                : [
+                    { icon: RefreshCw, text: "Unlimited edits & rewrites" },
+                    { icon: Mic, text: "10 coached rehearsals on Adrian's autocue" },
+                    { icon: Shield, text: "100% money-back guarantee" },
+                  ]
+              ).map((f) => (
+                <div key={f.text} className="flex items-center gap-2">
+                  <f.icon className="w-3.5 h-3.5 text-accent" />
+                  <span className="font-body text-xs text-muted-foreground">{f.text}</span>
                 </div>
-              )}
-              <div className="flex items-center gap-2">
-                <RefreshCw className="w-3.5 h-3.5 text-accent" />
-                <span className="font-body text-xs text-muted-foreground">
-                  Unlimited edits &amp; rewrites
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mic className="w-3.5 h-3.5 text-accent" />
-                <span className="font-body text-xs text-muted-foreground">
-                  10 coached rehearsals on Adrian's autocue
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-3.5 h-3.5 text-accent" />
-                <span className="font-body text-xs text-muted-foreground">100% money-back guarantee</span>
-              </div>
+              ))}
             </div>
             <div className="border-t border-border pt-4">
               <div className="flex items-center justify-between">

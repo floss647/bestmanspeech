@@ -199,7 +199,7 @@ const SpeechLandingPage = ({ data }: { data: LandingPageData }) => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="font-body text-sm md:text-base font-semibold text-accent mb-6"
           >
-            {data.promiseLine ?? `Read the opening free · ${pricing.basic.price} only if you love it · About ${len.minutes} min`}
+            {data.promiseLine ?? `Read the opening free · from ${pricing.speech.price} if you love it · About ${len.minutes} min`}
           </motion.p>
 
           <RehearsalHeroChip eulogy={data.speechType === "eulogy"} vows={isVows} delay={0.28} />

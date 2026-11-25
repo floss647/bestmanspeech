@@ -11,6 +11,11 @@ const corsHeaders = {
 
 // Tiered pricing by currency (amounts in minor units)
 const PRICING: Record<string, Record<string, number>> = {
+  // "Your speech": the full speech plus one new version, no rehearsal coach.
+  speech: { gbp: 1500, usd: 1900, aud: 2900, cad: 2500 },
+  // Upgrade from "Your speech" to "Speech + Coach" (the difference).
+  upgrade: { gbp: 1400, usd: 2000, aud: 2000, cad: 1400 },
+  // "Speech + Coach": everything (kept as "basic" for existing data).
   basic: {
     gbp: 2900,
     usd: 3900,
@@ -32,12 +37,16 @@ const PRICING: Record<string, Record<string, number>> = {
 };
 
 const TIER_DESCRIPTIONS: Record<string, string> = {
-  basic: "Basic Speech Package",
+  speech: "Your Speech",
+  upgrade: "Upgrade to Speech + Coach",
+  basic: "Speech + Coach",
   deluxe: "Deluxe Speech Package — Editing Suite & Unlimited Edits",
   premium: "Premium Speech Package — Full Suite, Delivery Coaching & Priority Support",
 };
 
 const MAX_REGENERATIONS: Record<string, number> = {
+  speech: 1,
+  upgrade: 9999,
   basic: 9999,
   deluxe: 9999,
   premium: 9999,
@@ -73,14 +82,19 @@ serve(async (req) => {
     // tampered with here.
     const { data: speechData, error: speechError } = await supabaseServiceClient
       .from("speeches")
-      .select("id, email, access_token, paid, offer_until")
+      .select("id, email, access_token, paid, tier, offer_until")
       .eq("id", speechId)
       .single();
 
     if (speechError || !speechData) {
       throw new Error("Speech not found");
     }
-    if (speechData.paid) {
+    const isUpgrade = normalizedTier === "upgrade";
+    if (isUpgrade) {
+      if (!speechData.paid || speechData.tier !== "speech") {
+        throw new Error("This speech already includes the rehearsal coach");
+      }
+    } else if (speechData.paid) {
       throw new Error("This speech has already been paid for");
     }
 
@@ -88,13 +102,16 @@ serve(async (req) => {
     const onOffer = normalizedTier === "basic" && offerActive(speechData.offer_until) && !!OFFER_PRICES[normalizedCurrency];
     if (onOffer) unitAmount = OFFER_PRICES[normalizedCurrency];
 
-    // Record the selected tier on the speech before charging for it.
-    const { error: updateError } = await supabaseServiceClient
-      .from("speeches")
-      .update({ tier: normalizedTier, max_regenerations: MAX_REGENERATIONS[normalizedTier] })
-      .eq("id", speechId);
-    if (updateError) {
-      throw new Error(`Failed to update speech: ${updateError.message}`);
+    // The tier is applied by verify-payment from what was actually paid; here we
+    // only note the choice on unpaid speeches (never on an upgrade).
+    if (!isUpgrade) {
+      const { error: updateError } = await supabaseServiceClient
+        .from("speeches")
+        .update({ tier: normalizedTier, max_regenerations: MAX_REGENERATIONS[normalizedTier] })
+        .eq("id", speechId);
+      if (updateError) {
+        throw new Error(`Failed to update speech: ${updateError.message}`);
+      }
     }
 
     const email = speechData.email;

@@ -72,7 +72,7 @@ const Hero = () => {
           </span>
           <span className="inline-flex items-center gap-1.5 font-body text-sm text-primary-foreground/60">
             <Tag className="w-3.5 h-3.5 text-accent" />
-            {pricing.basic.price}, once
+            From {pricing.speech.price}, once
           </span>
         </motion.div>
 
