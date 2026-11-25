@@ -91,7 +91,7 @@ User's answers:
 ${JSON.stringify(answers, null, 2)}
 ${toneInstruction}
 
-Write a completely fresh speech that uses the same information but with different structure, different jokes, and different transitions. It should feel like a genuinely different speech, not a rewrite. Length: ${length}`;
+Write a completely fresh speech that uses the same information but with different structure, different jokes, and different transitions. It should feel like a genuinely different speech, not a rewrite. Length: ${length} This replaces any other word count.`;
 
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) throw new Error("AI API key not configured");

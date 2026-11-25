@@ -1552,5 +1552,5 @@ function buildWeddingVowsUserPrompt(details: Record<string, any>): string {
     d.tone && `Preferred tone: ${d.tone}`,
   ].filter(Boolean).join("\n");
 
-  return `Write personalised wedding vows using these details:\n${lines}\n\nMake them intimate, specific, and deeply personal. These should sound like they could only come from this person. Aim for 500 to 700 words.`;
+  return `Write personalised wedding vows using these details:\n${lines}\n\nMake them intimate, specific, and deeply personal. These should sound like they could only come from this person. Aim for 250 to 350 words.`;
 }
