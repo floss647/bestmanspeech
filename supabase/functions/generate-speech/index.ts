@@ -55,7 +55,37 @@ serve(async (req) => {
       );
     }
 
-    const { speechType, details, country } = await req.json();
+    const { speechType, details, country, leadId, leadToken } = await req.json();
+
+    // Only write speeches for real visitors: a valid email that matches a lead saved
+    // by the questionnaire (create-lead), and no more than 5 speeches per email a day.
+    const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const email = typeof details?.email === "string" ? details.email.trim() : "";
+    const deny = (status: number, error: string) =>
+      new Response(JSON.stringify({ error }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const emailLike = email.replace(/[%_\\]/g, (m: string) => "\\" + m);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return deny(400, "Please enter a valid email address.");
+    let leadOk = false;
+    if (typeof leadId === "string" && typeof leadToken === "string") {
+      const { data: lead } = await db.from("leads").select("email").eq("id", leadId).eq("access_token", leadToken).maybeSingle();
+      leadOk = !!lead && (lead.email || "").toLowerCase() === email.toLowerCase();
+    }
+    if (!leadOk) {
+      // Older pages, or the lead save still in flight: look the lead up by email.
+      for (let i = 0; i < 4 && !leadOk; i++) {
+        const { count } = await db.from("leads").select("id", { count: "exact", head: true })
+          .ilike("email", emailLike).gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString());
+        leadOk = (count ?? 0) > 0;
+        if (!leadOk) await new Promise((r) => setTimeout(r, 1000));
+      }
+    }
+    if (!leadOk) {
+      console.warn("generate-speech refused: no matching lead", { ip: clientIp, speechType });
+      return deny(403, "Please start from the questions page.");
+    }
+    const { count: todays } = await db.from("speeches").select("id", { count: "exact", head: true })
+      .ilike("email", emailLike).gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString());
+    if ((todays ?? 0) >= 5) return deny(429, "You've written several speeches today. Please come back tomorrow, or reply to our email for help.");
 
     // Validate input size
     const detailsStr = JSON.stringify(details);
@@ -131,7 +161,6 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const email = typeof details?.email === "string" ? details.email : "";
     const { data: speechRow, error: insertError } = await supabase
       .from("speeches")
       .insert({

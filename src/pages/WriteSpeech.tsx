@@ -185,9 +185,12 @@ const WriteSpeech = () => {
   const leadTokenRef = useRef<string | null>(null);
   const leadStorageKey = `speech-lead-${speechType}`;
 
+  const leadPromiseRef = useRef<Promise<void> | null>(null);
   const captureLeadEmail = useCallback(async (email: string) => {
     if (leadCapturedRef.current || !email || !speechType) return;
     leadCapturedRef.current = true;
+    let done: () => void = () => {};
+    leadPromiseRef.current = new Promise<void>((r) => { done = r; });
     track("share_email", { speech_type: speechType }, `email-${speechType}`);
     try {
       // Create the lead via an edge function (service role) — the client can no
@@ -206,6 +209,7 @@ const WriteSpeech = () => {
       if (data?.leadId && data?.accessToken) {
         leadIdRef.current = data.leadId;
         leadTokenRef.current = data.accessToken;
+        done();
         try {
           localStorage.setItem(
             leadStorageKey,
@@ -296,6 +300,12 @@ const WriteSpeech = () => {
     setGeneratingStep(0);
     track("finish_questions", { speech_type: speechType });
 
+    // The generator only writes speeches for a saved lead: wait (briefly) for the
+    // email to be saved so we can send its id and token.
+    if (leadPromiseRef.current && !leadIdRef.current) {
+      await Promise.race([leadPromiseRef.current, new Promise((r) => setTimeout(r, 6000))]);
+    }
+
     try {
       const resp = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-speech`,
@@ -305,7 +315,7 @@ const WriteSpeech = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ speechType, details: answers, country }),
+          body: JSON.stringify({ speechType, details: answers, country, leadId: leadIdRef.current, leadToken: leadTokenRef.current }),
         }
       );
 
