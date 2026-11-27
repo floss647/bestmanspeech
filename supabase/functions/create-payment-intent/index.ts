@@ -12,9 +12,9 @@ const corsHeaders = {
 // Tiered pricing by currency (amounts in minor units)
 const PRICING: Record<string, Record<string, number>> = {
   // "Your speech": the full speech plus one new version, no rehearsal coach.
-  speech: { gbp: 1500, usd: 1900, aud: 2900, cad: 2500 },
+  speech: { gbp: 1900, usd: 2900, aud: 3900, cad: 2900 },
   // Upgrade from "Your speech" to "Speech + Coach" (the difference).
-  upgrade: { gbp: 1400, usd: 2000, aud: 2000, cad: 1400 },
+  upgrade: { gbp: 1000, usd: 1000, aud: 1000, cad: 1000 },
   // "Speech + Coach": everything (kept as "basic" for existing data).
   basic: {
     gbp: 2900,

@@ -151,7 +151,7 @@ function unfinishedEmail(type: string, country: string | null, name: string, lin
       subject: "Your answers are saved",
       paragraphs: [hi, "I'm sorry for your loss.",
         "You started answering the questions for a eulogy, and everything you wrote has been saved. You can pick up exactly where you stopped, whenever you're ready.",
-        "When you've finished the questions you'll see the opening straight away, free.",
+        "Most of the remaining questions are optional. When you've finished, you'll see the opening straight away, free.",
         "If you'd like a hand, just reply to this email. It comes straight to me."],
       button: { href: link, label: "Carry on where I left off" },
     };
@@ -159,7 +159,7 @@ function unfinishedEmail(type: string, country: string | null, name: string, lin
   return {
     subject: "Pick up where you left off",
     paragraphs: [hi, `You were partway through the questions for your ${title}, and your answers are saved.`,
-      "Finish the last few and you'll see the opening of your speech straight away, free, before you decide anything.",
+      "Most of the story questions are optional, so it only takes a few more minutes. When you finish, you'll see the opening of your speech straight away, free, before you decide anything.",
       "Any questions, just reply. It comes straight to me."],
     button: { href: link, label: "Carry on where I left off" },
   };

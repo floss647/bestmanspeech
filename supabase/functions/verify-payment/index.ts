@@ -13,11 +13,18 @@ const corsHeaders = {
 // Catalog prices (minor units) — must match create-payment-intent. Used to
 // assert the amount actually charged matches the tier being claimed.
 const PRICING: Record<string, Record<string, number>> = {
-  speech: { gbp: 1500, usd: 1900, aud: 2900, cad: 2500 },
-  upgrade: { gbp: 1400, usd: 2000, aud: 2000, cad: 1400 },
+  speech: { gbp: 1900, usd: 2900, aud: 3900, cad: 2900 },
+  upgrade: { gbp: 1000, usd: 1000, aud: 1000, cad: 1000 },
   basic: { gbp: 2900, usd: 3900, aud: 4900, cad: 3900 },
   deluxe: { gbp: 3900, usd: 4900, aud: 6900, cad: 5900 },
   premium: { gbp: 7900, usd: 9900, aud: 13900, cad: 10900 },
+};
+
+// Prices before 27 Nov 2026. A checkout opened before the price change can
+// still complete at the price it was shown.
+const LEGACY: Record<string, Record<string, number>> = {
+  speech: { gbp: 1500, usd: 1900, aud: 2900, cad: 2500 },
+  upgrade: { gbp: 1400, usd: 2000, aud: 2000, cad: 1400 },
 };
 
 serve(async (req) => {
@@ -65,7 +72,8 @@ serve(async (req) => {
       const expected = PRICING[tier]?.[cur];
       // A follow-up offer was priced server-side in create-payment-intent.
       const offerPrice = paymentIntent.metadata?.offer === "1" && tier === "basic" ? OFFER_PRICES[cur] : undefined;
-      if (!expected || (paymentIntent.amount !== expected && paymentIntent.amount !== offerPrice)) {
+      const legacy = LEGACY[tier]?.[cur];
+      if (!expected || (paymentIntent.amount !== expected && paymentIntent.amount !== offerPrice && paymentIntent.amount !== legacy)) {
         throw new Error("Payment amount does not match the expected price");
       }
 
