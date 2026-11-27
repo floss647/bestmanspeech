@@ -189,7 +189,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-gold-dark text-accent-foreground font-body font-bold text-sm rounded-lg transition-all duration-300"
           >
             <Lock className="w-3.5 h-3.5" />
-            Unlock · from {pricing.speech.price}
+            Unlock · {price}
           </button>
         </div>
       </nav>
@@ -206,7 +206,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             <span className="font-body text-sm text-accent font-medium">Your speech is ready</span>
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Unlock Your {speechTitle}
+            Your {speechTitle} is ready. One step left.
           </h1>
           {primaryName && (
             <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto mb-2">
@@ -258,6 +258,32 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             </p>
           </div>
         </motion.div>
+
+        {/* One clear next step, straight under the preview */}
+        <div className="max-w-md mx-auto mb-12 text-center">
+          <p className="font-display text-4xl font-bold text-foreground">{price}</p>
+          <p className="font-body text-sm text-muted-foreground mt-1 mb-4">
+            Your full speech + my rehearsal coach · One payment · Yours to keep
+          </p>
+          <button
+            onClick={() => handlePurchase("basic")}
+            disabled={loadingPurchase}
+            className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
+          >
+            Unlock My Speech — {price}
+          </button>
+          <p className="inline-flex items-center gap-1.5 mt-3 font-body text-sm text-muted-foreground">
+            <Shield className="w-4 h-4 text-accent" />
+            Love it or your money back
+          </p>
+          <button
+            onClick={() => handlePurchase("speech")}
+            disabled={loadingPurchase}
+            className="block mx-auto mt-3 font-body text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >
+            Or just the speech, without the coach, for {pricing.speech.price}
+          </button>
+        </div>
 
         {/* What you get */}
         <motion.div
@@ -381,32 +407,23 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               disabled={loadingPurchase}
               className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >
-              Get Speech + Coach — {price}
+              Unlock My Speech — {price}
             </button>
 
             <PayReassurance dark className="mt-5" />
           </div>
 
-          {/* The cheaper option: just the speech */}
-          <div className="mt-4 rounded-2xl border border-border bg-background p-6">
-            <div className="flex items-baseline justify-between gap-4 mb-2">
-              <span className="font-display text-lg font-bold text-foreground">Just the speech</span>
-              <span className="font-display text-2xl font-bold text-foreground">{pricing.speech.price}</span>
-            </div>
-            <p className="font-body text-sm text-muted-foreground mb-4">
-              {localize("Your full speech to copy and download, plus one new version. No rehearsal coach (you can add it later for ")}{pricing.upgrade.price}).
-            </p>
-            <p className="font-body text-xs text-muted-foreground mb-4">
-              Giving it in front of a room full of people? Speech + Coach gets you ready to stand up and deliver it.
-            </p>
+          {/* The cheaper option, kept small so there's one clear choice */}
+          <p className="mt-4 text-center font-body text-sm text-muted-foreground">
             <button
               onClick={() => handlePurchase("speech")}
               disabled={loadingPurchase}
-              className="w-full py-3 border-2 border-foreground/80 hover:bg-foreground hover:text-background text-foreground font-body font-semibold rounded-xl transition-all duration-300"
+              className="underline underline-offset-4 hover:text-foreground"
             >
-              Get just the speech — {pricing.speech.price}
+              Or just the speech for {pricing.speech.price}
             </button>
-          </div>
+            {localize(" (no rehearsal coach; you can add it later for ")}{pricing.upgrade.price}).
+          </p>
         </motion.div>
 
         {/* Trust strip */}
@@ -506,7 +523,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             onClick={scrollToPrices}
             className="inline-flex items-center gap-2 px-10 py-5 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
           >
-            Unlock My Speech · from {pricing.speech.price}
+            Unlock My Speech · {price}
           </button>
           <PayReassurance className="mt-6 max-w-md mx-auto text-left" />
         </motion.div>

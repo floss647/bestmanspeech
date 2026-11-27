@@ -17,8 +17,8 @@ interface GeolocationState {
 const defaultPricing: CountryPricing = {
   currency: "GBP",
   symbol: "£",
-  speech:  { price: "£15", priceNum: 1500 },
-  upgrade: { price: "£14", priceNum: 1400 },
+  speech:  { price: "£19", priceNum: 1900 },
+  upgrade: { price: "£10", priceNum: 1000 },
   basic:   { price: "£29", priceNum: 2900 },
   deluxe:  { price: "£39", priceNum: 3900 },
   premium: { price: "£79", priceNum: 7900 },
