@@ -4,7 +4,7 @@ import { Shield, Tv } from "lucide-react";
  * Sits right next to a Pay / Unlock button: the guarantee in plain words,
  * plus who is behind it. This is the moment people hesitate.
  */
-const PayReassurance = ({ dark = false, className = "" }: { dark?: boolean; className?: string }) => {
+const PayReassurance = ({ dark = false, className = "", thing = "speech" }: { dark?: boolean; className?: string; thing?: string }) => {
   const box = dark ? "bg-primary-foreground/5 border-primary-foreground/10" : "bg-accent/5 border-accent/20";
   const head = dark ? "text-primary-foreground" : "text-foreground";
   const body = dark ? "text-primary-foreground/70" : "text-muted-foreground";
@@ -15,7 +15,7 @@ const PayReassurance = ({ dark = false, className = "" }: { dark?: boolean; clas
         <div>
           <p className={`font-body text-sm font-semibold ${head}`}>100% money-back guarantee</p>
           <p className={`font-body text-xs leading-relaxed ${body}`}>
-            Not happy with your speech? Email me and I'll refund you in full. You've nothing to lose.
+            Not happy with your {thing}? Email me and I'll refund you in full. You've nothing to lose.
           </p>
         </div>
       </div>

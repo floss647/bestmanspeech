@@ -11,6 +11,7 @@ import ReviewsWidget from "@/components/ReviewsWidget";
 import { demoPoster, demoVideo, type DemoVariant } from "@/components/SpeechSuiteShowcase";
 import { REHEARSAL_POSTER, REHEARSAL_VIDEO } from "@/components/RehearsalShowcase";
 import PayReassurance from "@/components/PayReassurance";
+import { forVows } from "@/lib/vowsText";
 
 interface SpeechPaywallProps {
   speech: string;
@@ -121,18 +122,26 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
   const vt = videoHandlers(`${demoVariant}${isAmerican ? "-us" : ""}`, "paywall");
   const vr = videoHandlers("rehearsal-coach", "paywall", { silent: true });
 
+  // Vows customers should never read "speech" or "wait for the laugh".
+  const isVows = speechType === "wedding-vows";
+  const say = (t: string) => (isVows ? forVows(localize(t)) : localize(t));
+
   const valueCards = [
     {
       icon: Mic,
-      title: "Rehearse it with my autocue",
-      text: speechType === "eulogy"
+      title: isVows ? "Practise them on my autocue" : "Rehearse it with my autocue",
+      text: isVows
+        ? "Your vows, marked up with where to pause and breathe. Say them out loud and I'll coach your pace, so every promise lands the way you mean it."
+        : speechType === "eulogy"
         ? "Read it aloud on an autocue, gently marked up with where to pause and breathe. I'll listen back and help you find your pace."
         : "Your speech, marked up with where to pause and when to wait for the laugh. Say it out loud and I'll coach your timing and delivery.",
     },
     {
       icon: PenLine,
       title: "Make it yours",
-      text: "Your own speech suite. Change any line, add a joke, cut a story. It's saved for you.",
+      text: isVows
+        ? "Your own suite. Change any line, add a memory, rework a promise. It's saved for you."
+        : "Your own speech suite. Change any line, add a joke, cut a story. It's saved for you.",
     },
     {
       icon: RefreshCw,
@@ -148,7 +157,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
 
   const preview = getPersonalisedPreview();
 
-  const features = packageFeatures.map((f) => ({ ...f, text: localize(f.text) }));
+  const features = packageFeatures.map((f) => ({ ...f, text: say(f.text) }));
 
   const scrollToPrices = () => document.getElementById("pricing-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -162,7 +171,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
     navigate("/checkout", {
       state: {
         tier,
-        tierName: tier === "speech" ? "Your Speech" : "Speech + Coach",
+        tierName: say(tier === "speech" ? "Your Speech" : "Speech + Coach"),
         price: tier === "speech" ? pricing.speech.price : price,
         speechId,
         accessToken,
@@ -203,14 +212,16 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-6">
             <Check className="w-4 h-4 text-accent" />
-            <span className="font-body text-sm text-accent font-medium">Your speech is ready</span>
+            <span className="font-body text-sm text-accent font-medium">{isVows ? "Your vows are ready" : "Your speech is ready"}</span>
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Your {speechTitle} is ready. One step left.
+            {isVows ? "Your wedding vows are ready. One step left." : `Your ${speechTitle} is ready. One step left.`}
           </h1>
           {primaryName && (
             <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto mb-2">
-              {localize(`Your expertly crafted speech${primaryName ? ` for ${primaryName}` : ""} is one click away`)}
+              {isVows
+                ? `Your vows for ${primaryName} are one click away`
+                : localize(`Your expertly crafted speech for ${primaryName} is one click away`)}
             </p>
           )}
         </motion.div>
@@ -228,7 +239,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
         ) : (
           <p className="font-body text-sm text-muted-foreground text-center mb-8">
             <Clock className="w-4 h-4 inline mr-1.5 -mt-0.5" />
-            We'll keep your speech for you for 24 hours.
+            {say("We'll keep your speech for you for 24 hours.")}
           </p>
         )}
 
@@ -254,7 +265,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2">
             <Lock className="w-5 h-5 text-accent" />
             <p className="font-body text-sm text-muted-foreground font-medium">
-              The rest of your speech is ready below
+              {isVows ? "The rest of your vows are ready below" : "The rest of your speech is ready below"}
             </p>
           </div>
         </motion.div>
@@ -263,14 +274,14 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
         <div className="max-w-md mx-auto mb-12 text-center">
           <p className="font-display text-4xl font-bold text-foreground">{price}</p>
           <p className="font-body text-sm text-muted-foreground mt-1 mb-4">
-            Your full speech + my rehearsal coach · One payment · Yours to keep
+            {say("Your full speech + my rehearsal coach · One payment · Yours to keep")}
           </p>
           <button
             onClick={() => handlePurchase("basic")}
             disabled={loadingPurchase}
             className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
           >
-            Unlock My Speech — {price}
+            {isVows ? "Unlock My Vows" : "Unlock My Speech"} — {price}
           </button>
           <p className="inline-flex items-center gap-1.5 mt-3 font-body text-sm text-muted-foreground">
             <Shield className="w-4 h-4 text-accent" />
@@ -281,8 +292,41 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
             disabled={loadingPurchase}
             className="block mx-auto mt-3 font-body text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
           >
-            Or just the speech, without the coach, for {pricing.speech.price}
+            {say("Or just the speech, without the coach, for ")}{pricing.speech.price}
           </button>
+
+          {/* What it saves you, then the trust signals people look for before paying */}
+          <ul className="mt-6 space-y-2.5 text-left">
+            {[
+              isVows
+                ? ["Skip the blank page", "Your vows done tonight, not after weeks of putting it off"]
+                : ["Skip the blank page", "Done in minutes, not evenings of staring at a screen"],
+              ["Written my way", "The method I use for my bespoke clients, since 2012"],
+              ["Unlimited changes", isVows ? "New versions and edits until they sound like you" : "New versions and edits until it sounds like you"],
+              ["Love it or your money back", "Email me and I'll refund you in full"],
+            ].map(([title, sub]) => (
+              <li key={title} className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 mt-1 shrink-0 text-accent" />
+                <span className="font-body text-sm">
+                  <span className="font-semibold text-foreground">{title}</span>
+                  <span className="block text-muted-foreground">{sub}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-5 flex items-center justify-center gap-1.5 font-body text-xs text-muted-foreground">
+            <span className="flex text-accent">
+              {[0, 1, 2, 3, 4].map((i) => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
+            </span>
+            4.9/5 from 421 verified reviews of my bespoke speechwriting
+          </div>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 font-body text-[11px] text-muted-foreground">
+            <Lock className="w-3.5 h-3.5" />
+            <span className="mr-1">Secure checkout by Stripe</span>
+            {["Visa", "Mastercard", "Amex"].map((c) => (
+              <span key={c} className="px-1.5 py-0.5 rounded border border-border bg-background font-semibold">{c}</span>
+            ))}
+          </div>
         </div>
 
         {/* What you get */}
@@ -293,17 +337,19 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           className="max-w-5xl mx-auto mb-12"
         >
           <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
-            {localize(`It's more than a speech for ${price}`)}
+            {isVows ? `Everything you need to say them well, for ${price}` : localize(`It's more than a speech for ${price}`)}
           </h2>
           <p className="font-body text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
-            You get your full speech, your own speech suite to shape it, and my rehearsal coach to get you ready to stand up and give it.
+            {isVows
+              ? "You get your full vows, your own suite to shape them, and my rehearsal coach so you can say them without your voice going."
+              : "You get your full speech, your own speech suite to shape it, and my rehearsal coach to get you ready to stand up and give it."}
           </p>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <div className="flex gap-2 mb-3" role="tablist">
                 {([
                   ["rehearse", "Watch the rehearsal coach"],
-                  ["suite", "See the speech suite"],
+                  ["suite", isVows ? "See your own suite" : "See the speech suite"],
                 ] as const).map(([k, label]) => (
                   <button
                     key={k}
@@ -356,7 +402,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
                   <div>
                     {i === 0 && <p className="font-body text-[11px] uppercase tracking-[0.2em] text-accent font-semibold mb-1">Only at bestmanspeech.com</p>}
                     <h3 className="font-display text-lg font-bold text-foreground mb-1">{c.title}</h3>
-                    <p className="font-body text-sm text-muted-foreground leading-relaxed">{localize(c.text)}</p>
+                    <p className="font-body text-sm text-muted-foreground leading-relaxed">{say(c.text)}</p>
                   </div>
                 </div>
               ))}
@@ -375,7 +421,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           <div className="rounded-2xl bg-charcoal text-primary-foreground ring-2 ring-accent shadow-2xl shadow-accent/10 p-8 md:p-10">
             <div className="text-center mb-6">
               <span className="font-body text-xs font-semibold tracking-widest uppercase text-accent mb-3 block">
-                Speech + Coach · Most popular
+                {isVows ? "Vows + Coach · Most popular" : "Speech + Coach · Most popular"}
               </span>
               <div className="flex items-center justify-center my-4">
                 <span className="font-display text-5xl md:text-6xl font-bold text-accent">
@@ -407,10 +453,10 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               disabled={loadingPurchase}
               className="w-full py-4 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
             >
-              Unlock My Speech — {price}
+              {isVows ? "Unlock My Vows" : "Unlock My Speech"} — {price}
             </button>
 
-            <PayReassurance dark className="mt-5" />
+            <PayReassurance thing={isVows ? "vows" : "speech"} dark className="mt-5" />
           </div>
 
           {/* The cheaper option, kept small so there's one clear choice */}
@@ -420,7 +466,7 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
               disabled={loadingPurchase}
               className="underline underline-offset-4 hover:text-foreground"
             >
-              Or just the speech for {pricing.speech.price}
+              {say("Or just the speech for ")}{pricing.speech.price}
             </button>
             {localize(" (no rehearsal coach; you can add it later for ")}{pricing.upgrade.price}).
           </p>
@@ -514,18 +560,20 @@ const SpeechPaywall = ({ speech, speechId, accessToken, speechType, speechTitle,
           className="text-center py-12 border-t border-border"
         >
           <h2 className="font-display text-2xl font-bold text-foreground mb-3">
-            Ready to deliver the speech of a lifetime?
+            {isVows ? "Ready to say the words you mean?" : "Ready to deliver the speech of a lifetime?"}
           </h2>
           <p className="font-body text-muted-foreground mb-6 max-w-lg mx-auto">
-            Edit it yourself, get unlimited new versions, and keep it all in your own speech suite. 100% money-back guarantee.
+            {isVows
+              ? "Edit them yourself, get unlimited new versions, and keep them all in your own suite. 100% money-back guarantee."
+              : "Edit it yourself, get unlimited new versions, and keep it all in your own speech suite. 100% money-back guarantee."}
           </p>
           <button
             onClick={scrollToPrices}
             className="inline-flex items-center gap-2 px-10 py-5 bg-accent hover:bg-gold-dark text-accent-foreground font-display font-bold text-lg rounded-xl transition-all duration-300"
           >
-            Unlock My Speech · {price}
+            {isVows ? "Unlock My Vows" : "Unlock My Speech"} · {price}
           </button>
-          <PayReassurance className="mt-6 max-w-md mx-auto text-left" />
+          <PayReassurance thing={isVows ? "vows" : "speech"} className="mt-6 max-w-md mx-auto text-left" />
         </motion.div>
       </div>
     </div>
